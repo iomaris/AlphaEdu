@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AlphaEdu - Painel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="css/stylePainel.css">
+</head>
+<body>
+
+<!-- ================================================== -->
+<!-- ============ SIDEBAR COM A ESTRUTURA CORRETA ========= -->
+<!-- ================================================== -->
+<div class="sidebar">
+  <!-- 1. Navegação Principal (ocupa a parte de cima ) -->
+  <div class="sidebar-main-navigation">
+    <h2><i data-lucide="book-open"></i> AlphaEdu</h2>
+    <nav>
+      <a href="painel.html" class="active"><i data-lucide="layout-dashboard"></i> Painel</a>
+      <a href="cronometro.html"><i data-lucide="timer"></i> Cronômetro</a>
+      <a href="calendario.html"><i data-lucide="calendar"></i> Calendário</a>
+      <a href="bloco_de_notas.html"><i data-lucide="notebook-pen"></i> Bloco de Notas</a>
+      <a href="flashcards.html"><i data-lucide="layers"></i> Flashcards</a>
+    </nav>
+  </div>
+
+  <!-- 2. Menu Inferior (fixo embaixo) -->
+  <div id="profile-menu-container" class="sidebar-bottom-menu">
+    <!-- O botão do Perfil é o único item visível aqui -->
+    <button id="profile-menu-button" class="bottom-menu-item profile-button">
+      <span class="profile-avatar">AT</span>
+    </button>
+
+    <!-- O menu dropdown (escondido) que abre ao clicar no botão -->
+    <div id="profile-dropdown" class="profile-dropdown-sidebar">
+      <div class="dropdown-header">
+        <span class="username">Aluno Teste</span>
+        <span class="email">aluno.teste@email.com</span>
+      </div>
+      <a href="perfil.html" class="dropdown-item">
+        <i data-lucide="user-cog"></i>
+        <span>Editar Perfil</span>
+      </a>
+
+      
+      <!-- A opção "Configurações" agora está aqui dentro -->
+      <a href="configuracao.html" class="dropdown-item">
+        <i data-lucide="settings"></i>
+        <span>Configurações</span>
+      </a>
+      <div class="dropdown-divider"></div>
+      <a href="inicial.html" class="dropdown-item logout">
+        <i data-lucide="log-out"></i>
+        <span>Sair</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================== -->
+<!-- ============ CONTEÚDO PRINCIPAL DA PÁGINA ========== -->
+<!-- ================================================== -->
+<div class="main">
+  <div class="banner">
+    <i data-lucide="user-check"></i>
+    <h3>Bem-vindo(a) de volta, Aluno Teste!</h3>
+    <p>Aqui você encontra as últimas atualizações e ferramentas para organizar seus estudos.</p>
+  </div>
+  
+  <div class="panel">
+    <div class="notices-header">
+      <i data-lucide="megaphone"></i>
+      <span>Avisos Importantes</span>
+    </div>
+    <div class="notice-list">
+      <div class="notice-card">
+        <h4>Entrega de Trabalhos de Ciências</h4>
+        <div class="meta">Publicado por: <strong>Prof. Ana</strong> em 11/07/2024 às 14:30</div>
+        <p>O prazo final para entrega dos trabalhos de Ciências é dia 20/07. Não haverá prorrogação.</p>
+      </div>
+      <div class="notice-card">
+        <h4>Alteração de Horário da Aula de Português</h4>
+        <div class="meta">Publicado por: <strong>Prof. Silva</strong> em 10/07/2024 às 09:00</div>
+        <p>A aula de Português da próxima terça-feira (15/07) foi antecipada para as 08:00.</p>
+      </div>
+      <div class="notice-card">
+        <h4>Festa Junina da Escola</h4>
+        <div class="meta">Publicado em 05/07/2024 às 16:00</div>
+        <p>A Festa Junina será realizada no dia 18/07, a partir das 17:00, no pátio central. Contamos com a sua presença!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================== -->
+<!-- ========= BOTÃO FLUTUANTE E MODAL DE TURMA ========= -->
+<!-- ================================================== -->
+<button id="openJoinModalBtn" class="fab">
+  <i data-lucide="plus"></i>
+</button>
+
+<div id="joinClassModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4>Participar da Turma</h4>
+      <button id="closeJoinModalBtn" class="close-btn">&times;</button>
+    </div>
+    <form id="joinClassForm">
+      <p>Peça o código da turma para seu professor e digite-o aqui.</p>
+      <div class="form-group">
+        <label for="class-code-input">Código da turma</label>
+        <input type="text" id="class-code-input" placeholder="Digite o código" required>
+      </div>
+      <div class="modal-actions">
+        <button type="submit" class="btn-save">Participar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="js/scriptPainel.js"></script>
+</body>
+</html>

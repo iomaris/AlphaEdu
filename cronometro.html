@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AlphaEdu - Cronômetro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Link para a sua folha de estilo -->
+  <link rel="stylesheet" href="css/styleCronometro.css">
+</head>
+<body>
+
+<!-- ================================================== -->
+<!-- ===== 1. SIDEBAR CORRIGIDA (UMA ÚNICA VEZ ) ===== -->
+<!-- ================================================== -->
+<div class="sidebar">
+  <!-- Navegação Principal -->
+  <div class="sidebar-main-navigation">
+    <h2><i data-lucide="book-open"></i> AlphaEdu</h2>
+    <nav>
+      <a href="painel.html"><i data-lucide="layout-dashboard"></i> Painel</a>
+      <a href="cronometro.html" class="active"><i data-lucide="timer"></i> Cronômetro</a>
+      <a href="calendario.html"><i data-lucide="calendar"></i> Calendário</a>
+      <a href="bloco_de_notas.html"><i data-lucide="notebook-pen"></i> Bloco de Notas</a>
+      <a href="flashcards.html"><i data-lucide="layers"></i> Flashcards</a>
+    </nav>
+  </div>
+
+  <!-- Menu Inferior de Perfil -->
+  <div id="profile-menu-container" class="sidebar-bottom-menu">
+    <button id="profile-menu-button" class="bottom-menu-item profile-button">
+      <span class="profile-avatar">AT</span>
+    </button>
+    <div id="profile-dropdown" class="profile-dropdown-sidebar">
+      <div class="dropdown-header">
+        <span class="username">Aluno Teste</span>
+        <span class="email">aluno.teste@email.com</span>
+      </div>
+      <a href="perfil.html" class="dropdown-item">
+        <i data-lucide="user-cog"></i>
+        <span>Editar Perfil</span>
+      </a>
+      <a href="configuracao.html" class="dropdown-item">
+        <i data-lucide="settings"></i>
+        <span>Configurações</span>
+      </a>
+      <div class="dropdown-divider"></div>
+      <a href="inicial.html" class="dropdown-item logout">
+        <i data-lucide="log-out"></i>
+        <span>Sair</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================== -->
+<!-- ========= 2. CONTEÚDO PRINCIPAL DA PÁGINA ========= -->
+<!-- ================================================== -->
+<div class="main">
+  <!-- Banner -->
+  <div class="banner">
+    <i data-lucide="timer"></i>
+    <h3>Cronômetro Pomodoro</h3>
+    <p>Gerencie seu tempo de estudo e pausas para máxima produtividade.</p>
+  </div>
+
+  <!-- Painel do Cronômetro -->
+  <div class="panel">
+    <div class="tabs">
+      <button id="tab-pomodoro" class="active">Pomodoro</button>
+      <button id="tab-timer">Temporizador</button>
+    </div>
+
+    <!-- Aba Pomodoro -->
+    <div id="pomodoro-tab" class="tab-content active">
+      <div class="timer-display" id="pomodoro-display">
+        <div class="time-card" id="pomodoro-minutes">25</div>
+        <div class="time-separator">:</div>
+        <div class="time-card" id="pomodoro-seconds">00</div>
+      </div>
+      <div class="controls">
+        <button onclick="startPomodoro()">Iniciar</button>
+        <button onclick="pausePomodoro()">Pausar</button>
+        <button onclick="resetPomodoro()">Resetar</button>
+      </div>
+    </div>
+
+    <!-- Aba Temporizador -->
+    <div id="timer-tab" class="tab-content">
+      <div class="timer-display" id="custom-display">
+        <div class="time-card" id="custom-minutes">00</div>
+        <div class="time-separator">:</div>
+        <div class="time-card" id="custom-seconds">00</div>
+      </div>
+      <div class="input-row">
+        <input type="number" id="custom-minutes-input" placeholder="Minutos" min="0" />
+        <input type="number" id="custom-seconds-input" placeholder="Segundos" min="0" max="59" />
+      </div>
+      <div class="controls">
+        <button onclick="startCustomTimer()">Iniciar</button>
+        <button onclick="pauseCustomTimer()">Pausar</button>
+        <button onclick="resetCustomTimer()">Resetar</button>
+      </div>
+    </div>
+
+    <!-- Configurações do Pomodoro -->
+    <div class="settings" id="pomodoro-settings">
+      <h4>Configurações do Pomodoro</h4>
+      <div class="settings-row">
+        <label for="pomodoro-length">Duração (min):</label>
+        <input type="number" id="pomodoro-length" value="25" min="1" />
+        <button onclick="applySettings()">Aplicar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="js/scriptCronometro.js"></script>
+<script src="js/scriptGlobal.js"></script>
+</body>
+</html>

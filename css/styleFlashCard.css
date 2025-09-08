@@ -1,0 +1,483 @@
+/* ================================================== */
+/* ===== ARQUIVO CSS COMPLETO: styleFlashCard.css ===== */
+/* ================================================== */
+
+/* --- Variáveis de Cor e Reset Global --- */
+:root {
+  --blue: #3498db;
+  --blue-light: #d6eaf8;
+  --bg: #f9f9fb;
+  --card-bg: #ffffff;
+  --card-border: #e5e5e5;
+  --text-primary: #333;
+  --text-secondary: #666;
+  --red-notice: #e74c3c;
+}
+
+body.dark-mode {
+  --bg: #1a1a1a;
+  --card-bg: #2c2c2c;
+  --card-border: #404040;
+  --text-primary: #f0f0f0;
+  --text-secondary: #a0a0a0;
+  --blue-light: #2c3e50;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  display: flex;
+  height: 100vh;
+  background: var(--bg);
+  color: var(--text-primary);
+  overflow: hidden;
+}
+
+/* ================================================== */
+/* ========= 1. ESTILOS CORRIGIDOS DA SIDEBAR ========= */
+/* ================================================== */
+
+.sidebar {
+  width: 240px;
+  background: var(--card-bg);
+  border-right: 1px solid var(--card-border);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: fixed;
+  height: 100%;
+}
+
+.sidebar h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: var(--blue);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sidebar nav a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  transition: background 0.2s;
+}
+
+.sidebar nav a:hover,
+.sidebar nav a.active {
+  background: var(--blue-light);
+  color: var(--blue);
+  font-weight: 600;
+}
+
+/* --- Menu Inferior (Perfil) --- */
+.sidebar-bottom-menu {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--card-border);
+}
+
+.bottom-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--text-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.bottom-menu-item:hover {
+  background-color: var(--bg);
+  color: var(--text-primary);
+}
+
+.profile-button {
+  padding: 4px;
+}
+
+.profile-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--blue);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --- Menu Pop-up (Dropdown) --- */
+.profile-dropdown-sidebar {
+  display: none;
+  position: absolute;
+  bottom: 0;
+  left: calc(100% + 10px);
+  width: 240px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+}
+
+.profile-dropdown-sidebar.show {
+  display: block;
+}
+
+.dropdown-header { padding: 16px; border-bottom: 1px solid var(--card-border); }
+.dropdown-header .username { display: block; font-weight: 600; }
+.dropdown-header .email { font-size: 13px; color: var(--text-secondary); }
+.dropdown-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; text-decoration: none; color: var(--text-primary); font-size: 14px; transition: background-color 0.2s; }
+.dropdown-item:hover { background-color: var(--bg); }
+.dropdown-item i { width: 18px; height: 18px; color: var(--text-secondary); }
+.dropdown-divider { height: 1px; background-color: var(--card-border); margin: 4px 0; }
+.dropdown-item.logout { color: var(--red-notice); }
+
+
+/* ================================================== */
+/* ===== 2. ESTILOS ESPECÍFICOS DA PÁGINA DE FLASHCARDS ===== */
+/* ================================================== */
+
+.main {
+  margin-left: 240px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 20px;
+  align-items: center; /* Centraliza o conteúdo dos flashcards */
+}
+
+.banner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: var(--card-bg);
+  padding: 40px 20px;
+  border-radius: 12px;
+  border: 1px solid var(--card-border);
+  width: 100%;
+  max-width: 800px;
+}
+
+.banner i {
+  width: 40px;
+  height: 40px;
+  color: var(--blue);
+  margin-bottom: 10px;
+}
+
+.banner h3 {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 5px;
+}
+
+.banner p {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.toolbar {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.search {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  background: var(--bg);
+  color: var(--text-primary);
+}
+
+.add-btn {
+  padding: 10px 16px;
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.2s;
+}
+
+.add-btn:hover {
+  background: #2980b9;
+}
+
+.flashcard-container {
+  perspective: 1000px;
+  width: 100%;
+  max-width: 600px;
+  height: 350px;
+}
+
+.flashcard {
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  background: var(--card-bg);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: 500;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  position: relative;
+}
+
+.flashcard.is-flipped {
+  transform: rotateY(180deg);
+}
+
+.flashcard-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+  border-radius: 16px;
+}
+
+.flashcard-front {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+}
+
+.flashcard-back {
+  background: var(--blue-light);
+  color: var(--blue);
+  transform: rotateY(180deg);
+}
+
+.tags {
+  margin-top: 12px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.tag {
+  background: var(--blue-light);
+  color: var(--blue);
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.btn:hover {
+  background: var(--bg);
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1000;
+}
+
+.modal.show {
+  display: flex;
+  opacity: 1;
+}
+
+.modal-content {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 20px;
+  width: 400px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-content h4 {
+  margin-bottom: 12px;
+  font-size: 18px;
+}
+
+.modal-content label {
+  display: block;
+  margin-top: 10px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.modal-content input,
+.modal-content textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 6px;
+  border: 1px solid var(--card-border);
+  border-radius: 6px;
+  font-size: 14px;
+  background: var(--bg);
+  color: var(--text-primary);
+}
+
+.modal-actions {
+  margin-top: 15px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.modal-actions button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.cancel-btn {
+  background: var(--bg);
+  color: var(--text-primary);
+  border: 1px solid var(--card-border);
+}
+
+.save-btn {
+  background: var(--blue);
+  color: #fff;
+}
+
+/* ================================================== */
+/* ===== 3. SEÇÃO DE RESPONSIVIDADE ===== */
+/* ================================================== */
+
+@media (max-width: 980px) {
+  body {
+    flex-direction: column;
+    overflow: auto;
+  }
+  .sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    align-items: center;
+  }
+  .sidebar-main-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-grow: 1;
+  }
+  .sidebar-main-navigation nav {
+    display: flex;
+    flex-direction: row;
+  }
+  .sidebar-bottom-menu {
+    border-top: none;
+    padding-top: 0;
+    flex-direction: row;
+  }
+  .main {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .sidebar-main-navigation nav {
+    flex-direction: column;
+  }
+  .sidebar-bottom-menu {
+    flex-direction: column;
+    border-top: 1px solid var(--card-border);
+    padding-top: 12px;
+  }
+}

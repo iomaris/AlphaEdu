@@ -1,0 +1,117 @@
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AlphaEdu - Registrar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styleRegistrar.css">
+
+</head>
+
+
+
+<body>
+  <div class="left">
+
+  </div>
+
+  <div class="right">
+    <div class="form-container">
+
+
+      <div class="tab-container">
+        <div class="tab active" data-target="inscrever">Inscrever-se</div>
+        <div class="tab" data-target="entrar">Entrar</div>
+        <div class="underline"></div>
+      </div>
+
+
+
+      <div class="social-buttons">
+        <button class="social-button" type="button">
+          <img class="icon" src="https://cdn-icons-png.flaticon.com/512/281/281764.png" alt="Google"> Continuar com o
+          Google
+        </button>
+      </div>
+
+      <div class="divider">ou com e-mail</div>
+<!-- DENTRO DO SEU ARQUIVO Registrar.html, SUBSTITUA O CONTEÚDO DA TAG <form> POR ISTO: -->
+
+  <form>
+    <!-- Grupo 1: Data de Nascimento -->
+    <div class="form-group">
+      <label for="dia">Data de nascimento</label>
+      <div class="date-container">
+        <select id="dia" name="dia" required>
+          <option value="">Dia</option>
+          <script>
+            for (let d = 1; d <= 31; d++) { document.write(`<option value="${d}">${d}</option>`); }
+          </script>
+        </select>
+        <select id="mes" name="mes" required>
+          <option value="">Mês</option>
+          <option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option><option value="4">Abril</option><option value="5">Maio</option><option value="6">Junho</option><option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option><option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
+        </select>
+        <select id="ano" name="ano" required>
+          <option value="">Ano</option>
+          <script>
+            const anoAtual = new Date().getFullYear();
+            for (let a = anoAtual; a >= 1900; a--) { document.write(`<option value="${a}">${a}</option>`); }
+          </script>
+        </select>
+      </div>
+    </div>
+  
+    <!-- Grupo 2: Nome de usuário -->
+    <div class="form-group">
+      <label for="username">Nome de usuário</label>
+      <input type="text" id="username" placeholder="Nome de usuário" />
+    </div>
+  
+    <!-- Grupo 3: E-mail -->
+    <div class="form-group">
+      <label for="email">E-mail</label>
+      <input type="email" id="email" placeholder="usuario@email.com" />
+    </div>
+  
+    <!-- Grupo 4: Tipo de Usuário -->
+    <div class="form-group">
+      <label for="user-type">Tipo de Usuário</label>
+      <select id="user-type" name="user-type" required>
+        <option value="" disabled selected>Selecione seu tipo de usuário</option>
+        <option value="aluno">Aluno</option>
+        <option value="professor">Professor</option>
+      </select>
+    </div>
+  
+    <!-- Grupo 5: Senha -->
+    <div class="form-group">
+      <label for="senha">
+        <span>Senha</span>
+        <div class="forgot"><a href="#">Esqueci a senha</a></div>
+      </label>
+      <div class="password-container">
+        <input type="password" id="senha" placeholder="Digite sua senha" />
+      </div>
+    </div>
+  
+    <button type="submit" class="submit-btn">Inscrever-se</button>
+  </form>
+
+      <div class="bottom">
+        Já possui uma conta? <a href="Login.html">Entre</a>
+      </div>
+    </div>
+  </div>
+  <script src="js/scriptRegistrar.js"></script>
+
+
+
+  
+
+
+
+</body>
+
+</html>

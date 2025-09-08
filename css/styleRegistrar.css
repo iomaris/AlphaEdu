@@ -1,0 +1,560 @@
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Nunito Sans', sans-serif;
+  }
+
+  html,
+  body {
+    height: 100%;
+  }
+
+
+  body {
+    display: flex;
+    min-height: 100vh;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  /* LADOS */
+  .left,
+  .right {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px;
+  }
+
+  .left {
+    width: 50%;
+    background: url("../imagens/Registrar.png") no-repeat center center;
+    background-size: cover;
+    /* faz a imagem cobrir toda a área */
+    color: #fff;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 80px;
+  }
+
+
+  .left h1 {
+    font-size: 56px;
+    font-weight: 800;
+    max-width: 520px;
+    line-height: 1.2;
+    margin-bottom: 30px;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    /* melhora a legibilidade do texto sobre a imagem */
+  }
+
+  .left .logo {
+    position: absolute;
+    left: 32px;
+    bottom: 24px;
+    font-size: 30px;
+    font-weight: 800;
+    color: #fff;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  }
+
+  .left img {
+    position: absolute;
+    /* fixa dentro da área azul */
+    bottom: 60px;
+    /* distância da parte inferior */
+    right: -500px;
+    /* puxa um pouco para dentro */
+    width: 1500px;
+    /* controla o tamanho */
+    height: auto;
+    /* mantém proporção */
+    z-index: 1;
+    /* garante que não sobreponha o formulário */
+  }
+
+
+
+  /* DIREITA */
+  .right {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    /* <<< ALTERE PARA 'flex-start' */
+    align-items: center;
+    padding: 40px;
+    overflow-y: auto;
+  }
+
+
+  .form-container {
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    align-items: stretch;
+    margin: 0 40px;
+  }
+
+  .tab-container {
+    position: relative;
+    display: flex;
+    gap: 40px;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+
+  .tab {
+    cursor: pointer;
+    color: #6b7280;
+    transition: color 0.3s ease;
+    position: relative;
+  }
+
+  .tab.active {
+    color: #111827;
+  }
+
+  /* underline animado */
+  .underline {
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    height: 3px;
+    width: 100px;
+    /* ajusta na inicialização */
+    background: #2563eb;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+  }
+
+
+  .social-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  .social-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    border: 1px solid #e5e7eb;
+    padding: 14px 18px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 999px;
+    background: #fff;
+    cursor: pointer;
+    transition: background .12s, transform .06s;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02);
+  }
+
+  .social-button:hover {
+    background: #f8fafc;
+    transform: translateY(-1px);
+  }
+
+  .social-button img.icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .divider {
+    text-align: center;
+    color: #9ca3af;
+    font-size: 14px;
+    margin: 14px 0;
+    position: relative;
+  }
+
+  .divider::before,
+  .divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 38%;
+    height: 1px;
+    background: #e6e7ea;
+  }
+
+  .divider::before {
+    left: 0;
+    transform: translateY(-50%);
+  }
+
+  .divider::after {
+    right: 0;
+    transform: translateY(-50%);
+  }
+
+  form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    text-align: left; /* <<< ADICIONE ESTA LINHA */
+  }
+  
+
+  label {
+    display: block;
+    font-size: 14px;
+    color: #1e293b;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .forgot a {
+    font-size: 13px;
+    color: #2563eb;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .forgot a:hover {
+    text-decoration: underline;
+  }
+
+  /* CAMPOS MAIS SUAVES */
+  input {
+    padding: 14px 48px 14px 16px;
+    font-size: 15px;
+    border: none;
+    border-radius: 8px;
+    outline: none;
+    width: 100%;
+    background: #ecf0f5;
+    color: #7189b4;
+    font-weight: 500;
+    box-shadow: inset 0 0 0 1px #ecf0f5;
+    transition: box-shadow 0.2s ease, background 0.2s ease;
+  }
+
+  input::placeholder {
+    color: #8a9bbb;
+    font-weight: 500;
+  }
+
+  input:focus {
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
+    background: #ffffff;
+  }
+
+
+  .submit-btn {
+    padding: 15px;
+    border: none;
+    background: #2563eb;
+    color: #fff;
+    font-size: 17px;
+    font-weight: 800;
+    border-radius: 999px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 6px;
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.3);
+    transition: transform .08s, filter .08s;
+
+  }
+
+  .password-container {
+    position: relative;
+    width: 100%;
+  }
+
+  .toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 14px;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .toggle-password svg {
+    width: 20px;
+    height: 20px;
+    fill: #f6f8fa;
+  }
+
+  .toggle-password:hover svg {
+    fill: #f0f2f5;
+  }
+
+  .submit-btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(.98);
+  }
+
+  .bottom {
+    text-align: center;
+    margin-top: 6px;
+    font-size: 15px;
+    color: #6b7280;
+  }
+
+  .bottom a {
+    color: #335eea;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  @media (max-width:980px) {
+
+    .left,
+    .right {
+      width: 100%;
+      padding: 36px;
+    }
+
+    body {
+      flex-direction: column;
+    }
+
+    .left {
+      align-items: center;
+      text-align: center;
+      padding: 36px 28px;
+    }
+
+    .left img,
+    .left .logo {
+      display: none;
+    }
+
+    .form-container {
+      max-width: 620px;
+      margin: 0 auto;
+    }
+  }
+
+  @media (max-width:420px) {
+    .form-container {
+      padding: 0 100px;
+    }
+  }
+
+  /* ==== AJUSTE: container e selects da Data de nascimento ==== */
+  .date-container {
+    display: flex;
+    gap: 10px;
+    /* espaço entre Dia/Mês/Ano */
+    margin-top: 4px;
+    /* pequeno respiro após o label */
+  }
+
+  .date-container select {
+    padding: 14px 16px;
+    /* igual aos inputs */
+    font-size: 15px;
+    border: none;
+    border-radius: 8px;
+    outline: none;
+    background: #ecf0f5;
+    color: #7189b4;
+    font-weight: 500;
+    box-shadow: inset 0 0 0 1px #ecf0f5;
+    transition: box-shadow 0.2s ease, background 0.2s ease;
+    flex: 1;
+    /* todos proporcionais */
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .date-container select:focus {
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
+    background: #ffffff;
+  }
+
+  /* ========================================================== */
+
+
+  .submit-btn {
+    padding: 15px;
+    border: none;
+    background: #2563eb;
+    color: #fff;
+    font-size: 17px;
+    font-weight: 800;
+    border-radius: 999px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 6px;
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.3);
+    transition: transform .08s, filter .08s;
+
+  }
+
+  .password-container {
+    position: relative;
+    width: 100%;
+  }
+
+  .toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 14px;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .toggle-password svg {
+    width: 20px;
+    height: 20px;
+    fill: #f6f8fa;
+  }
+
+  .toggle-password:hover svg {
+    fill: #f0f2f5;
+  }
+
+  .submit-btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(.98);
+  }
+
+  .bottom {
+    text-align: center;
+    margin-top: 6px;
+    font-size: 15px;
+    color: #6b7280;
+  }
+
+  .bottom a {
+    color: #335eea;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  /* --- RESPONSIVIDADE --- */
+
+  /* Para tablets e telas menores */
+  @media (max-width: 980px) {
+    body {
+      flex-direction: column;
+      /* Empilha os lados verticalmente */
+      overflow: auto;
+      /* Permite a rolagem do corpo inteiro */
+    }
+
+    .left {
+      display: none;
+      /* Oculta a imagem da esquerda para focar no formulário */
+    }
+
+    .right {
+      width: 100%;
+      /* Ocupa a largura total */
+      min-height: 100vh;
+      /* Garante que ocupe a altura toda da tela */
+      padding: 40px 20px;
+      /* Padding vertical e horizontal reduzido */
+      justify-content: flex-start;
+      /* Alinha o conteúdo ao topo */
+    }
+  }
+
+  /* Para celulares */
+  @media (max-width: 480px) {
+    .right {
+      padding: 30px 15px;
+      /* Reduz ainda mais o padding para ganhar espaço */
+    }
+
+    .tab-container {
+      gap: 20px;
+      /* Diminui o espaço entre as abas */
+      font-size: 18px;
+    }
+
+    .social-button,
+    .submit-btn,
+    input,
+    .date-container select {
+      font-size: 14px;
+      /* Diminui um pouco a fonte dos botões e campos */
+      padding: 12px 14px;
+    }
+  }
+
+
+  /* Animação de fade suave */
+  .fade-out {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .fade-in {
+    opacity: 1;
+    transition: opacity 0.5s ease;
+  }
+  /* ADICIONE ESTE BLOCO DE CÓDIGO AO SEU ARQUIVO styleRegistrar.css */
+
+/* Garante o espaçamento correto entre os grupos de formulário */
+.form-group {
+  width: 100%;
+}
+
+/* Estilo para o campo de seleção (Tipo de Usuário) */
+select {
+  padding: 14px 16px;
+  font-size: 15px;
+  border: none;
+  border-radius: 8px;
+  outline: none;
+  width: 100%;
+  background: #ecf0f5;
+  color: #7189b4;
+  font-weight: 500;
+  box-shadow: inset 0 0 0 1px #ecf0f5;
+  transition: box-shadow 0.2s ease, background 0.2s ease;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e" );
+  background-position: right 0.7rem center;
+  background-repeat: no-repeat;
+  background-size: 1.2em 1.2em;
+  padding-right: 2.5rem;
+}
+
+select:focus {
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
+  background: #ffffff;
+}
+
+/* Cor do texto do placeholder do select */
+select:required:invalid {
+  color: #8a9bbb;
+}
+option[value=""][disabled] {
+  display: none;
+}
+option {
+  color: #1e293b;
+}

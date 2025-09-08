@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AlphaEdu - Flashcards</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="css/styleFlashCard.css">
+</head>
+<body>
+
+<!-- ================================================== -->
+<!-- ===== 1. SIDEBAR CORRIGIDA (UMA ÚNICA VEZ ) ===== -->
+<!-- ================================================== -->
+<div class="sidebar">
+  <!-- Navegação Principal -->
+  <div class="sidebar-main-navigation">
+    <h2><i data-lucide="book-open"></i> AlphaEdu</h2>
+    <nav>
+      <a href="painel.html"><i data-lucide="layout-dashboard"></i> Painel</a>
+      <a href="cronometro.html"><i data-lucide="timer"></i> Cronômetro</a>
+      <a href="calendario.html"><i data-lucide="calendar"></i> Calendário</a>
+      <a href="bloco_de_notas.html"><i data-lucide="notebook-pen"></i> Bloco de Notas</a>
+      <a href="flashcards.html" class="active"><i data-lucide="layers"></i> Flashcards</a>
+    </nav>
+  </div>
+
+  <!-- Menu Inferior de Perfil -->
+  <div id="profile-menu-container" class="sidebar-bottom-menu">
+    <button id="profile-menu-button" class="bottom-menu-item profile-button">
+      <span class="profile-avatar">AT</span>
+    </button>
+    <div id="profile-dropdown" class="profile-dropdown-sidebar">
+      <div class="dropdown-header">
+        <span class="username">Aluno Teste</span>
+        <span class="email">aluno.teste@email.com</span>
+      </div>
+      <a href="perfil.html" class="dropdown-item">
+        <i data-lucide="user-cog"></i>
+        <span>Editar Perfil</span>
+      </a>
+      <a href="configuracao.html" class="dropdown-item">
+        <i data-lucide="settings"></i>
+        <span>Configurações</span>
+      </a>
+      <div class="dropdown-divider"></div>
+      <a href="inicial.html" class="dropdown-item logout">
+        <i data-lucide="log-out"></i>
+        <span>Sair</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================== -->
+<!-- ========= 2. CONTEÚDO PRINCIPAL DA PÁGINA ========= -->
+<!-- ================================================== -->
+<div class="main">
+  <div class="content">
+    <div class="banner">
+      <i data-lucide="layers"></i>
+      <h3>Flashcards</h3>
+      <p>Crie e revise flashcards para estudo interativo.</p>
+    </div>
+    <div class="toolbar">
+      <input type="text" class="search" placeholder="Buscar flashcards...">
+      <button class="add-btn" id="add"><i data-lucide="plus"></i> Novo Flashcard</button>
+    </div>
+    <div class="flashcard-container">
+      <div class="flashcard" id="flashcard">
+        <div class="flashcard-face flashcard-front" id="card-front"></div>
+        <div class="flashcard-face flashcard-back" id="card-back"></div>
+      </div>
+    </div>
+    <div class="tags" id="tags"></div>
+    <div class="counter" id="counter" style="text-align: center; margin-top: 20px;"></div>
+    <div class="controls">
+      <button class="btn" id="prev"><i data-lucide="arrow-left"></i> Anterior</button>
+      <button class="btn" id="shuffle"><i data-lucide="shuffle"></i> Embaralhar</button>
+      <button class="btn" id="edit"><i data-lucide="edit"></i> Editar</button>
+      <button class="btn" id="delete"><i data-lucide="trash-2"></i> Excluir</button>
+      <button class="btn" id="next">Próximo <i data-lucide="arrow-right"></i></button>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================== -->
+<!-- ============= 3. MODAL DE NOVO FLASHCARD ============= -->
+<!-- ================================================== -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h4 id="modal-title">Novo Flashcard</h4>
+    <label>Pergunta</label>
+    <input type="text" id="modal-pergunta" placeholder="Digite a pergunta aqui...">
+    <label>Resposta</label>
+    <textarea id="modal-resposta" rows="4" placeholder="Digite a resposta aqui..."></textarea>
+    <label>Tags (separadas por vírgula)</label>
+    <input type="text" id="modal-tags" placeholder="Ex: geografia, história, química">
+    <div class="modal-actions">
+      <button class="cancel-btn" id="cancel">Cancelar</button>
+      <button class="save-btn" id="save">Criar Flashcard</button>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="js/scriptFlashCard.js"></script>
+<script src="js/scriptGlobal.js"></script>
+</body>
+</html>

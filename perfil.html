@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AlphaEdu - Editar Perfil</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Link para o mesmo CSS do painel -->
+  <link rel="stylesheet" href="css/stylePainel.css"> 
+</head>
+<body>
+
+<!-- 1. Sidebar (Exatamente igual à da página do painel ) -->
+<div class="sidebar">
+  <!-- Navegação Principal -->
+  <div class="sidebar-main-navigation">
+    <h2><i data-lucide="book-open"></i> AlphaEdu</h2>
+    <nav>
+      <!-- O link ativo continua sendo o do Painel, pois o perfil é uma sub-página dele -->
+      <a href="painel.html" class="active"><i data-lucide="layout-dashboard"></i> Painel</a>
+      <a href="cronometro.html"><i data-lucide="timer"></i> Cronômetro</a>
+      <a href="calendario.html"><i data-lucide="calendar"></i> Calendário</a>
+      <a href="bloco_de_notas.html"><i data-lucide="notebook-pen"></i> Bloco de Notas</a>
+      <a href="flashcards.html"><i data-lucide="layers"></i> Flashcards</a>
+    </nav>
+  </div>
+
+  <!-- Menu Inferior de Perfil -->
+  <div id="profile-menu-container" class="sidebar-bottom-menu">
+    <button id="profile-menu-button" class="bottom-menu-item profile-button">
+      <span class="profile-avatar">AT</span>
+    </button>
+    <div id="profile-dropdown" class="profile-dropdown-sidebar">
+      <div class="dropdown-header">
+        <span class="username">Aluno Teste</span>
+        <span class="email">aluno.teste@email.com</span>
+      </div>
+      <a href="perfil.html" class="dropdown-item">
+        <i data-lucide="user-cog"></i>
+        <span>Editar Perfil</span>
+      </a>
+      <a href="#" class="dropdown-item">
+        <i data-lucide="settings"></i>
+        <span>Configurações</span>
+      </a>
+      <div class="dropdown-divider"></div>
+      <a href="#" class="dropdown-item logout">
+        <i data-lucide="log-out"></i>
+        <span>Sair</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- 2. Conteúdo Principal da Página de Perfil -->
+<div class="main">
+  <!-- Cabeçalho da página -->
+  <header class="main-header">
+    <h1 class="page-title">Editar Perfil</h1>
+  </header>
+
+  <!-- Painel com o formulário de edição -->
+  <div class="panel">
+    <form id="profile-form">
+      <div class="form-group">
+        <label for="profile-name">Nome Completo</label>
+        <input type="text" id="profile-name" value="Aluno Teste">
+      </div>
+      <div class="form-group">
+        <label for="profile-email">Endereço de E-mail</label>
+        <input type="email" id="profile-email" value="aluno.teste@email.com" disabled>
+        <small style="font-size: 12px; color: var(--text-secondary); margin-top: 4px; display: block;">O e-mail não pode ser alterado.</small>
+      </div>
+      <div class="form-group">
+        <label for="profile-password">Nova Senha</label>
+        <input type="password" id="profile-password" placeholder="Deixe em branco para não alterar">
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn-save">Salvar Alterações</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Scripts (O mesmo do painel, para o menu da sidebar funcionar) -->
+<script src="js/scriptPainel.js"></script> 
+</body>
+</html>

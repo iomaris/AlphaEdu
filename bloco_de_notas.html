@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlphaEdu - Bloco de Notas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="css/styleNotas.css">
+</head>
+<body>
+
+<!-- ================================================== -->
+<!-- ===== 1. SIDEBAR CORRIGIDA (UMA ÚNICA VEZ ) ===== -->
+<!-- ================================================== -->
+<div class="sidebar">
+  <!-- Navegação Principal -->
+  <div class="sidebar-main-navigation">
+    <h2><i data-lucide="book-open"></i> AlphaEdu</h2>
+    <nav>
+      <a href="painel.html"><i data-lucide="layout-dashboard"></i> Painel</a>
+      <a href="cronometro.html"><i data-lucide="timer"></i> Cronômetro</a>
+      <a href="calendario.html"><i data-lucide="calendar"></i> Calendário</a>
+      <a href="bloco_de_notas.html" class="active"><i data-lucide="notebook-pen"></i> Bloco de Notas</a>
+      <a href="flashcards.html"><i data-lucide="layers"></i> Flashcards</a>
+    </nav>
+  </div>
+
+  <!-- Menu Inferior de Perfil -->
+  <div id="profile-menu-container" class="sidebar-bottom-menu">
+    <button id="profile-menu-button" class="bottom-menu-item profile-button">
+      <span class="profile-avatar">AT</span>
+    </button>
+    <div id="profile-dropdown" class="profile-dropdown-sidebar">
+      <div class="dropdown-header">
+        <span class="username">Aluno Teste</span>
+        <span class="email">aluno.teste@email.com</span>
+      </div>
+      <a href="perfil.html" class="dropdown-item">
+        <i data-lucide="user-cog"></i>
+        <span>Editar Perfil</span>
+      </a>
+      <a href="configuracao.html" class="dropdown-item">
+        <i data-lucide="settings"></i>
+        <span>Configurações</span>
+       
+
+      </a>
+      <div class="dropdown-divider"></div>
+      <a href="inicial.html" class="dropdown-item logout">
+        <i data-lucide="log-out"></i>
+        <span>Sair</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================== -->
+<!-- ========= 2. CONTEÚDO PRINCIPAL DA PÁGINA ========= -->
+<!-- ================================================== -->
+<div class="main">
+    <div class="banner">
+        <i data-lucide="notebook-pen"></i>
+        <h3>Bloco de Notas</h3>
+        <p>Escreva e salve suas notas de estudo e lembretes importantes.</p>
+    </div>
+
+    <div class="panel">
+        <div class="toolbar">
+            <div class="search-container">
+                <i data-lucide="search" class="search-icon"></i>
+                <input type="text" id="searchInput" class="search-input" placeholder="Buscar notas...">
+            </div>
+            <button id="newNoteBtn" class="new-note-btn"><i data-lucide="plus"></i> Nova Nota</button>
+        </div>
+        <div id="notesContainer" class="notes-container">
+            <!-- As notas serão inseridas aqui pelo JavaScript -->
+        </div>
+    </div>
+</div>
+
+<!-- ================================================== -->
+<!-- ============= 3. MODAIS DA PÁGINA ============= -->
+<!-- ================================================== -->
+<div id="noteModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">Nova Nota</h2>
+            <button id="closeModal" class="close-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="text" id="noteTitleInput" placeholder="Título da nota">
+            <textarea id="noteContentInput" rows="8" placeholder="Escreva sua nota aqui..."></textarea>
+        </div>
+        <div class="modal-footer">
+            <button id="cancelBtn" class="btn-cancel">Cancelar</button>
+            <button id="saveNoteBtn" class="btn-save">Salvar</button>
+        </div>
+    </div>
+</div>
+
+<div id="deleteModal" class="modal">
+    <div class="modal-content" style="max-width: 400px;">
+        <div class="modal-header">
+            <h2>Excluir Nota</h2>
+            <button id="closeDeleteModal" class="close-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>Tem certeza que deseja excluir esta nota? Esta ação não pode ser desfeita.</p>
+        </div>
+        <div class="modal-footer">
+            <button id="cancelDeleteBtn" class="btn-cancel">Cancelar</button>
+            <button id="confirmDeleteBtn" class="btn-save" style="background:#e74c3c;">Excluir</button>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="js/scriptNotas.js"></script>
+<script src="js/scriptGlobal.js"></script>
+</body>
+</html>
