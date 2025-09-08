@@ -17,3 +17,7 @@ if (profileMenuContainer && profileMenuButton && profileDropdown) {
         }
     });
 }
+
+  lucide.createIcons( );
+
+
