@@ -28,15 +28,13 @@
 
 
 
-      <div class="social-buttons">
-        <button class="social-button" type="button">
-          <img class="icon" src="https://cdn-icons-png.flaticon.com/512/281/281764.png" alt="Google"> Continuar com o
-          Google
-        </button>
-      </div>
+      
 
-      <div class="divider">ou com e-mail</div>
-<!-- DENTRO DO SEU ARQUIVO Registrar.html, SUBSTITUA O CONTEÚDO DA TAG <form> POR ISTO: -->
+    <!-- Grupo 2: Nome de usuário -->
+    <div class="form-group">
+      <label for="username">Nome de usuário</label>
+      <input type="text" id="username" placeholder="Nome de usuário" />
+    </div> 
 
   <form>
     <!-- Grupo 1: Data de Nascimento -->
@@ -63,11 +61,7 @@
       </div>
     </div>
   
-    <!-- Grupo 2: Nome de usuário -->
-    <div class="form-group">
-      <label for="username">Nome de usuário</label>
-      <input type="text" id="username" placeholder="Nome de usuário" />
-    </div>
+   
   
     <!-- Grupo 3: E-mail -->
     <div class="form-group">
@@ -108,8 +102,51 @@
 
 
 
-  
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
 
+  const firebaseConfig = {
+    apiKey: "AIzaSyD5mZJOy6WLXis0vyuBDN3R0fv62uewMZ4",
+    authDomain: "alfa-edu-ltnov3.firebaseapp.com",
+    databaseURL: "https://alfa-edu-ltnov3-default-rtdb.firebaseio.com",
+    projectId: "alfa-edu-ltnov3",
+    storageBucket: "alfa-edu-ltnov3.firebasestorage.app",
+    messagingSenderId: "65492735007",
+    appId: "1:65492735007:web:579b220d5b730e8bc6f12a"
+  };
+
+  const app = initializeApp(firebaseConfig);
+
+  const auth = getAuth(app);
+
+  const form = document.querySelector("form");
+  form.addEventListener("submit", (e) => {
+    e.preventDefault(); 
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("senha").value;
+
+    if (!email || !password) {
+      alert("Preencha e-mail e senha.");
+      return;
+    }
+
+   
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+       
+        const user = userCredential.user;
+        console.log("Usuário cadastrado:", user.email);
+        
+        window.location.href = "painel.html";
+      })
+      .catch((error) => {
+        console.error(error.code, error.message);
+        alert("OH NÃO VOCE COMETEU UM ERRO TERRÍVEL, se liga: " + error.message);
+      });
+  });
+</script>
 
 
 </body>

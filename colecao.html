@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlphaEdu - Coleções de Flashcards</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="css/styleColecao.css">
+</head>
+<body>
+
+<!-- Sidebar Padrão -->
+<div class="sidebar">
+
+     
+    <div class="sidebar-main-navigation">
+      
+  <div class="sidebar-logo">
+    <img src="imagens/logo.png" alt="AlphaEdu Logo">
+  
+    <span>AlphaEdu</span>
+  </div>
+    <nav>
+      <a href="painel.html"><i data-lucide="layout-dashboard"></i> Painel</a>
+      <a href="cronometro.html"><i data-lucide="timer"></i> Cronômetro</a>
+      <a href="calendario.html"><i data-lucide="calendar"></i> Calendário</a>
+      <a href="bloco_de_notas.html"><i data-lucide="notebook-pen"></i> Bloco de Notas</a>
+      <a href="arquivos.html"><i data-lucide="folder-archive"></i> Meus Arquivos</a>
+      <a href="colecao.html" class="active"><i data-lucide="layers"></i> Flashcards</a>
+    </nav>
+  </div>
+  <div id="profile-menu-container" class="sidebar-bottom-menu">
+    <button id="profile-menu-button" class="bottom-menu-item profile-button">
+      <span class="profile-avatar">AT</span>
+    </button>
+    <div id="profile-dropdown" class="profile-dropdown-sidebar">
+      <div class="dropdown-header">
+        <span class="username">Aluno Teste</span>
+        <span class="email">aluno.teste@email.com</span>
+      </div>
+      <a href="perfil.html" class="dropdown-item"><i data-lucide="user-cog"></i><span>Editar Perfil</span></a>
+      <a href="configuracao.html" class="dropdown-item"><i data-lucide="settings"></i><span>Configurações</span></a>
+      <div class="dropdown-divider"></div>
+      <a href="inicial.html" class="dropdown-item logout"><i data-lucide="log-out"></i><span>Sair</span></a>
+    </div>
+  </div>
+</div>
+
+<!-- Conteúdo Principal -->
+<div class="main">
+    <div class="banner">
+        <i data-lucide="layers"></i>
+        <h3>Minhas Coleções de Flashcards</h3>
+        <p>Crie, gerencie e estude suas coleções de flashcards.</p>
+    </div>
+
+    <div class="panel">
+        <div class="toolbar">
+            <div class="search-container">
+                <i data-lucide="search" class="search-icon"></i>
+                <input type="text" id="search-input" class="search-input" placeholder="Buscar coleções...">
+            </div>
+            <button id="add-collection-btn" class="btn-primary"><i data-lucide="plus"></i> Nova Coleção</button>
+        </div>
+        <div id="collections-grid" class="collections-grid">
+            <!-- As coleções serão inseridas aqui pelo JavaScript -->
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Nova/Editar Coleção -->
+<div id="collection-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 id="modal-title">Nova Coleção</h4>
+            <button id="close-modal-btn" class="close-btn">&times;</button>
+        </div>
+        <form id="collection-form">
+            <div class="form-group">
+                <label for="collection-name">Nome da Coleção</label>
+                <input type="text" id="collection-name" placeholder="Ex: Biologia Celular" required>
+            </div>
+            <div class="form-group">
+                <label for="collection-description">Descrição (Opcional  )</label>
+                <textarea id="collection-description" rows="3" placeholder="Ex: Capítulos 1 a 3 do livro"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="button" id="cancel-btn" class="btn-secondary">Cancelar</button>
+                <button type="submit" class="btn-save">Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal de Confirmação de Exclusão -->
+<div id="confirm-delete-modal" class="modal">
+    <div class="modal-content" style="max-width: 450px;">
+        <div class="modal-header">
+            <h4>Confirmar Exclusão</h4>
+            <button id="close-confirm-modal-btn" class="close-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+            <i data-lucide="alert-triangle" class="confirm-icon"></i>
+            <p id="confirm-modal-text">Você tem certeza que deseja excluir este item? Esta ação não pode ser desfeita.</p>
+        </div>
+        <div class="modal-actions">
+            <button type="button" id="cancel-delete-btn" class="btn-secondary">Cancelar</button>
+            <button type="button" id="confirm-delete-btn" class="btn-danger">Sim, Excluir</button>
+        </div>
+    </div>
+</div>
+
+<!-- 
+  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+  AQUI ESTÁ A CORREÇÃO: Removido o scriptGlobal.js que causava o conflito
+  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+-->
+<script src="js/scriptColecao.js"></script>
+
+</body>
+</html>

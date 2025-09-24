@@ -1,0 +1,223 @@
+/* ================================================== */
+/* ===== ARQUIVO CSS COMPLETO: stylePerfil.css ===== */
+/* ================================================== */
+
+/* --- 1. PALETA DE CORES FUTURISTA (PADRÃO DO PROJETO) --- */
+:root {
+    --bg-dark: #0a0f1e;
+    --bg-panel: #121a2f;
+    --primary-blue: #2563eb;
+    --blue-light: #3b82f6;
+    --blue-glow: #60a5fa;
+    --text-light: #e2e8f0;
+    --text-muted: #94a3b8;
+    --white: #ffffff;
+    --accent: #38bdf8;
+    --danger: #ef4444;
+    --danger-hover: #f87171;
+    --panel-border: rgba(59, 130, 246, 0.2);
+  }
+  
+  /* --- RESET GLOBAL --- */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  body {
+    display: flex;
+    height: 100vh;
+    background: radial-gradient(circle at top left, #0f172a, var(--bg-dark) 70%);
+    color: var(--text-light);
+    overflow: hidden;
+  }
+  
+ /* --- 2. SIDEBAR --- */
+.sidebar {
+  width: 240px;
+  background: linear-gradient(180deg, #111827, #0f172a);
+  /* ✅ ALTERAÇÃO 1: Ajuste no padding geral da sidebar */
+  padding: 20px 15px; /* Aumenta o espaço nas laterais para alinhar melhor */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: fixed;
+  height: 100%;
+  border-right: 1px solid rgba(59, 130, 246, 0.2);
+  z-index: 100;
+}
+
+/* ✅ ALTERAÇÃO 2: Bloco da logo completamente refeito */
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Aumenta um pouco o espaço entre logo e texto */
+  margin-bottom: 25px;
+  /* Remove o padding interno para que ele se alinhe com a sidebar */
+  padding: 0; 
+}
+
+.sidebar-logo img {
+  height: 45px; /* Reduz um pouco a altura para caber melhor */
+  width: auto;
+  /* Impede que a imagem encolha se o espaço for pequeno */
+  flex-shrink: 0; 
+}
+
+.sidebar-logo span {
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
+}
+
+
+.sidebar nav a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 12px 10px; 
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--text-light);
+  margin-bottom: 8px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+  .sidebar nav a:hover { background: rgba(59, 130, 246, 0.15); color: var(--blue-light); box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+  .sidebar nav a.active { background: var(--primary-blue); color: var(--white); font-weight: 700; box-shadow: 0 0 15px rgba(59, 130, 246, 0.6); }
+  .sidebar-bottom-menu { position: relative; padding-top: 12px; border-top: 1px solid var(--panel-border); }
+  .profile-button { display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px; border-radius: 8px; background: none; border: none; cursor: pointer; color: var(--white); }
+  .profile-avatar { width: 40px; height: 40px; border-radius: 50%; background-color: var(--blue-light); color: var(--bg-dark); font-weight: 600; display: flex; align-items: center; justify-content: center; }
+  .profile-dropdown-sidebar { position: absolute; bottom: 70px; left: 10px; width: 220px; background: #1e293b; border-radius: 12px; border: 1px solid rgba(59, 130, 246, 0.3); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); padding: 8px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: opacity 0.3s, transform 0.3s; z-index: 110; }
+  .profile-dropdown-sidebar.show { opacity: 1; visibility: visible; transform: translateY(0); }
+  .dropdown-header { padding: 12px; border-bottom: 1px solid var(--panel-border); margin-bottom: 8px; }
+  .dropdown-header .username { display: block; font-weight: 600; color: var(--text-light); }
+  .dropdown-header .email { display: block; font-size: 12px; color: var(--text-muted); }
+  .dropdown-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 6px; text-decoration: none; color: var(--text-light); font-size: 14px; transition: background 0.2s; }
+  .dropdown-item:hover { background: rgba(59, 130, 246, 0.15); color: var(--blue-light); }
+  .dropdown-item.logout { color: var(--danger); }
+  .dropdown-item.logout:hover { background: rgba(239, 68, 68, 0.15); }
+  .dropdown-divider { height: 1px; background: var(--panel-border); margin: 8px 0; }
+  
+  /* --- 3. CONTEÚDO PRINCIPAL (PERFIL) --- */
+  .main {
+    margin-left: 240px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    gap: 30px;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  
+  .main-header {
+    margin-bottom: 0; /* Reduzido para alinhar com o painel */
+  }
+  
+  .main-header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--blue-glow);
+    text-shadow: 0 0 12px rgba(59, 130, 246, 0.7);
+  }
+  
+  /* --- PAINEL DO FORMULÁRIO --- */
+
+  .panel {
+    background: var(--bg-panel);
+    border-radius: 16px;
+    border: 1px solid var(--panel-border);
+    box-shadow: 0 0 15px rgba(37, 99, 235, 0.15);
+    padding: 32px;
+    width: 100%;
+    max-width: 600px; /* Define uma largura máxima para o formulário */
+    margin: 0 auto;
+  }
+
+
+  
+  .form-group {
+    margin-bottom: 24px;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-light);
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--panel-border);
+    outline: none;
+    background: #1e293b;
+    color: var(--white);
+    font-size: 15px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  
+  .form-group input:focus {
+    border-color: var(--blue-light);
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+  }
+  
+  .form-group input:disabled {
+    background: #2c3a52;
+    color: var(--text-muted);
+    cursor: not-allowed;
+  }
+  
+  .form-group small {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 6px;
+    display: block;
+  }
+  
+  .form-actions {
+    margin-top: 32px;
+    border-top: 1px solid var(--panel-border);
+    padding-top: 24px;
+    text-align: right;
+  }
+  
+  .btn-save {
+    padding: 12px 24px;
+    background: var(--primary-blue);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+  }
+  
+  .btn-save:hover {
+    background: var(--blue-light);
+    box-shadow: 0 0 12px var(--blue-light);
+  }
+  
+  /* --- RESPONSIVIDADE --- */
+  @media (max-width: 980px) {
+    body { flex-direction: column; overflow: auto; }
+    .sidebar { position: static; width: 100%; height: auto; flex-direction: row; align-items: center; }
+    .sidebar-main-navigation { display: flex; align-items: center; justify-content: space-between; flex-grow: 1; }
+    .sidebar-main-navigation nav { display: flex; flex-direction: row; }
+    .sidebar-bottom-menu { border-top: none; padding-top: 0; flex-direction: row; }
+    .main { margin-left: 0; }
+  }
+  @media (max-width: 480px) {
+    .sidebar { flex-direction: column; align-items: stretch; }
+    .sidebar-main-navigation nav { flex-direction: column; }
+    .sidebar-bottom-menu { flex-direction: column; border-top: 1px solid var(--panel-border); padding-top: 12px; }
+  }
+  

@@ -10,23 +10,26 @@
 </head>
 <body>
 
-<!-- ================================================== -->
-<!-- ===== 1. SIDEBAR CORRIGIDA (UMA ÚNICA VEZ ) ===== -->
-<!-- ================================================== -->
+<!-- Sidebar Padrão -->
 <div class="sidebar">
-  <!-- Navegação Principal -->
+
+     
   <div class="sidebar-main-navigation">
-    <h2><i data-lucide="book-open"></i> AlphaEdu</h2>
+    
+<div class="sidebar-logo">
+  <img src="imagens/logo.png" alt="AlphaEdu Logo">
+
+  <span>AlphaEdu</span>
+</div>
     <nav>
       <a href="painel.html"><i data-lucide="layout-dashboard"></i> Painel</a>
       <a href="cronometro.html"><i data-lucide="timer"></i> Cronômetro</a>
       <a href="calendario.html"><i data-lucide="calendar"></i> Calendário</a>
       <a href="bloco_de_notas.html"><i data-lucide="notebook-pen"></i> Bloco de Notas</a>
-      <a href="flashcards.html" class="active"><i data-lucide="layers"></i> Flashcards</a>
+      <a href="arquivos.html"><i data-lucide="folder-archive"></i> Meus Arquivos</a>
+      <a href="colecao.html" class="active"><i data-lucide="layers"></i> Flashcards</a>
     </nav>
   </div>
-
-  <!-- Menu Inferior de Perfil -->
   <div id="profile-menu-container" class="sidebar-bottom-menu">
     <button id="profile-menu-button" class="bottom-menu-item profile-button">
       <span class="profile-avatar">AT</span>
@@ -36,36 +39,30 @@
         <span class="username">Aluno Teste</span>
         <span class="email">aluno.teste@email.com</span>
       </div>
-      <a href="perfil.html" class="dropdown-item">
-        <i data-lucide="user-cog"></i>
-        <span>Editar Perfil</span>
-      </a>
-      <a href="configuracao.html" class="dropdown-item">
-        <i data-lucide="settings"></i>
-        <span>Configurações</span>
-      </a>
+      <a href="perfil.html" class="dropdown-item"><i data-lucide="user-cog"></i><span>Editar Perfil</span></a>
+      <a href="configuracao.html" class="dropdown-item"><i data-lucide="settings"></i><span>Configurações</span></a>
       <div class="dropdown-divider"></div>
-      <a href="inicial.html" class="dropdown-item logout">
-        <i data-lucide="log-out"></i>
-        <span>Sair</span>
-      </a>
+      <a href="inicial.html" class="dropdown-item logout"><i data-lucide="log-out"></i><span>Sair</span></a>
     </div>
   </div>
 </div>
 
-<!-- ================================================== -->
-<!-- ========= 2. CONTEÚDO PRINCIPAL DA PÁGINA ========= -->
-<!-- ================================================== -->
+<!-- Conteúdo Principal -->
 <div class="main">
   <div class="content">
     <div class="banner">
       <i data-lucide="layers"></i>
-      <h3>Flashcards</h3>
-      <p>Crie e revise flashcards para estudo interativo.</p>
+      <h3>Flashcards de Estudo</h3>
+      <p>Crie e revise flashcards para um aprendizado interativo e eficaz.</p>
     </div>
     <div class="toolbar">
       <input type="text" class="search" placeholder="Buscar flashcards...">
-      <button class="add-btn" id="add"><i data-lucide="plus"></i> Novo Flashcard</button>
+      <!-- 
+        <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+        AQUI ESTÁ A CORREÇÃO: O ID agora é "add", como o JavaScript espera.
+        <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+      -->
+      <button class="btn-primary" id="add"><i data-lucide="plus"></i> Novo Flashcard</button>
     </div>
     <div class="flashcard-container">
       <div class="flashcard" id="flashcard">
@@ -74,7 +71,7 @@
       </div>
     </div>
     <div class="tags" id="tags"></div>
-    <div class="counter" id="counter" style="text-align: center; margin-top: 20px;"></div>
+    <div class="counter" id="counter"></div>
     <div class="controls">
       <button class="btn" id="prev"><i data-lucide="arrow-left"></i> Anterior</button>
       <button class="btn" id="shuffle"><i data-lucide="shuffle"></i> Embaralhar</button>
@@ -85,27 +82,54 @@
   </div>
 </div>
 
-<!-- ================================================== -->
-<!-- ============= 3. MODAL DE NOVO FLASHCARD ============= -->
-<!-- ================================================== -->
+<!-- Modal de Criar/Editar Flashcard -->
 <div class="modal" id="modal">
   <div class="modal-content">
-    <h4 id="modal-title">Novo Flashcard</h4>
-    <label>Pergunta</label>
-    <input type="text" id="modal-pergunta" placeholder="Digite a pergunta aqui...">
-    <label>Resposta</label>
-    <textarea id="modal-resposta" rows="4" placeholder="Digite a resposta aqui..."></textarea>
-    <label>Tags (separadas por vírgula)</label>
-    <input type="text" id="modal-tags" placeholder="Ex: geografia, história, química">
+    <div class="modal-header">
+        <h4 id="modal-title">Novo Flashcard</h4>
+        <button id="close-modal-btn" class="close-btn">&times;</button>
+    </div>
+    <form id="card-form">
+        <div class="form-group">
+            <label for="modal-pergunta">Pergunta</label>
+            <input type="text" id="modal-pergunta" placeholder="Digite a pergunta aqui..." required>
+        </div>
+        <div class="form-group">
+            <label for="modal-resposta">Resposta</label>
+            <textarea id="modal-resposta" rows="4" placeholder="Digite a resposta aqui..." required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="modal-tags">Tags (separadas por vírgula )</label>
+            <input type="text" id="modal-tags" placeholder="Ex: geografia, história, química">
+        </div>
+        <div class="modal-actions">
+            <button type="button" id="cancel" class="btn-secondary">Cancelar</button>
+            <button type="submit" id="save" class="btn-save">Criar Flashcard</button>
+        </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal de Confirmação de Exclusão -->
+<div id="confirm-delete-modal" class="modal">
+  <div class="modal-content" style="max-width: 450px;">
+    <div class="modal-header">
+      <h4>Confirmar Exclusão</h4>
+      <button id="close-confirm-modal-btn" class="close-btn">&times;</button>
+    </div>
+    <div class="modal-body">
+      <i data-lucide="alert-triangle" class="confirm-icon"></i>
+      <p id="confirm-modal-text">Você tem certeza que deseja excluir este item? Esta ação não pode ser desfeita.</p>
+    </div>
     <div class="modal-actions">
-      <button class="cancel-btn" id="cancel">Cancelar</button>
-      <button class="save-btn" id="save">Criar Flashcard</button>
+      <button type="button" id="cancel-delete-btn" class="btn-secondary">Cancelar</button>
+      <button type="button" id="confirm-delete-btn" class="btn-danger">Sim, Excluir</button>
     </div>
   </div>
 </div>
 
 <!-- Scripts -->
 <script src="js/scriptFlashCard.js"></script>
-<script src="js/scriptGlobal.js"></script>
+
 </body>
 </html>

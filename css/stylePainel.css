@@ -1,24 +1,22 @@
+/* ================================================== */
+/* ===== ARQUIVO CSS COMPLETO: stylePainel.css ===== */
+/* ================================================== */
 
+/* --- 1. PALETA DE CORES FUTURISTA --- */
 :root {
-  --blue: #3498db;
-  --blue-light: #d6eaf8;
-  --bg: #f9f9fb;
-  --card-bg: #ffffff;
-  --card-border: #e5e5e5;
-  --text-primary: #333;
-  --text-secondary: #666;
-  --red-notice: #e74c3c;
+  --bg-dark: #0a0f1e;
+  --bg-panel: #121a2f;
+  --primary-blue: #2563eb;   /* Azul principal */
+  --blue-light: #3b82f6;     /* Azul claro neon */
+  --blue-glow: #60a5fa;      /* Efeito de brilho */
+  --text-light: #e2e8f0;
+  --text-muted: #94a3b8;
+  --white: #ffffff;
+  --accent: #38bdf8;
+  --danger: #ef4444; /* Laranja para ações de "sair" */
 }
 
-body.dark-mode {
-  --bg: #1a1a1a;
-  --card-bg: #2c2c2c;
-  --card-border: #404040;
-  --text-primary: #f0f0f0;
-  --text-secondary: #a0a0a0;
-  --blue-light: #2c3e50;
-}
-
+/* --- RESET GLOBAL --- */
 * {
   margin: 0;
   padding: 0;
@@ -29,335 +27,476 @@ body.dark-mode {
 body {
   display: flex;
   height: 100vh;
-  background: var(--bg);
-  color: var(--text-primary);
-  overflow: hidden; /* Impede a rolagem no corpo da página */
+  background: radial-gradient(circle at top left, #0f172a, var(--bg-dark) 70%);
+  color: var(--text-light);
+  overflow: hidden;
+}
+
+/* --- Ícones Lucide --- */
+i[data-lucide] {
+    width: 18px;
+    height: 18px;
 }
 
 /* ================================================== */
-/* ========= 1. ALTERAÇÕES NA ESTRUTURA DA SIDEBAR ======== */
+/* ===== ARQUIVO CSS COMPLETO: stylePainel.css ===== */
 /* ================================================== */
 
+/* ... (todo o início do seu CSS permanece igual) ... */
+
+/* --- 2. SIDEBAR --- */
 .sidebar {
   width: 240px;
-  background: var(--card-bg);
-  border-right: 1px solid var(--card-border);
-  padding: 20px;
+  background: linear-gradient(180deg, #111827, #0f172a);
+  /* ✅ ALTERAÇÃO 1: Ajuste no padding geral da sidebar */
+  padding: 20px 15px; /* Aumenta o espaço nas laterais para alinhar melhor */
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* ESSA LINHA É A CHAVE: empurra o menu para baixo */
+  justify-content: space-between;
   position: fixed;
   height: 100%;
+  border-right: 1px solid rgba(59, 130, 246, 0.2);
+  z-index: 100;
 }
 
-.sidebar h2 {
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 20px;
-  color: var(--blue);
+/* ✅ ALTERAÇÃO 2: Bloco da logo completamente refeito */
+.sidebar-logo {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px; /* Aumenta um pouco o espaço entre logo e texto */
+  margin-bottom: 25px;
+  /* Remove o padding interno para que ele se alinhe com a sidebar */
+  padding: 0; 
 }
+
+.sidebar-logo img {
+  height: 45px; /* Reduz um pouco a altura para caber melhor */
+  width: auto;
+  /* Impede que a imagem encolha se o espaço for pequeno */
+  flex-shrink: 0; 
+}
+
+.sidebar-logo span {
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
+}
+
 
 .sidebar nav a {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px;
+  gap: 10px;
+
+  padding: 12px 10px; 
   border-radius: 8px;
   text-decoration: none;
-  color: var(--text-primary);
+  color: var(--text-light);
   margin-bottom: 8px;
-  transition: background 0.2s;
+  transition: all 0.3s ease;
+  font-weight: 500;
 }
 
-.sidebar nav a:hover,
+
+
+.sidebar nav a:hover {
+  background: rgba(59, 130, 246, 0.15);
+  color: var(--blue-light);
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+}
+
 .sidebar nav a.active {
-  background: var(--blue-light);
-  color: var(--blue);
-  font-weight: 600;
+  background: var(--primary-blue);
+  color: var(--white);
+  font-weight: 700;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
 }
 
-/* ================================================== */
-/* ===== 2. REMOÇÃO DO .sidebar-footer ANTIGO E ====== */
-/* ====== ADIÇÃO DO NOVO MENU INFERIOR ============= */
-/* ================================================== */
-
-/* Removendo o .sidebar-footer antigo para evitar conflitos */
-.sidebar-footer {
-  display: none;
-}
-
-/* Novo container para os ícones inferiores */
+/* --- MENU DE PERFIL NA SIDEBAR --- */
 .sidebar-bottom-menu {
-  position: relative; /* Essencial para o menu pop-up */
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  position: relative;
   padding-top: 12px;
-  border-top: 1px solid var(--card-border);
-}
-
-.bottom-menu-item {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 48px; /* <<< AUMENTE DE 40px para 48px (ou similar) */
-  width: 100%;
-  padding: 8px;
-  border-radius: 8px;
-  text-decoration: none;
-  color: var(--text-secondary);
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
-}
-
-
-.bottom-menu-item:hover {
-  background-color: var(--bg);
-  color: var(--text-primary);
+  border-top: 1px solid rgba(59, 130, 246, 0.2);
 }
 
 .profile-button {
-  padding: 4px; /* Ajuste para o avatar caber perfeitamente */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--white);
+  transition: background 0.3s;
+}
+
+.profile-button:hover {
+    background: rgba(59, 130, 246, 0.1);
 }
 
 .profile-avatar {
-  width: 40px;   /* <<< ALTERADO DE 32px para 40px */
-  height: 40px;  /* <<< ALTERADO DE 32px para 40px */
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background-color: var(--blue);
-  color: #fff;
-  font-size: 14px; /* <<< ALTERADO DE 12px para 14px */
+  background-color: var(--blue-light);
+  color: var(--bg-dark);
   font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
-
-/* ================================================== */
-/* ======== 3. ESTILOS PARA O MENU POP-UP (DROPDOWN) ====== */
-/* ================================================== */
-
 .profile-dropdown-sidebar {
-  display: none; /* Escondido por padrão */
   position: absolute;
-  bottom: 0;
-  left: calc(100% + 10px); /* Posiciona à direita da sidebar com um espaço */
-  width: 240px;
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 1001;
+  bottom: 70px;
+  left: 10px;
+  width: 220px;
+  background: #1e293b;
+  border-radius: 12px;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  padding: 8px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: opacity 0.3s, transform 0.3s;
+  z-index: 110;
 }
 
 .profile-dropdown-sidebar.show {
-  display: block;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 
 .dropdown-header {
-  padding: 16px;
-  border-bottom: 1px solid var(--card-border);
+  padding: 12px;
+  border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+  margin-bottom: 8px;
 }
 
 .dropdown-header .username {
   display: block;
   font-weight: 600;
+  color: var(--text-light);
 }
 
 .dropdown-header .email {
-  font-size: 13px;
-  color: var(--text-secondary);
+  display: block;
+  font-size: 12px;
+  color: var(--text-muted);
 }
 
 .dropdown-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 6px;
   text-decoration: none;
-  color: var(--text-primary);
+  color: var(--text-light);
   font-size: 14px;
-  transition: background-color 0.2s;
+  transition: background 0.2s;
 }
 
 .dropdown-item:hover {
-  background-color: var(--bg);
+  background: rgba(59, 130, 246, 0.15);
+  color: var(--blue-light);
 }
 
-.dropdown-item i {
-  width: 18px;
-  height: 18px;
-  color: var(--text-secondary);
+.dropdown-item.logout, .dropdown-item[style*="color: #f59e0b"] {
+    color: var(--danger);
+}
+.dropdown-item.logout:hover, .dropdown-item[style*="color: #f59e0b"]:hover {
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--danger);
 }
 
 .dropdown-divider {
   height: 1px;
-  background-color: var(--card-border);
-  margin: 4px 0;
+  background: rgba(59, 130, 246, 0.2);
+  margin: 8px 0;
 }
 
-.dropdown-item.logout {
-  color: var(--red-notice);
-}
-
-
-/* ================================================== */
-/* ======== ESTILOS DO CONTEÚDO PRINCIPAL (.main) ========= */
-/* ================================================== */
-
+/* --- 3. LAYOUT PRINCIPAL --- */
 .main {
   margin-left: 240px;
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 20px;
-  gap: 20px;
+  padding: 30px;
   height: 100vh;
   overflow-y: auto;
 }
 
-.banner {
-  text-align: center;
-  background: var(--card-bg);
-  padding: 40px 20px;
-  border-radius: 12px;
-  border: 1px solid var(--card-border);
+.main-header {
+  margin-bottom: 30px;
 }
 
-.banner i {
-  width: 40px;
-  height: 40px;
-  color: var(--blue);
-  margin-bottom: 10px;
+.main-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--blue-glow);
+  text-shadow: 0 0 12px rgba(59, 130, 246, 0.7);
 }
 
-.banner h3 {
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 5px;
+.main-header p {
+  font-size: 16px;
+  color: var(--text-muted);
 }
 
-.banner p {
-  color: var(--text-secondary);
-  font-size: 14px;
+/* --- 4. GRID DO PAINEL --- */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr; 
+  gap: 30px;
+  align-items: start;
 }
 
-.panel {
-  background: var(--card-bg);
-  border-radius: 12px;
-  border: 1px solid var(--card-border);
-  padding: 30px;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: 1100px;
-  margin: 0 auto;
+#class-panel {
+    grid-column: 1 / 2;
 }
 
-.notices-header {
+.right-column {
+    grid-column: 2 / 3;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.grid-item {
+  background: var(--bg-panel);
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  box-shadow: 0 0 15px rgba(37, 99, 235, 0.15);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.grid-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 25px rgba(59, 130, 246, 0.4);
+}
+
+.card-header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--text-primary);
+  gap: 12px;
   margin-bottom: 20px;
 }
 
-.notices-header i {
-  color: var(--red-notice);
+.card-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--blue-light);
+  text-shadow: 0 0 6px var(--blue-glow);
+}
+
+/* --- 5. WIDGETS --- */
+.notices-container {
+    grid-column: 1 / 2;
 }
 
 .notice-list {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 16px;
+  overflow-y: auto;
+  padding-right: 10px;
+  max-height: 400px;
 }
 
 .notice-card {
-  border: 1px solid var(--card-border);
-  border-radius: 10px;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 12px;
   padding: 16px;
-  transition: box-shadow 0.2s, border-color 0.2s;
+  background: #1e293b;
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.2);
+  transition: 0.3s;
 }
 
 .notice-card:hover {
-  border-color: #ccc;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0 18px rgba(59, 130, 246, 0.4);
 }
 
 .notice-card h4 {
   font-size: 16px;
   font-weight: 600;
-  margin-bottom: 6px;
-}
-
-.notice-card .meta {
-  font-size: 12px;
-  color: var(--text-secondary);
-  margin-bottom: 10px;
+  margin-bottom: 4px;
+  color: var(--blue-light);
 }
 
 .notice-card p {
   font-size: 14px;
+  color: var(--text-muted);
   line-height: 1.5;
+  margin-bottom: 8px;
 }
 
-/* ================================================== */
-/* ======== ESTILOS DO BOTÃO FLUTUANTE E MODAL ======== */
-/* ================================================== */
+.notice-card .meta {
+  font-size: 12px;
+  color: var(--accent);
+}
 
-.fab {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  width: 56px;
-  height: 56px;
-  background-color: var(--blue);
-  color: #fff;
-  border: none;
-  border-radius: 50%;
+/* --- CALENDÁRIO MINI --- */
+.mini-calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  color: var(--text-light);
+}
+
+.mini-calendar-header button {
+    background: none;
+    border: none;
+    color: var(--blue-glow);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+.mini-calendar-header button:hover {
+    background: rgba(59, 130, 246, 0.2);
+}
+
+.mini-calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--blue-light);
+  margin-bottom: 8px;
+}
+
+.mini-calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.mini-day {
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  font-size: 13px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  color: var(--text-muted);
+}
+.mini-day.current-month {
+    color: var(--text-light);
+}
+
+.mini-day.today {
+  background-color: var(--blue-light);
+  color: var(--bg-dark);
+  font-weight: 700;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+}
+
+.mini-day:not(.empty):hover {
+  background: rgba(59, 130, 246, 0.2);
   cursor: pointer;
-  transition: transform 0.2s ease, background-color 0.2s ease;
-  z-index: 999;
 }
 
-.fab:hover {
-  background-color: #2980b9;
-  transform: scale(1.05);
+.view-all-btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 8px 16px;
+    background: none;
+    border: 1px solid var(--blue-light);
+    color: var(--blue-light);
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+.view-all-btn:hover {
+    background: var(--blue-light);
+    color: var(--bg-dark);
+    box-shadow: 0 0 12px var(--blue-light);
 }
 
+/* ✅ ATIVIDADE 1 e 2: Estilos para o novo widget de Bloco de Notas */
+.mini-notes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 150px; /* Altura máxima para o widget */
+  overflow-y: auto;
+  padding-right: 8px; /* Espaço para a barra de rolagem */
+}
+
+.mini-note-card {
+  background: #1e293b;
+  padding: 12px;
+  border-radius: 8px;
+  border-left: 3px solid var(--accent);
+}
+
+.mini-note-card h5 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-light);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Adiciona "..." se o título for muito longo */
+}
+
+.mini-note-card p {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+/* Fim da alteração */
+
+
+/* --- 6. MODAL E BOTÃO FAB (sem alterações) --- */
 .modal {
-  display: none;
   position: fixed;
   z-index: 1000;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  align-items: center;
-  justify-content: center;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(10, 15, 30, 0.8);
+  backdrop-filter: blur(5px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .modal.show {
-  display: flex;
+  opacity: 1;
+  visibility: visible;
 }
 
 .modal-content {
-  background: var(--card-bg);
-  border-radius: 12px;
+  transform: translateY(-20px);
+  transition: transform 0.3s ease;
+  background: var(--bg-panel);
+  margin: 15% auto;
   padding: 24px;
-  width: 500px;
-  max-width: 90%;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  width: 90%;
+  max-width: 450px;
+  border-radius: 16px;
+  box-shadow: 0 0 40px rgba(59, 130, 246, 0.3);
+}
+
+.modal.show .modal-content {
+  transform: translateY(0);
 }
 
 .modal-header {
@@ -365,124 +504,111 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(59, 130, 246, 0.2);
 }
 
 .modal-header h4 {
   font-size: 18px;
-  font-weight: 600;
+  color: var(--blue-light);
 }
 
 .close-btn {
+  color: var(--text-muted);
+  font-size: 28px;
+  font-weight: bold;
   background: none;
   border: none;
-  font-size: 24px;
-  color: var(--text-secondary);
   cursor: pointer;
+  transition: color 0.2s;
 }
 
-.modal-content p {
-  font-size: 14px;
-  color: var(--text-secondary);
-  margin-bottom: 20px;
+.close-btn:hover,
+.close-btn:focus {
+  color: var(--text-light);
+}
+
+.modal p {
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    font-size: 14px;
 }
 
 .form-group {
-  margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 .form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 500;
-  font-size: 14px;
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-light);
 }
 
-.form-group input {
+#class-code-input {
   width: 100%;
-  padding: 12px 16px;
-  border: 1px solid var(--card-border);
+  padding: 12px;
   border-radius: 8px;
-  font-size: 15px;
-  background: var(--bg);
-  color: var(--text-primary);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  outline: none;
+  background: #1e293b;
+  color: var(--white);
+  font-size: 16px;
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-.form-group input:focus {
-  outline: none;
-  border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+#class-code-input:focus {
+    border-color: var(--blue-light);
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
 }
 
 .modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 10px;
+    text-align: right;
 }
 
 .btn-save {
-  padding: 12px 24px;
+  padding: 10px 20px;
+  background: var(--primary-blue);
+  color: white;
   border: none;
-  background: var(--blue);
-  color: #fff;
-  font-size: 15px;
-  font-weight: 600;
   border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  font-weight: 600;
+  transition: all 0.3s;
 }
 
 .btn-save:hover {
-  background-color: #2980b9;
+  background: var(--blue-light);
+  box-shadow: 0 0 12px var(--blue-light);
 }
 
-/* ================================================== */
-/* ======== RESPONSIVIDADE (SEM ALTERAÇÕES) ========= */
-/* ================================================== */
-
-@media (max-width: 980px) {
-  body {
-    flex-direction: column;
-    overflow: auto;
-  }
-  .sidebar {
-    /* Em telas menores, a sidebar poderia ser um menu hamburguer, mas por enquanto vamos mantê-la */
-    position: static;
-    width: 100%;
-    height: auto;
-    flex-direction: row; /* Alinha itens horizontalmente */
-    align-items: center;
-  }
-  .sidebar-main-navigation {
+.fab {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 56px;
+    height: 56px;
+    background: var(--primary-blue);
+    color: white;
+    border-radius: 50%;
+    border: none;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    flex-grow: 1;
-  }
-  .sidebar-main-navigation nav {
-    display: flex;
-    flex-direction: row;
-  }
-  .sidebar-bottom-menu {
-    border-top: none;
-    padding-top: 0;
-    flex-direction: row;
-  }
-  .main {
-    margin-left: 0;
-  }
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.6);
+    cursor: pointer;
+    transition: all 0.3s;
+    z-index: 999;
 }
 
-@media (max-width: 480px) {
-  .sidebar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .sidebar-main-navigation nav {
-    flex-direction: column;
-  }
-  .sidebar-bottom-menu {
-    flex-direction: column;
-    border-top: 1px solid var(--card-border);
-    padding-top: 12px;
-  }
+.fab:hover {
+    background: var(--blue-light);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 25px rgba(59, 130, 246, 0.7);
+}
+
+.fab i {
+    width: 24px;
+    height: 24px;
 }

@@ -1,117 +1,178 @@
-
 document.addEventListener('DOMContentLoaded', function() {
-    // Inicializa os \u00edcones
+    // Inicializa os ícones do Lucide
     lucide.createIcons();
 
-    // --- L\u00d3GICA DO MODAL PARA PARTICIPAR DA TURMA ---
-
-    // Seleciona os elementos do DOM
+    // --- SELETORES DE ELEMENTOS ---
+    const painelAvisos = document.getElementById('class-panel');
     const openModalBtn = document.getElementById('openJoinModalBtn');
+    const welcomeMessage = document.getElementById('welcome-message');
+    const leaveClassBtn = document.getElementById('leave-class-btn');
     const closeModalBtn = document.getElementById('closeJoinModalBtn');
     const modal = document.getElementById('joinClassModal');
     const joinForm = document.getElementById('joinClassForm');
     const codeInput = document.getElementById('class-code-input');
+    const profileMenuContainer = document.getElementById('profile-menu-container');
+    const profileMenuButton = document.getElementById('profile-menu-button');
+    const profileDropdown = document.getElementById('profile-dropdown');
 
-    // Fun\u00e7\u00e3o para abrir o modal
-    function openModal() {
-        modal.classList.add('show');
-    }
+    // --- FUNÇÃO PRINCIPAL DE ATUALIZAÇÃO DA UI (Layout) ---
+    function updateUserInterface() {
+        const userHasCode = localStorage.getItem('userHasTurmaCode') === 'true';
+        const rightColumn = document.querySelector('.right-column');
 
-    // Fun\u00e7\u00e3o para fechar o modal
-    function closeModal() {
-        modal.classList.remove('show');
-    }
-document.addEventListener('DOMContentLoaded', function() {
-    // Inicializa os ícones
-    lucide.createIcons();
-
-    // --- LÓGICA DO MODAL PARA PARTICIPAR DA TURMA ---
-
-    // Seleciona os elementos do DOM
-    const openModalBtn = document.getElementById('openJoinModalBtn');
-    const closeModalBtn = document.getElementById('closeJoinModalBtn');
-    const modal = document.getElementById('joinClassModal');
-    const joinForm = document.getElementById('joinClassForm');
-    const codeInput = document.getElementById('class-code-input');
-
-    // Função para abrir o modal
-    function openModal() {
-        modal.classList.add('show');
-    }
-
-    // Função para fechar o modal
-    function closeModal() {
-        modal.classList.remove('show');
-    }
-
-    // Adiciona os eventos de clique
-    openModalBtn.addEventListener('click', openModal);
-    closeModalBtn.addEventListener('click', closeModal);
-
-    // Fecha o modal se o usuário clicar fora do conteúdo
-    modal.addEventListener('click', function(event) {
-        if (event.target === modal) {
-            closeModal();
-        }
-    });
-
-    // Lógica para quando o formulário do modal for enviado
-    joinForm.addEventListener('submit', function(event) {
-        event.preventDefault(); // Impede o envio da página
-        const classCode = codeInput.value.trim();
-
-        if (classCode) {
-            alert(`Tentando participar da turma com o código: ${classCode}`);
-            // Aqui você adicionaria a lógica para enviar o código ao servidor
-            closeModal(); // Fecha o modal após a tentativa
+        if (userHasCode) {
+            if (painelAvisos) painelAvisos.style.display = 'block';
+            if (rightColumn) rightColumn.style.gridColumn = '2 / 3';
+            if (openModalBtn) openModalBtn.style.display = 'none';
+            if (leaveClassBtn) leaveClassBtn.style.display = 'flex';
+            if (welcomeMessage) welcomeMessage.textContent = 'Bem-vindo(a) de volta, Aluno Teste!';
         } else {
-            alert('Por favor, insira um código de turma.');
+            if (painelAvisos) painelAvisos.style.display = 'none';
+            if (rightColumn) rightColumn.style.gridColumn = '1 / 2';
+            if (openModalBtn) openModalBtn.style.display = 'flex';
+            if (leaveClassBtn) leaveClassBtn.style.display = 'none';
+            if (welcomeMessage) welcomeMessage.textContent = 'Bem-vindo(a) ao seu espaço de estudos!';
         }
-    });
-});
+    }
 
-    // Adiciona os eventos de clique
-    openModalBtn.addEventListener('click', openModal);
-    closeModalBtn.addEventListener('click', closeModal);
+    // --- LÓGICA DO MODAL PARA ENTRAR NA TURMA ---
+    if (openModalBtn && modal) {
+        openModalBtn.addEventListener('click', () => modal.classList.add('show'));
+    }
+    if (closeModalBtn && modal) {
+        closeModalBtn.addEventListener('click', () => modal.classList.remove('show'));
+    }
+    if (modal) {
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) modal.classList.remove('show');
+        });
+    }
+    if (joinForm) {
+        joinForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const classCode = codeInput.value.trim();
+            if (classCode) {
+                alert(`Código "${classCode}" aceito! Bem-vindo(a) à turma.`);
+                localStorage.setItem('userHasTurmaCode', 'true');
+                updateUserInterface();
+                modal.classList.remove('show');
+            } else {
+                alert('Por favor, insira um código de turma.');
+            }
+        });
+    }
 
-    // Fecha o modal se o usu\u00e1rio clicar fora do conte\u00fado
-    modal.addEventListener('click', function(event) {
-        if (event.target === modal) {
-            closeModal();
+    // --- LÓGICA PARA SAIR DA TURMA ---
+    if (leaveClassBtn) {
+        leaveClassBtn.addEventListener('click', function(event) {
+            event.preventDefault();
+            if (confirm('Tem certeza que deseja sair da turma? Você perderá o acesso aos avisos e ao calendário compartilhado.')) {
+                localStorage.removeItem('userHasTurmaCode');
+                updateUserInterface();
+                alert('Você saiu da turma.');
+            }
+        });
+    }
+
+    // --- LÓGICA DO MENU DE PERFIL ---
+    if (profileMenuContainer && profileMenuButton && profileDropdown) {
+        profileMenuButton.addEventListener('click', (event) => {
+            event.stopPropagation();
+            profileDropdown.classList.toggle('show');
+        });
+        window.addEventListener('click', (event) => {
+            if (!profileMenuContainer.contains(event.target)) {
+                profileDropdown.classList.remove('show');
+            }
+        });
+    }
+
+    // --- LÓGICA PARA O MINI CALENDÁRIO ---
+    const miniMonthYearEl = document.getElementById('mini-month-year');
+    const miniDaysEl = document.getElementById('mini-calendar-days');
+    const miniPrevBtn = document.getElementById('mini-prev-month');
+    const miniNextBtn = document.getElementById('mini-next-month');
+    let miniCurrentDate = new Date();
+
+    function renderMiniCalendar() {
+        if (!miniMonthYearEl || !miniDaysEl) return;
+
+        const year = miniCurrentDate.getFullYear();
+        const month = miniCurrentDate.getMonth();
+        const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+        
+        miniMonthYearEl.textContent = `${monthNames[month]} ${year}`;
+        miniDaysEl.innerHTML = '';
+
+        const firstDay = new Date(year, month, 1).getDay();
+        const lastDate = new Date(year, month + 1, 0).getDate();
+        const lastDayOfPrevMonth = new Date(year, month, 0).getDate();
+
+        for (let i = firstDay; i > 0; i--) {
+            miniDaysEl.innerHTML += `<div class="mini-day other-month">${lastDayOfPrevMonth - i + 1}</div>`;
         }
-    });
 
-    // L\u00f3gica para quando o formul\u00e1rio do modal for enviado
-    joinForm.addEventListener('submit', function(event) {
-        event.preventDefault(); // Impede o envio da p\u00e1gina
-        const classCode = codeInput.value.trim();
+        for (let i = 1; i <= lastDate; i++) {
+            let isToday = i === new Date().getDate() && month === new Date().getMonth() && year === new Date().getFullYear() ? 'today' : '';
+            miniDaysEl.innerHTML += `<div class="mini-day current-month ${isToday}">${i}</div>`;
+        }
+        
+        const totalDays = firstDay + lastDate;
+        const remainingDays = 35 - totalDays >= 0 ? 35 - totalDays : 42 - totalDays;
+        for (let i = 1; i <= remainingDays; i++) {
+            miniDaysEl.innerHTML += `<div class="mini-day other-month">${i}</div>`;
+        }
+    }
 
-        if (classCode) {
-            alert(`Tentando participar da turma com o c\u00f3digo: ${classCode}`);
-            // Aqui voc\u00ea adicionaria a l\u00f3gica para enviar o c\u00f3digo ao servidor
-            closeModal(); // Fecha o modal ap\u00f3s a tentativa
+    if (miniPrevBtn) {
+        miniPrevBtn.addEventListener('click', () => {
+            miniCurrentDate.setMonth(miniCurrentDate.getMonth() - 1);
+            renderMiniCalendar();
+        });
+    }
+    if (miniNextBtn) {
+        miniNextBtn.addEventListener('click', () => {
+            miniCurrentDate.setMonth(miniCurrentDate.getMonth() + 1);
+            renderMiniCalendar();
+        });
+    }
+
+    // --- ✅ ATIVIDADE 1 e 2: LÓGICA PARA RENDERIZAR AS NOTAS NO WIDGET ---
+    function renderMiniNotes() {
+        const miniNotesList = document.getElementById('mini-notes-list');
+        if (!miniNotesList) return;
+
+        // Busca as notas do localStorage (a mesma fonte de dados do scriptNotas.js)
+        const notes = JSON.parse(localStorage.getItem('notes')) || [];
+
+        miniNotesList.innerHTML = ''; // Limpa a lista antes de adicionar as notas
+
+        if (notes.length > 0) {
+            // Pega as 3 notas mais recentes (as últimas do array)
+            const recentNotes = notes.slice(-3).reverse();
+
+            recentNotes.forEach(note => {
+                const noteCard = document.createElement('div');
+                noteCard.className = 'mini-note-card';
+
+                const noteTitle = document.createElement('h5');
+                noteTitle.textContent = note.title || 'Nota sem título';
+
+                const noteDate = document.createElement('p');
+                noteDate.textContent = new Date(note.id).toLocaleDateString('pt-BR');
+
+                noteCard.appendChild(noteTitle);
+                noteCard.appendChild(noteDate);
+                miniNotesList.appendChild(noteCard);
+            });
         } else {
-            alert('Por favor, insira um c\u00f3digo de turma.');
+            // Mensagem exibida se não houver notas
+            miniNotesList.innerHTML = '<p style="color: var(--text-muted); font-size: 14px;">Nenhuma nota encontrada.</p>';
         }
-    });
+    }
+
+    // --- PONTO DE PARTIDA: Chama todas as funções de inicialização ---
+    updateUserInterface();
+    renderMiniCalendar();
+    renderMiniNotes(); // Chama a nova função para carregar as notas
 });
-
-// --- LÓGICA DO MENU DE PERFIL ---
-const profileMenuContainer = document.getElementById('profile-menu-container');
-const profileMenuButton = document.getElementById('profile-menu-button');
-const profileDropdown = document.getElementById('profile-dropdown');
-
-if (profileMenuContainer && profileMenuButton && profileDropdown) {
-    profileMenuButton.addEventListener('click', function(event) {
-        event.stopPropagation();
-        profileDropdown.classList.toggle('show');
-    });
-
-    // Fecha o dropdown se o usuário clicar fora dele
-    window.addEventListener('click', function(event) {
-        if (!profileMenuContainer.contains(event.target)) {
-            profileDropdown.classList.remove('show');
-        }
-    });
-}
-

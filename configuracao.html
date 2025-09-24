@@ -14,15 +14,22 @@
 <!-- ============= 1. SIDEBAR PADRÃO ============= -->
 <!-- ================================================== -->
 <div class="sidebar">
-  <!-- Navegação Principal -->
+
+     
   <div class="sidebar-main-navigation">
-    <h2><i data-lucide="book-open"></i> AlphaEdu</h2>
+    
+<div class="sidebar-logo">
+  <img src="imagens/logo.png" alt="AlphaEdu Logo">
+
+  <span>AlphaEdu</span>
+</div>
     <nav>
       <a href="painel.html"><i data-lucide="layout-dashboard"></i> Painel</a>
       <a href="cronometro.html"><i data-lucide="timer"></i> Cronômetro</a>
-      <a href="calendario.html" class="active"><i data-lucide="calendar"></i> Calendário</a>
+      <a href="calendario.html"><i data-lucide="calendar"></i> Calendário</a>
       <a href="bloco_de_notas.html"><i data-lucide="notebook-pen"></i> Bloco de Notas</a>
-      <a href="flashcards.html"><i data-lucide="layers"></i> Flashcards</a>
+      <a href="arquivos.html"><i data-lucide="folder-archive"></i> Meus Arquivos</a>
+      <a href="colecao.html"><i data-lucide="layers"></i> Flashcards</a>
     </nav>
   </div>
 
@@ -67,12 +74,15 @@
       <i data-lucide="palette"></i>
       <h3>Tema e Aparência</h3>
     </div>
+
     <div class="panel-body">
       <div class="setting-item">
         <div class="setting-text">
           <h4>Modo Escuro</h4>
           <p>Reduza o cansaço visual em ambientes com pouca luz.</p>
         </div>
+
+        
         <div class="setting-control">
           <label class="switch">
             <input type="checkbox" id="dark-mode-toggle">
@@ -91,7 +101,9 @@
     </div>
     <div class="panel-body">
       <div class="setting-item">
+        
         <div class="setting-text">
+
           <h4>Notificações por E-mail</h4>
           <p>Receber avisos e lembretes de atividades no seu e-mail.</p>
         </div>

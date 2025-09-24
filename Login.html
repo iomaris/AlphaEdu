@@ -50,7 +50,7 @@
 
 
       <div class="social-buttons">
-        <button class="social-button" type="button">
+        <button id="login-google" class="social-button" type="button">
           <img class="icon" src="https://cdn-icons-png.flaticon.com/512/281/281764.png" alt="Google"> Continuar com o
           Google
         </button>
@@ -93,6 +93,75 @@
   </div>
   <script src="js/scriptLogin.js"></script>
 
+  
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup  } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+
+    // Config do Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyD5mZJOy6WLXis0vyuBDN3R0fv62uewMZ4",
+      authDomain: "alfa-edu-ltnov3.firebaseapp.com",
+      databaseURL: "https://alfa-edu-ltnov3-default-rtdb.firebaseio.com",
+      projectId: "alfa-edu-ltnov3",
+      storageBucket: "alfa-edu-ltnov3.firebasestorage.app",
+      messagingSenderId: "65492735007",
+      appId: "1:65492735007:web:579b220d5b730e8bc6f12a"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+    document.getElementById("login-google").addEventListener("click", async() => {
+    try{
+      const resultado = await signInWithPopup(auth, provider);
+
+      const credencial = GoogleAuthProvider.credentialFromResult(resultado);
+      const token = credencial.accessToken;
+
+      const user = resultado.user;
+      console.log("Usuário logado:", user);
+
+      window.location.href= "painel.html";
+    } catch (error) {
+
+      console.error ("Erro no login com o google :(, se liga:", error);
+      alert("Não foi possivel fazer login com o google");
+    }
+
+
+
+
+
+    });
+
+
+
+    const loginForm = document.querySelector("form"); // pega seu form de login
+    const emailInput = document.getElementById("email");
+    const senhaInput = document.getElementById("senha");
+
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = emailInput.value.trim();
+      const senha = senhaInput.value.trim();
+
+      if (!email || !senha) {
+        alert("Preencha todos os campos.");
+        return;
+      }
+
+      try {
+        await signInWithEmailAndPassword(auth, email, senha);
+
+        window.location.href = "painel.html";
+      } catch (err) {
+        console.error(err);
+        alert("Usuário ou senha inválidos.");
+      }
+    });
+  </script>
 
 
 </body>
