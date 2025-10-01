@@ -1,306 +1,267 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Inicializa os ícones Lucide
-    lucide.createIcons();
+// Importa as funções necessárias do Firebase
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-    // --- VARIÁVEIS GLOBAIS ---
-    let currentDate = new Date();
-    let selectedDate = new Date();
-    let personalEvents = JSON.parse(localStorage.getItem('personalEvents')) || {};
-    let classEvents = {};
-    const userHasCode = localStorage.getItem('userHasTurmaCode') === 'true';
-    let editingEvent = null;
-    let eventToDelete = null;
+// Sua configuração do Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyC02F-Ka3ftBr4k-uNzUU3d7znjMgQ-zdk",
+    authDomain: "alphaedu-60ef2.firebaseapp.com",
+    databaseURL: "https://alphaedu-60ef2-default-rtdb.firebaseio.com",
+    projectId: "alphaedu-60ef2",
+    storageBucket: "alphaedu-60ef2.appspot.com",
+    messagingSenderId: "850593200345",
+    appId: "1:850593200345:web:abf53a5b5cd6c255f4e6c8"
+};
 
-    // --- ELEMENTOS DO DOM ---
-    const monthYearElement = document.getElementById('month-year');
-    const calendarDaysElement = document.getElementById('calendar-days');
-    const eventsTitleElement = document.getElementById('events-title');
-    const eventListElement = document.getElementById('event-list');
-    const modal = document.getElementById('event-modal');
-    const eventForm = document.getElementById('event-form');
+// Inicializa o Firebase
+const app = initializeApp(firebaseConfig );
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+// --- VARIÁVEIS GLOBAIS ---
+let currentUser = null;
+let currentDate = new Date();
+let selectedDate = new Date();
+let personalEvents = {};
+let editingEvent = null;
+let eventToDelete = null;
+
+// --- ELEMENTOS DO DOM ---
+const monthYearElement = document.getElementById('month-year');
+const calendarDaysElement = document.getElementById('calendar-days');
+const eventsTitleElement = document.getElementById('events-title');
+const eventListElement = document.getElementById('event-list');
+const eventModal = document.getElementById('event-modal');
+const eventForm = document.getElementById('event-form');
+const confirmDeleteModal = document.getElementById('confirm-delete-modal');
+const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+
+// --- FUNÇÕES PRINCIPAIS (FIREBASE E RENDERIZAÇÃO) ---
+
+async function loadUserEvents() {
+    if (!currentUser) return;
+    const eventsRef = ref(db, `users/${currentUser.uid}/calendarEvents`);
+    try {
+        const snapshot = await get(eventsRef);
+        personalEvents = snapshot.exists() ? snapshot.val() : {};
+    } catch (error) {
+        console.error("Erro ao carregar eventos:", error);
+        personalEvents = {};
+    }
+    renderCalendar();
+    renderEvents();
+}
+
+async function saveEventsToFirebase() {
+    if (!currentUser) return;
+    const eventsRef = ref(db, `users/${currentUser.uid}/calendarEvents`);
+    try {
+        await set(eventsRef, personalEvents);
+    } catch (error) {
+        console.error("Erro ao salvar eventos:", error);
+    }
+}
+
+function renderCalendar() {
+    if (!monthYearElement || !calendarDaysElement) return;
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    monthYearElement.textContent = `${monthNames[month]} ${year}`;
+    calendarDaysElement.innerHTML = '';
+
+    const firstDayOfMonth = new Date(year, month, 1).getDay();
+    const lastDayOfMonth = new Date(year, month + 1, 0).getDate();
+    const lastDayOfPrevMonth = new Date(year, month, 0).getDate();
+
+    for (let i = firstDayOfMonth; i > 0; i--) {
+        calendarDaysElement.innerHTML += `<div class="day other-month">${lastDayOfPrevMonth - i + 1}</div>`;
+    }
+
+    for (let day = 1; day <= lastDayOfMonth; day++) {
+        const dayDate = new Date(year, month, day);
+        const dayKey = getDateKey(dayDate);
+        let dayClasses = 'day';
+        if (dayDate.toDateString() === new Date().toDateString()) dayClasses += ' today';
+        if (dayDate.toDateString() === selectedDate.toDateString()) dayClasses += ' selected';
+
+        let dayHTML = `<div class="${dayClasses}" data-date="${dayKey}">${day}`;
+        if (personalEvents[dayKey] && Object.keys(personalEvents[dayKey]).length > 0) {
+            dayHTML += '<div class="event-dot"></div>';
+        }
+        dayHTML += '</div>';
+        calendarDaysElement.innerHTML += dayHTML;
+    }
     
-    const confirmModal = document.getElementById('confirm-delete-modal');
-    const confirmModalText = document.getElementById('confirm-modal-text');
-    const closeConfirmModalBtn = document.getElementById('close-confirm-modal-btn');
-    const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
-    const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
-
-    const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-
-    // --- FUNÇÕES AUXILIARES ---
-    function formatDate(date) {
-        const d = String(date.getDate()).padStart(2, '0');
-        const m = String(date.getMonth() + 1).padStart(2, '0');
-        const y = date.getFullYear();
-        return `${d}/${m}/${y}`;
+    const totalDaysRendered = firstDayOfMonth + lastDayOfMonth;
+    const remainingSlots = totalDaysRendered > 35 ? 42 - totalDaysRendered : 35 - totalDaysRendered;
+    for (let i = 1; i <= remainingSlots; i++) {
+        calendarDaysElement.innerHTML += `<div class="day other-month">${i}</div>`;
     }
 
-    function getDateKey(date) {
-        const y = date.getFullYear();
-        const m = String(date.getMonth() + 1).padStart(2, '0');
-        const d = String(date.getDate()).padStart(2, '0');
-        return `${y}-${m}-${d}`;
-    }
+    document.querySelectorAll('.day[data-date]').forEach(dayElement => {
+        dayElement.addEventListener('click', () => {
+            const [y, m, d] = dayElement.dataset.date.split('-');
+            selectedDate = new Date(y, m - 1, d);
+            renderCalendar();
+            renderEvents();
+        });
+    });
+}
 
-    function loadClassEvents() {
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0');
-        classEvents = {
-            [`${year}-${month}-15`]: [{ title: 'Entrega de Trabalho de Ciências', description: 'Prazo final para o trabalho sobre o sistema solar.' }],
-            [`${year}-${month}-22`]: [{ title: 'Prova de Matemática', description: 'Assuntos: Álgebra e Geometria.' }],
-        };
-    }
+function renderEvents() {
+    if (!eventsTitleElement || !eventListElement) return;
+    const dateKey = getDateKey(selectedDate);
+    eventsTitleElement.textContent = `Eventos para ${formatDate(selectedDate)}`;
+    const dayEvents = personalEvents[dateKey] ? Object.values(personalEvents[dateKey]) : [];
+    const dayEventKeys = personalEvents[dateKey] ? Object.keys(personalEvents[dateKey]) : [];
 
-    // --- FUNÇÕES PRINCIPAIS DE RENDERIZAÇÃO ---
-    function renderCalendar() {
-        if (!monthYearElement || !calendarDaysElement) return;
-        const year = currentDate.getFullYear();
-        const month = currentDate.getMonth();
-        monthYearElement.textContent = `${monthNames[month]} ${year}`;
-        calendarDaysElement.innerHTML = '';
-
-        const firstDayOfMonth = new Date(year, month, 1).getDay();
-        const lastDayOfMonth = new Date(year, month + 1, 0).getDate();
-        const lastDayOfPrevMonth = new Date(year, month, 0).getDate();
-
-        for (let i = firstDayOfMonth; i > 0; i--) {
-            const dayElement = document.createElement('div');
-            dayElement.className = 'day other-month';
-            dayElement.textContent = lastDayOfPrevMonth - i + 1;
-            calendarDaysElement.appendChild(dayElement);
-        }
-
-        for (let day = 1; day <= lastDayOfMonth; day++) {
-            const dayElement = document.createElement('div');
-            dayElement.className = 'day';
-            dayElement.textContent = day;
-            const dayDate = new Date(year, month, day);
-            const dayKey = getDateKey(dayDate);
-
-            if (dayDate.toDateString() === new Date().toDateString()) dayElement.classList.add('today');
-            if (dayDate.toDateString() === selectedDate.toDateString()) dayElement.classList.add('selected');
-            
-            const hasPersonalEvent = personalEvents[dayKey] && personalEvents[dayKey].length > 0;
-            const hasClassEvent = userHasCode && classEvents[dayKey] && classEvents[dayKey].length > 0;
-            if (hasPersonalEvent || hasClassEvent) {
-                const dot = document.createElement('div');
-                dot.className = 'event-dot';
-                dayElement.appendChild(dot);
-            }
-
-            dayElement.addEventListener('click', () => {
-                selectedDate = new Date(year, month, day);
-                renderCalendar();
-                renderEvents();
-            });
-            calendarDaysElement.appendChild(dayElement);
-        }
-
-        const totalDaysRendered = calendarDaysElement.children.length;
-        const remainingSlots = 42 - totalDaysRendered;
-        for (let day = 1; day <= remainingSlots; day++) {
-            const dayElement = document.createElement('div');
-            dayElement.className = 'day other-month';
-            dayElement.textContent = day;
-            calendarDaysElement.appendChild(dayElement);
-        }
-    }
-
-    function renderEvents() {
-        if (!eventsTitleElement || !eventListElement) return;
-        const dateKey = getDateKey(selectedDate);
-        eventsTitleElement.textContent = `Eventos para ${formatDate(selectedDate)}`;
-        
-        const personalDayEvents = (personalEvents[dateKey] || []).map((e, index) => ({...e, tag: 'personal', originalIndex: index }));
-        const classDayEvents = userHasCode ? (classEvents[dateKey] || []).map(e => ({...e, tag: 'class'})) : [];
-        const allEvents = [...classDayEvents, ...personalDayEvents];
-
-        if (allEvents.length === 0) {
-            eventListElement.innerHTML = `<p style="text-align: center; width: 100%;">Nenhum evento para esta data.</p>`;
-        } else {
-            eventListElement.innerHTML = allEvents.map(event => `
-                <div class="event-card" data-index="${event.originalIndex}">
-                    <div class="event-tag ${event.tag}">${event.tag === 'personal' ? 'Pessoal' : 'Turma'}</div>
-                    ${event.eventType ? `<div class="event-type">${event.eventType}</div>` : ''}
-                    <div class="event-title">${event.title}</div>
-                    ${event.description ? `<div class="event-desc">${event.description}</div>` : ''}
-                    
-                    ${event.tag === 'personal' ? `
-                    <div class="event-card-footer">
-                        <button class="event-action-btn edit" title="Editar Evento">
-                            <i data-lucide="pencil"></i>
-                        </button>
-                        <button class="event-action-btn delete" title="Excluir Evento">
-                            <i data-lucide="trash-2"></i>
-                        </button>
-                    </div>
-                    ` : ''}
+    if (dayEvents.length === 0) {
+        eventListElement.innerHTML = `<p class="no-events-message">Nenhum evento para esta data.</p>`;
+    } else {
+        eventListElement.innerHTML = dayEvents.map((event, index) => `
+            <div class="event-card" data-key="${dayEventKeys[index]}">
+                <div class="event-type">${event.eventType || 'Pessoal'}</div>
+                <div class="event-title">${event.title}</div>
+                ${event.description ? `<div class="event-desc">${event.description}</div>` : ''}
+                <div class="event-card-footer">
+                    <button class="event-action-btn edit" title="Editar"><i data-lucide="pencil"></i></button>
+                    <button class="event-action-btn delete" title="Excluir"><i data-lucide="trash-2"></i></button>
                 </div>
-            `).join('');
-        }
-        lucide.createIcons();
-        addEventListenersToEventActions();
+            </div>
+        `).join('');
     }
+    lucide.createIcons();
+    addEventListenersToEventActions();
+}
 
-    // --- FUNÇÕES DE AÇÃO (EDITAR E EXCLUIR) ---
-
-    function addEventListenersToEventActions() {
-        document.querySelectorAll('.event-action-btn.delete').forEach(button => {
-            button.addEventListener('click', (e) => {
-                const card = e.currentTarget.closest('.event-card');
-                const index = parseInt(card.dataset.index, 10);
-                const dateKey = getDateKey(selectedDate);
-                openConfirmModal(dateKey, index);
-            });
+function addEventListenersToEventActions() {
+    eventListElement.querySelectorAll('.event-action-btn.delete').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const card = e.currentTarget.closest('.event-card');
+            const eventKey = card.dataset.key;
+            openConfirmModal(getDateKey(selectedDate), eventKey);
         });
-
-        document.querySelectorAll('.event-action-btn.edit').forEach(button => {
-            button.addEventListener('click', (e) => {
-                const card = e.currentTarget.closest('.event-card');
-                const index = parseInt(card.dataset.index, 10);
-                const dateKey = getDateKey(selectedDate);
-                openEditModal(dateKey, index);
-            });
+    });
+    eventListElement.querySelectorAll('.event-action-btn.edit').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const card = e.currentTarget.closest('.event-card');
+            const eventKey = card.dataset.key;
+            openEditModal(getDateKey(selectedDate), eventKey);
         });
-    }
+    });
+}
 
-    function deleteEvent(dateKey, index) {
-        personalEvents[dateKey].splice(index, 1);
-        if (personalEvents[dateKey].length === 0) {
-            delete personalEvents[dateKey];
-        }
-        localStorage.setItem('personalEvents', JSON.stringify(personalEvents));
-        renderCalendar();
-        renderEvents();
-    }
+// --- FUNÇÕES AUXILIARES E DE MODAL ---
 
-    function openEditModal(dateKey, index) {
-        editingEvent = { dateKey, index };
-        const event = personalEvents[dateKey][index];
-        document.querySelector('#event-modal .modal-header h4').textContent = 'Editar Evento';
-        document.getElementById('event-title-input').value = event.title;
-        document.getElementById('event-date').value = dateKey;
-        document.getElementById('event-type').value = event.eventType;
-        document.getElementById('event-desc').value = event.description;
-        document.querySelector('#event-modal .btn-save').textContent = 'Salvar Alterações';
-        modal.classList.add('show');
-    }
+function formatDate(date) { return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }); }
+function getDateKey(date) { return date.toISOString().split('T')[0]; }
 
-    function openConfirmModal(dateKey, index) {
-        eventToDelete = { dateKey, index };
-        const event = personalEvents[dateKey][index];
-        if (confirmModalText) confirmModalText.textContent = `Tem certeza que deseja excluir o evento "${event.title}"?`;
-        if (confirmModal) confirmModal.classList.add('show');
-    }
+function openModal(modalElement) { modalElement.classList.add('show'); }
+function closeModal(modalElement) { modalElement.classList.remove('show'); }
 
-    function closeConfirmModal() {
-        if (confirmModal) confirmModal.classList.remove('show');
-    }
+function openEditModal(dateKey, eventKey) {
+    editingEvent = { dateKey, eventKey };
+    const event = personalEvents[dateKey][eventKey];
+    eventModal.querySelector('.modal-header h4').textContent = 'Editar Evento';
+    document.getElementById('event-title-input').value = event.title;
+    document.getElementById('event-date').value = dateKey;
+    document.getElementById('event-type').value = event.eventType;
+    document.getElementById('event-desc').value = event.description || '';
+    eventModal.querySelector('.btn-save').textContent = 'Salvar Alterações';
+    openModal(eventModal);
+}
 
-    function handleDelete() {
-        if (!eventToDelete) return;
-        const { dateKey, index } = eventToDelete;
-        deleteEvent(dateKey, index);
-        closeConfirmModal();
-    }
+function openConfirmModal(dateKey, eventKey) {
+    eventToDelete = { dateKey, eventKey };
+    const eventTitle = personalEvents[dateKey][eventKey].title;
+    document.getElementById('confirm-modal-text').textContent = `Tem certeza que deseja excluir o evento "${eventTitle}"?`;
+    openModal(confirmDeleteModal);
+}
 
-    // --- EVENT LISTENERS GERAIS ---
-    const prevMonthBtn = document.getElementById('prev-month');
-    if (prevMonthBtn) prevMonthBtn.addEventListener('click', () => {
+// --- LÓGICA DE INICIALIZAÇÃO E EVENT LISTENERS ---
+
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        currentUser = user;
+        initializePage();
+    } else {
+        window.location.href = 'Login.html';
+    }
+});
+
+async function initializePage() {
+    lucide.createIcons();
+    setupEventListeners();
+    await loadUserEvents();
+}
+
+function setupEventListeners() {
+    document.getElementById('prev-month')?.addEventListener('click', () => {
         currentDate.setMonth(currentDate.getMonth() - 1);
         renderCalendar();
-        renderEvents();
     });
-
-    const nextMonthBtn = document.getElementById('next-month');
-    if (nextMonthBtn) nextMonthBtn.addEventListener('click', () => {
+    document.getElementById('next-month')?.addEventListener('click', () => {
         currentDate.setMonth(currentDate.getMonth() + 1);
         renderCalendar();
-        renderEvents();
     });
-
-    const addEventBtn = document.getElementById('add-event-btn');
-    if (addEventBtn) addEventBtn.addEventListener('click', () => {
+    document.getElementById('add-event-btn')?.addEventListener('click', () => {
         editingEvent = null;
         eventForm.reset();
-        document.querySelector('#event-modal .modal-header h4').textContent = 'Novo Evento';
-        document.querySelector('#event-modal .btn-save').textContent = 'Adicionar';
+        eventModal.querySelector('.modal-header h4').textContent = 'Novo Evento';
+        eventModal.querySelector('.btn-save').textContent = 'Adicionar';
         document.getElementById('event-date').value = getDateKey(selectedDate);
-        modal.classList.add('show');
+        openModal(eventModal);
     });
-
-    const closeModalBtn = document.getElementById('close-modal');
-    if (closeModalBtn) closeModalBtn.addEventListener('click', () => modal.classList.remove('show'));
-    
-    const cancelBtn = document.getElementById('cancel-btn');
-    if (cancelBtn) cancelBtn.addEventListener('click', () => modal.classList.remove('show'));
-    
-    if (modal) modal.addEventListener('click', (e) => {
-        if (e.target === modal) modal.classList.remove('show');
-    });
-
-    if (eventForm) eventForm.addEventListener('submit', (e) => {
+    document.getElementById('close-modal')?.addEventListener('click', () => closeModal(eventModal));
+    document.getElementById('cancel-btn')?.addEventListener('click', () => closeModal(eventModal));
+    eventModal?.addEventListener('click', (e) => { if (e.target === eventModal) closeModal(eventModal); });
+    eventForm?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const title = document.getElementById('event-title-input').value;
         const date = document.getElementById('event-date').value;
         const eventType = document.getElementById('event-type').value;
         const description = document.getElementById('event-desc').value;
         const newEvent = { title, eventType, description };
-
+        
+        let eventKey;
         if (editingEvent) {
-            const { dateKey, index } = editingEvent;
-            if (dateKey !== date) {
-                personalEvents[dateKey].splice(index, 1);
-                if (personalEvents[dateKey].length === 0) delete personalEvents[dateKey];
-                if (!personalEvents[date]) personalEvents[date] = [];
-                personalEvents[date].push(newEvent);
-            } else {
-                personalEvents[dateKey][index] = newEvent;
+            eventKey = editingEvent.eventKey;
+            const oldDateKey = editingEvent.dateKey;
+            if (oldDateKey !== date) {
+                delete personalEvents[oldDateKey][eventKey];
+                if (Object.keys(personalEvents[oldDateKey]).length === 0) delete personalEvents[oldDateKey];
             }
         } else {
-            if (!personalEvents[date]) personalEvents[date] = [];
-            personalEvents[date].push(newEvent);
+            eventKey = `event_${Date.now()}`;
         }
+        if (!personalEvents[date]) personalEvents[date] = {};
+        personalEvents[date][eventKey] = newEvent;
 
-        localStorage.setItem('personalEvents', JSON.stringify(personalEvents));
-        modal.classList.remove('show');
+        await saveEventsToFirebase();
+        closeModal(eventModal);
+        
         const [year, month, day] = date.split('-');
-        selectedDate = new Date(year, month - 1, day);
         currentDate = new Date(year, month - 1, 1);
+        selectedDate = new Date(year, month - 1, day);
         renderCalendar();
         renderEvents();
     });
-    
-    if(closeConfirmModalBtn) closeConfirmModalBtn.addEventListener('click', closeConfirmModal);
-    if(cancelDeleteBtn) cancelDeleteBtn.addEventListener('click', closeConfirmModal);
-    if(confirmDeleteBtn) confirmDeleteBtn.addEventListener('click', handleDelete);
-    if(confirmModal) confirmModal.addEventListener('click', (e) => { if (e.target === confirmModal) closeConfirmModal(); });
+    document.getElementById('close-confirm-modal-btn')?.addEventListener('click', () => closeModal(confirmDeleteModal));
+    document.getElementById('cancel-delete-btn')?.addEventListener('click', () => closeModal(confirmDeleteModal));
+    confirmDeleteModal?.addEventListener('click', (e) => { if (e.target === confirmDeleteModal) closeModal(confirmDeleteModal); });
+    document.getElementById('confirm-delete-btn')?.addEventListener('click', async () => {
+        if (!eventToDelete) return;
+        const { dateKey, eventKey } = eventToDelete;
+        
+        delete personalEvents[dateKey][eventKey];
+        if (Object.keys(personalEvents[dateKey]).length === 0) {
+            delete personalEvents[dateKey];
+        }
 
-    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-    // CORREÇÃO: LÓGICA DO MENU DE PERFIL AGORA DENTRO DO DOMCONTENTLOADED
-    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-    const profileMenuContainer = document.getElementById('profile-menu-container');
-    const profileMenuButton = document.getElementById('profile-menu-button');
-    const profileDropdown = document.getElementById('profile-dropdown');
-
-    if (profileMenuContainer && profileMenuButton && profileDropdown) {
-        profileMenuButton.addEventListener('click', function(event) {
-            event.stopPropagation();
-            profileDropdown.classList.toggle('show');
-        });
-        window.addEventListener('click', function(event) {
-            if (!profileMenuContainer.contains(event.target)) {
-                profileDropdown.classList.remove('show');
-            }
-        });
-    }
-
-    // --- INICIALIZAÇÃO ---
-    function initialize() {
-        if (userHasCode) loadClassEvents();
+        await saveEventsToFirebase();
+        closeModal(confirmDeleteModal);
         renderCalendar();
         renderEvents();
-    }
-    initialize();
-});
+    });
+}

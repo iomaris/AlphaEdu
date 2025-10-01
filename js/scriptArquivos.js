@@ -1,188 +1,247 @@
-document.addEventListener('DOMContentLoaded', () => {
-    lucide.createIcons();
+// =======================================================================
+// 1. SETUP DO FIREBASE (Adicionado Storage)
+// =======================================================================
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getDatabase, ref as dbRef, get, set, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-    // --- SELETORES DE ELEMENTOS ---
-    const addFileBtn = document.getElementById('addFileBtn');
-    const fileModal = document.getElementById('fileModal');
-    const closeModal = document.getElementById('closeModal');
-    const cancelBtn = document.getElementById('cancelBtn');
-    const fileForm = document.getElementById('fileForm');
-    const filesContainer = document.getElementById('filesContainer');
-    const fileInput = document.getElementById('fileInput');
-    const fileNameEl = document.getElementById('fileName');
-    
-    // Seletores do Modal de Exclusão
-    const deleteModal = document.getElementById('deleteModal');
-    const closeDeleteModal = document.getElementById('closeDeleteModal');
-    const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
-    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+const firebaseConfig = {
+    apiKey: "AIzaSyC02F-Ka3ftBr4k-uNzUU3d7znjMgQ-zdk",
+    authDomain: "alphaedu-60ef2.firebaseapp.com",
+    databaseURL: "https://alphaedu-60ef2-default-rtdb.firebaseio.com",
+    projectId: "alphaedu-60ef2",
+    storageBucket: "alphaedu-60ef2.appspot.com", // Essencial para o Storage
+    messagingSenderId: "850593200345",
+    appId: "1:850593200345:web:abf53a5b5cd6c255f4e6c8"
+};
 
-    // ✅ CORREÇÃO 2: Seletores do Menu de Perfil
-    const profileMenuContainer = document.getElementById('profile-menu-container');
-    const profileMenuButton = document.getElementById('profile-menu-button');
-    const profileDropdown = document.getElementById('profile-dropdown');
+const app = initializeApp(firebaseConfig );
+const auth = getAuth(app);
+const db = getDatabase(app);
+const storage = getStorage(app);
 
-    let fileToDelete = null;
+// =======================================================================
+// 2. ELEMENTOS DO DOM E ESTADO (Sua lógica original, mantida)
+// =======================================================================
+const addFileBtn = document.getElementById('addFileBtn');
+const fileModal = document.getElementById('fileModal');
+const closeModal = document.getElementById('closeModal');
+const cancelBtn = document.getElementById('cancelBtn');
+const fileForm = document.getElementById('fileForm');
+const filesContainer = document.getElementById('filesContainer');
+const fileInput = document.getElementById('fileInput');
+const fileNameEl = document.getElementById('fileName');
+const deleteModal = document.getElementById('deleteModal');
+const closeDeleteModal = document.getElementById('closeDeleteModal');
+const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+const profileMenuContainer = document.getElementById('profile-menu-container');
+const profileMenuButton = document.getElementById('profile-menu-button');
+const profileDropdown = document.getElementById('profile-dropdown');
 
-    // --- FUNÇÕES DO MODAL ---
-    const showModal = (modal) => modal.style.display = 'flex';
-    const hideModal = (modal) => modal.style.display = 'none';
+let currentUser = null;
+let filesMetadata = {}; // Armazena os metadados dos arquivos
+let fileToDeleteId = null;
 
-    addFileBtn.addEventListener('click', () => {
-        fileForm.reset();
-        fileNameEl.textContent = 'Clique para selecionar um arquivo PDF';
-        document.getElementById('modalTitle').textContent = 'Adicionar Novo Arquivo';
-        showModal(fileModal);
-    });
+// =======================================================================
+// 3. FUNÇÕES DE DADOS (Modificadas para usar Firebase Storage e Realtime DB)
+// =======================================================================
 
-    closeModal.addEventListener('click', () => hideModal(fileModal));
-    cancelBtn.addEventListener('click', () => hideModal(fileModal));
-    fileModal.addEventListener('click', (e) => {
-        if (e.target === fileModal) hideModal(fileModal);
-    });
+async function loadFilesMetadata() {
+    if (!currentUser) return;
+    const filesRef = dbRef(db, `users/${currentUser.uid}/files`);
+    try {
+        const snapshot = await get(filesRef);
+        filesMetadata = snapshot.exists() ? snapshot.val() : {};
+    } catch (error) {
+        console.error("Erro ao carregar metadados dos arquivos:", error);
+        filesMetadata = {};
+    }
+    renderFiles();
+}
 
-    // --- LÓGICA DO INPUT DE ARQUIVO ---
-    fileInput.addEventListener('change', () => {
-        if (fileInput.files.length > 0) {
-            fileNameEl.textContent = fileInput.files[0].name;
-        } else {
-            fileNameEl.textContent = 'Clique para selecionar um arquivo PDF';
-        }
-    });
+// =======================================================================
+// 4. FUNÇÕES DE RENDERIZAÇÃO E UI (Sua lógica original, com pequenas adaptações)
+// =======================================================================
 
-    // --- LÓGICA DE SALVAR E RENDERIZAR ---
-    const getFiles = () => JSON.parse(localStorage.getItem('savedFiles')) || [];
-    const saveFiles = (files) => localStorage.setItem('savedFiles', JSON.stringify(files));
+const showModal = (modal) => modal.style.display = 'flex';
+const hideModal = (modal) => modal.style.display = 'none';
 
-    // ✅ CORREÇÃO 1: Função para abrir o arquivo em nova aba
-    const openFile = (fileId) => {
-        const files = getFiles();
-        const fileToOpen = files.find(file => file.id == fileId);
-        if (fileToOpen && fileToOpen.fileData) {
-            // Converte a string Base64 de volta para um formato que o navegador pode abrir
-            const byteCharacters = atob(fileToOpen.fileData.split(',')[1]);
-            const byteNumbers = new Array(byteCharacters.length);
-            for (let i = 0; i < byteCharacters.length; i++) {
-                byteNumbers[i] = byteCharacters.charCodeAt(i);
-            }
-            const byteArray = new Uint8Array(byteNumbers);
-            const blob = new Blob([byteArray], { type: 'application/pdf' });
-            const fileURL = URL.createObjectURL(blob);
-            window.open(fileURL, '_blank');
-        } else {
-            alert('Não foi possível encontrar os dados do arquivo.');
-        }
-    };
+function renderFiles() {
+    filesContainer.innerHTML = '';
+    const filesArray = Object.values(filesMetadata);
 
-    const renderFiles = () => {
-        const files = getFiles();
-        filesContainer.innerHTML = '';
-        if (files.length === 0) {
-            filesContainer.innerHTML = '<p class="empty-message" style="color: var(--text-muted); grid-column: 1 / -1; text-align: center;">Nenhum arquivo salvo. Clique em "Adicionar Arquivo" para começar.</p>';
-            return;
-        }
-
-        files.forEach(file => {
-            const fileCard = document.createElement('div');
-            fileCard.className = 'file-card';
-            fileCard.dataset.id = file.id;
-            // Adiciona um cursor de ponteiro para indicar que é clicável
-            fileCard.style.cursor = 'pointer';
-
-            fileCard.innerHTML = `
-                <div class="file-card-header">
-                    <i data-lucide="file-text"></i>
-                    <div>
-                        <h4 class="file-title">${file.title}</h4>
-                    </div>
-                </div>
-                <p class="file-description">${file.description || 'Sem descrição.'}</p>
-                <div class="file-meta">
-                    <span class="file-date">Salvo em: ${new Date(file.id).toLocaleDateString('pt-BR')}</span>
-                    <div class="file-actions">
-                        <button class="delete-btn" data-id="${file.id}"><i data-lucide="trash-2"></i></button>
-                    </div>
-                </div>
-            `;
-            
-            // ✅ CORREÇÃO 1: Adiciona o evento de clique no card para abrir o arquivo
-            fileCard.addEventListener('click', (e) => {
-                // Impede que o clique no botão de deletar também abra o arquivo
-                if (!e.target.closest('.delete-btn')) {
-                    openFile(file.id);
-                }
-            });
-
-            filesContainer.appendChild(fileCard);
-        });
-        lucide.createIcons();
-    };
-
-    fileForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const files = getFiles();
-        const file = fileInput.files[0];
-
-        if (!file) {
-            alert('Por favor, selecione um arquivo.');
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.readAsDataURL(file); // Lê o arquivo como uma string Base64
-        reader.onload = () => {
-            const newFile = {
-                id: new Date().getTime(),
-                title: document.getElementById('fileTitleInput').value,
-                description: document.getElementById('fileDescriptionInput').value,
-                fileName: file.name,
-                fileData: reader.result // ✅ CORREÇÃO 1: Salva o conteúdo do arquivo
-            };
-            
-            saveFiles([newFile, ...files]);
-            renderFiles();
-            hideModal(fileModal);
-        };
-    });
-
-    // --- LÓGICA DE EXCLUSÃO ---
-    filesContainer.addEventListener('click', (e) => {
-        const deleteButton = e.target.closest('.delete-btn');
-        if (deleteButton) {
-            e.stopPropagation(); // Impede que o evento de clique se propague para o card
-            fileToDelete = deleteButton.dataset.id;
-            showModal(deleteModal);
-        }
-    });
-
-    confirmDeleteBtn.addEventListener('click', () => {
-        let files = getFiles();
-        files = files.filter(file => file.id != fileToDelete);
-        saveFiles(files);
-        renderFiles();
-        hideModal(deleteModal);
-        fileToDelete = null;
-    });
-
-    closeDeleteModal.addEventListener('click', () => hideModal(deleteModal));
-    cancelDeleteBtn.addEventListener('click', () => hideModal(deleteModal));
-    deleteModal.addEventListener('click', (e) => {
-        if (e.target === deleteModal) hideModal(deleteModal);
-    });
-
-    // ✅ CORREÇÃO 2: Lógica do Menu de Perfil
-    if (profileMenuContainer && profileMenuButton && profileDropdown) {
-        profileMenuButton.addEventListener('click', (event) => {
-            event.stopPropagation();
-            profileDropdown.classList.toggle('show');
-        });
-        window.addEventListener('click', (event) => {
-            if (!profileMenuContainer.contains(event.target)) {
-                profileDropdown.classList.remove('show');
-            }
-        });
+    if (filesArray.length === 0) {
+        filesContainer.innerHTML = '<p class="empty-message">Nenhum arquivo salvo. Clique em "Adicionar Arquivo" para começar.</p>';
+        return;
     }
 
-    // --- PONTO DE PARTIDA ---
-    renderFiles();
+    filesArray.sort((a, b) => b.id - a.id).forEach(file => {
+        const fileCard = document.createElement('div');
+        fileCard.className = 'file-card';
+        fileCard.dataset.id = file.id;
+        fileCard.style.cursor = 'pointer';
+
+        fileCard.innerHTML = `
+            <div class="file-card-header">
+                <i data-lucide="file-text"></i>
+                <div>
+                    <h4 class="file-title">${file.title}</h4>
+                </div>
+            </div>
+            <p class="file-description">${file.description || 'Sem descrição.'}</p>
+            <div class="file-meta">
+                <span class="file-date">Salvo em: ${new Date(file.id).toLocaleDateString('pt-BR')}</span>
+                <div class="file-actions">
+                    <button class="delete-btn" data-id="${file.id}"><i data-lucide="trash-2"></i></button>
+                </div>
+            </div>
+        `;
+        
+        fileCard.addEventListener('click', (e) => {
+            if (!e.target.closest('.delete-btn')) {
+                window.open(file.downloadURL, '_blank');
+            }
+        });
+        filesContainer.appendChild(fileCard);
+    });
+    lucide.createIcons();
+}
+
+// =======================================================================
+// 5. EVENT LISTENERS (Modificados para usar Firebase)
+// =======================================================================
+
+addFileBtn.addEventListener('click', () => {
+    fileForm.reset();
+    fileNameEl.textContent = 'Clique para selecionar um arquivo PDF';
+    document.getElementById('modalTitle').textContent = 'Adicionar Novo Arquivo';
+    showModal(fileModal);
+});
+
+closeModal.addEventListener('click', () => hideModal(fileModal));
+cancelBtn.addEventListener('click', () => hideModal(fileModal));
+fileModal.addEventListener('click', (e) => { if (e.target === fileModal) hideModal(fileModal); });
+
+fileInput.addEventListener('change', () => {
+    fileNameEl.textContent = fileInput.files.length > 0 ? fileInput.files[0].name : 'Clique para selecionar um arquivo PDF';
+});
+
+fileForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!currentUser) return;
+
+    const file = fileInput.files[0];
+    const title = document.getElementById('fileTitleInput').value;
+    if (!file || !title) {
+        alert('Por favor, selecione um arquivo e forneça um título.');
+        return;
+    }
+
+    const saveButton = document.getElementById('saveFileBtn');
+    saveButton.disabled = true;
+    saveButton.textContent = 'Enviando...';
+
+    try {
+        const fileId = Date.now();
+        const filePath = `userFiles/${currentUser.uid}/${fileId}_${file.name}`;
+        const fileStorageRef = storageRef(storage, filePath);
+
+        // 1. Faz o upload do arquivo para o Cloud Storage
+        const uploadResult = await uploadBytes(fileStorageRef, file);
+        
+        // 2. Pega a URL de download do arquivo
+        const downloadURL = await getDownloadURL(uploadResult.ref);
+
+        // 3. Cria os metadados para salvar no Realtime Database
+        const fileMetadata = {
+            id: fileId,
+            title: title,
+            description: document.getElementById('fileDescriptionInput').value,
+            fileName: file.name,
+            filePath: filePath, // Caminho no Storage para futura exclusão
+            downloadURL: downloadURL,
+            createdAt: new Date().toISOString()
+        };
+
+        // 4. Salva os metadados no Realtime Database
+        const fileDbRef = dbRef(db, `users/${currentUser.uid}/files/${fileId}`);
+        await set(fileDbRef, fileMetadata);
+
+        // 5. Atualiza a UI
+        filesMetadata[fileId] = fileMetadata;
+        renderFiles();
+        hideModal(fileModal);
+
+    } catch (error) {
+        console.error("Erro ao salvar arquivo:", error);
+        alert("Ocorreu um erro ao salvar o arquivo. Tente novamente.");
+    } finally {
+        saveButton.disabled = false;
+        saveButton.textContent = 'Salvar';
+    }
+});
+
+filesContainer.addEventListener('click', (e) => {
+    const deleteButton = e.target.closest('.delete-btn');
+    if (deleteButton) {
+        e.stopPropagation();
+        fileToDeleteId = deleteButton.dataset.id;
+        showModal(deleteModal);
+    }
+});
+
+confirmDeleteBtn.addEventListener('click', async () => {
+    if (!fileToDeleteId || !currentUser) return;
+
+    try {
+        const fileMeta = filesMetadata[fileToDeleteId];
+        if (!fileMeta) throw new Error("Metadados do arquivo não encontrados.");
+
+        // 1. Deleta o arquivo do Cloud Storage
+        const fileStorageRef = storageRef(storage, fileMeta.filePath);
+        await deleteObject(fileStorageRef);
+
+        // 2. Deleta os metadados do Realtime Database
+        const fileDbRef = dbRef(db, `users/${currentUser.uid}/files/${fileToDeleteId}`);
+        await remove(fileDbRef);
+
+        // 3. Atualiza a UI
+        delete filesMetadata[fileToDeleteId];
+        renderFiles();
+        hideModal(deleteModal);
+
+    } catch (error) {
+        console.error("Erro ao excluir arquivo:", error);
+        // Mesmo se falhar em deletar do storage, remove da lista para o usuário
+        delete filesMetadata[fileToDeleteId];
+        renderFiles();
+        hideModal(deleteModal);
+        alert("Não foi possível excluir o arquivo do armazenamento, mas ele foi removido da sua lista.");
+    } finally {
+        fileToDeleteId = null;
+    }
+});
+
+closeDeleteModal.addEventListener('click', () => hideModal(deleteModal));
+cancelDeleteBtn.addEventListener('click', () => hideModal(deleteModal));
+deleteModal.addEventListener('click', (e) => { if (e.target === deleteModal) hideModal(deleteModal); });
+
+if (profileMenuContainer) {
+    profileMenuButton.addEventListener('click', (e) => { e.stopPropagation(); profileDropdown.classList.toggle('show'); });
+    window.addEventListener('click', (e) => { if (!profileMenuContainer.contains(e.target)) profileDropdown.classList.remove('show'); });
+}
+
+// =======================================================================
+// 6. INICIALIZAÇÃO
+// =======================================================================
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        currentUser = user;
+        lucide.createIcons();
+        loadFilesMetadata();
+    } else {
+        window.location.href = 'Login.html';
+    }
 });

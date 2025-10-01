@@ -635,7 +635,7 @@
 }
 
 
-  /* --- Responsividade (Mantida) --- */
+ 
   @media (max-width: 980px) {
     body { flex-direction: column; overflow: auto; }
     .sidebar { position: static; width: 100%; height: auto; flex-direction: row; align-items: center; }

@@ -7,26 +7,22 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="css/styleCalendario.css">
+  
   <!-- 
-    <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-    AQUI ESTÁ A CORREÇÃO: Removido o atributo "defer"
-    <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    CORREÇÃO DEFINITIVA:
+    1. O script principal agora é do tipo "module".
+    2. Ele é carregado no final do <body> para garantir que o HTML exista.
   -->
-  <script src="js/scriptCalendario.js"></script>
 </head>
 <body>
 
-<!-- Sidebar (Permanece igual  ) -->
+<!-- Sidebar (Permanece igual ) -->
 <div class="sidebar">
-
-     
   <div class="sidebar-main-navigation">
-    
-<div class="sidebar-logo">
-  <img src="imagens/logo.png" alt="AlphaEdu Logo">
-
-  <span>AlphaEdu</span>
-</div>
+    <div class="sidebar-logo">
+      <img src="imagens/logo.png" alt="AlphaEdu Logo">
+      <span>AlphaEdu</span>
+    </div>
     <nav>
       <a href="painel.html"><i data-lucide="layout-dashboard"></i> Painel</a>
       <a href="cronometro.html"><i data-lucide="timer"></i> Cronômetro</a>
@@ -53,14 +49,13 @@
   </div>
 </div>
 
-<!-- Conteúdo Principal -->
+<!-- Conteúdo Principal (Permanece igual) -->
 <div class="main">
   <div class="banner">
     <i data-lucide="calendar"></i>
     <h3>Calendário Interativo</h3>
     <p>Visualize, crie e gerencie seus eventos acadêmicos e pessoais.</p>
   </div>
-
   <div class="panel">
     <div class="calendar-wrapper">
       <div class="calendar">
@@ -75,7 +70,6 @@
         <div class="days" id="calendar-days"></div>
       </div>
     </div>
-
     <div class="events-wrapper">
       <div class="events">
         <h3 id="events-title"></h3>
@@ -86,13 +80,10 @@
   </div>
 </div>
 
-<!-- Modal de Criar/Editar Evento -->
+<!-- Modais (Permanecem iguais) -->
 <div class="modal" id="event-modal">
   <div class="modal-content">
-    <div class="modal-header">
-      <h4>Novo Evento</h4>
-      <button class="close-btn" id="close-modal">&times;</button>
-    </div>
+    <div class="modal-header"><h4>Novo Evento</h4><button class="close-btn" id="close-modal">&times;</button></div>
     <form id="event-form">
       <div class="form-group"><label for="event-title-input">Título</label><input type="text" id="event-title-input" required></div>
       <div class="form-group"><label for="event-date">Data</label><input type="date" id="event-date" required></div>
@@ -102,24 +93,16 @@
     </form>
   </div>
 </div>
-
-<!-- Modal de Confirmação de Exclusão -->
 <div id="confirm-delete-modal" class="modal">
   <div class="modal-content" style="max-width: 450px;">
-    <div class="modal-header">
-      <h4>Confirmar Exclusão</h4>
-      <button id="close-confirm-modal-btn" class="close-btn">&times;</button>
-    </div>
-    <div class="modal-body">
-      <i data-lucide="alert-triangle" class="confirm-icon"></i>
-      <p id="confirm-modal-text">Você tem certeza que deseja excluir este item? Esta ação não pode ser desfeita.</p>
-    </div>
-    <div class="modal-actions">
-      <button type="button" id="cancel-delete-btn" class="btn-secondary">Cancelar</button>
-      <button type="button" id="confirm-delete-btn" class="btn-danger">Sim, Excluir</button>
-    </div>
+    <div class="modal-header"><h4>Confirmar Exclusão</h4><button id="close-confirm-modal-btn" class="close-btn">&times;</button></div>
+    <div class="modal-body"><i data-lucide="alert-triangle" class="confirm-icon"></i><p id="confirm-modal-text">Você tem certeza?</p></div>
+    <div class="modal-actions"><button type="button" id="cancel-delete-btn" class="btn-secondary">Cancelar</button><button type="button" id="confirm-delete-btn" class="btn-danger">Sim, Excluir</button></div>
   </div>
 </div>
+
+<!-- O SCRIPT AGORA É CARREGADO AQUI, NO FINAL -->
+<script type="module" src="js/scriptCalendario.js"></script>
 
 </body>
 </html>

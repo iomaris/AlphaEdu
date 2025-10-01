@@ -1,53 +1,39 @@
-
+// Pega os elementos da página uma única vez
 const tabs = document.querySelectorAll('.tab');
 const underline = document.querySelector('.underline');
 
+/**
+ * Função para mover a linha de sublinhado para baixo da aba ativa.
+ * @param {HTMLElement} element - A aba que deve ser sublinhada.
+ */
 function moveUnderline(element) {
-  underline.style.width = element.offsetWidth + "px";
-  underline.style.left = element.offsetLeft + "px";
+  // Garante que os elementos existem antes de tentar manipulá-los
+  if (underline && element) {
+    underline.style.width = element.offsetWidth + "px";
+    underline.style.left = element.offsetLeft + "px";
+  }
 }
 
-// adiciona evento de clique
+// Adiciona o evento de clique para cada aba
 tabs.forEach(tab => {
   tab.addEventListener('click', () => {
-    tabs.forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    moveUnderline(tab);
-
-    // redirecionamento conforme o data-target
-    // redirecionamento conforme o data-target
+    // Pega o destino a partir do atributo data-target
     const destino = tab.getAttribute("data-target");
+
+    // Redireciona para a página correta com o nome de arquivo CORRETO
     if (destino === "entrar") {
+      // Se já estiver na página de login, não faz nada.
+      // Se precisar, pode redirecionar para 'login.html' para garantir.
       window.location.href = "login.html";
     } else if (destino === "inscrever") {
-      window.location.href = "registrar.html";
+      // CORREÇÃO: Usar "Registrar.html" com 'R' maiúsculo
+      window.location.href = "Registrar.html";
     }
-
   });
 });
 
-// posição inicial da underline
+// Define a posição inicial da "underline" assim que a página carrega
 window.addEventListener('load', () => {
   const activeTab = document.querySelector('.tab.active');
   moveUnderline(activeTab);
 });
-
-function moveUnderline(element) {
-  underline.style.width = element.offsetWidth + "px";
-  underline.style.left = element.offsetLeft + "px";
-}
-
-tabs.forEach(tab => {
-  tab.addEventListener('click', () => {
-    tabs.forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    moveUnderline(tab);
-  });
-});
-
-// posição inicial
-window.addEventListener('load', () => {
-  const activeTab = document.querySelector('.tab.active');
-  moveUnderline(activeTab);
-});
-

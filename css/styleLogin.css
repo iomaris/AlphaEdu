@@ -412,3 +412,75 @@ input:focus {
   opacity: 1;
   transition: opacity 0.5s ease;
 }
+
+/* =============================================== */
+/* =========== ESTILOS DO MODAL DE AVISO =========== */
+/* =============================================== */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  z-index: 1000;
+}
+
+.modal-overlay.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  background: white;
+  padding: 30px 35px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 420px;
+  text-align: center;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.modal-overlay.visible .modal-content {
+  transform: scale(1);
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.modal-content p {
+  margin-bottom: 25px;
+  color: #666;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.modal-content button {
+  padding: 12px 35px;
+  border: none;
+  background: #2563eb;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.modal-content button:hover {
+  background: #1d4ed8;
+}

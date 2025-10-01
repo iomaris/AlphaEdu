@@ -1,154 +1,203 @@
+<!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>AlphaEdu - Registrar</title>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styleRegistrar.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
 
+  <!-- ================================================== -->
+  <!-- CSS PARA A NOVA TELA DE SUCESSO (Adicionado ) -->
+  <!-- ================================================== -->
+  <style>
+    /* Esconde a mensagem de sucesso por padrão */
+    #successContainer {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    /* Ícone de check verde */
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      color: #22c55e; /* Verde vibrante */
+      margin-bottom: 24px;
+    }
+
+    /* Título da mensagem */
+    #successContainer h2 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 12px;
+    }
+
+    /* Parágrafo da mensagem */
+    #successContainer p {
+      font-size: 16px;
+      color: #6b7280;
+      max-width: 350px;
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+
+    /* Botão para ir ao painel */
+    #successContainer a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      background-color: #2563eb; /* Azul padrão do seu projeto */
+      color: white;
+      text-decoration: none;
+      border-radius: 999px; /* Botão "pílula" */
+      font-weight: 600;
+      font-size: 16px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+    }
+
+    #successContainer a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+    }
+
+    /* Animação de Fade In */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
-
-
-
 <body>
-  <div class="left">
-
-  </div>
-
+  <div class="left"></div>
   <div class="right">
     <div class="form-container">
-
-
-      <div class="tab-container">
-        <div class="tab active" data-target="inscrever">Inscrever-se</div>
-        <div class="tab" data-target="entrar">Entrar</div>
-        <div class="underline"></div>
-      </div>
-
-
-
       
-
-    <!-- Grupo 2: Nome de usuário -->
-    <div class="form-group">
-      <label for="username">Nome de usuário</label>
-      <input type="text" id="username" placeholder="Nome de usuário" />
-    </div> 
-
-  <form>
-    <!-- Grupo 1: Data de Nascimento -->
-    <div class="form-group">
-      <label for="dia">Data de nascimento</label>
-      <div class="date-container">
-        <select id="dia" name="dia" required>
-          <option value="">Dia</option>
-          <script>
-            for (let d = 1; d <= 31; d++) { document.write(`<option value="${d}">${d}</option>`); }
-          </script>
-        </select>
-        <select id="mes" name="mes" required>
-          <option value="">Mês</option>
-          <option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option><option value="4">Abril</option><option value="5">Maio</option><option value="6">Junho</option><option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option><option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
-        </select>
-        <select id="ano" name="ano" required>
-          <option value="">Ano</option>
-          <script>
-            const anoAtual = new Date().getFullYear();
-            for (let a = anoAtual; a >= 1900; a--) { document.write(`<option value="${a}">${a}</option>`); }
-          </script>
-        </select>
+      <!-- Container do Formulário de Registro (some ao ter sucesso) -->
+      <div id="registrationContainer">
+        <div class="tab-container">
+          <div class="tab active" data-target="inscrever">Inscrever-se</div>
+          <div class="tab" data-target="entrar">Entrar</div>
+          <div class="underline"></div>
+        </div>
+        <form id="registerForm">
+          <div class="form-group"><label for="username">Nome de usuário</label><input type="text" id="username" required /></div>
+          <div class="form-group"><label for="email">E-mail</label><input type="email" id="email" placeholder="Insira seu endereço de e-mail" required /></div>
+          <div class="form-group"><label for="user-type">Tipo de Usuário</label><select id="user-type" required><option value="" disabled selected>Selecione</option><option value="aluno">Aluno</option><option value="professor">Professor</option></select></div>
+          <div class="form-group"><label for="senha">Senha</label><input type="password" id="senha" required /></div>
+          <div class="form-group"><label for="confirmar-senha">Confirmar Senha</label><input type="password" id="confirmar-senha" required /></div>
+          <button type="submit" class="submit-btn">Inscrever-se</button>
+        </form>
+        <div class="bottom">Já possui uma conta? <a href="Login.html">Entre</a></div>
       </div>
-    </div>
-  
-   
-  
-    <!-- Grupo 3: E-mail -->
-    <div class="form-group">
-      <label for="email">E-mail</label>
-      <input type="email" id="email" placeholder="usuario@email.com" />
-    </div>
-  
-    <!-- Grupo 4: Tipo de Usuário -->
-    <div class="form-group">
-      <label for="user-type">Tipo de Usuário</label>
-      <select id="user-type" name="user-type" required>
-        <option value="" disabled selected>Selecione seu tipo de usuário</option>
-        <option value="aluno">Aluno</option>
-        <option value="professor">Professor</option>
-      </select>
-    </div>
-  
-    <!-- Grupo 5: Senha -->
-    <div class="form-group">
-      <label for="senha">
-        <span>Senha</span>
-        <div class="forgot"><a href="#">Esqueci a senha</a></div>
-      </label>
-      <div class="password-container">
-        <input type="password" id="senha" placeholder="Digite sua senha" />
-      </div>
-    </div>
-  
-    <button type="submit" class="submit-btn">Inscrever-se</button>
-  </form>
 
-      <div class="bottom">
-        Já possui uma conta? <a href="Login.html">Entre</a>
+      <!-- ================================================== -->
+      <!-- NOVA TELA DE SUCESSO (Aparece após o cadastro) -->
+      <!-- ================================================== -->
+      <div id="successContainer">
+        <i data-lucide="check-circle" class="success-icon"></i>
+        <h2>Conta Criada!</h2>
+        <p>Seja bem-vindo(a) ao AlphaEdu! Seu espaço de estudos está pronto para ser explorado.</p>
+        <a href="painel.html">
+          Ir para o Painel
+          <i data-lucide="arrow-right"></i>
+        </a>
       </div>
+
     </div>
   </div>
-  <script src="js/scriptRegistrar.js"></script>
 
-
-
-  <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+<script type="module">
+  // ==================================================
+  // SCRIPT DO FIREBASE (Lógica permanece a mesma)
+  // ==================================================
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
   const firebaseConfig = {
-    apiKey: "AIzaSyD5mZJOy6WLXis0vyuBDN3R0fv62uewMZ4",
-    authDomain: "alfa-edu-ltnov3.firebaseapp.com",
-    databaseURL: "https://alfa-edu-ltnov3-default-rtdb.firebaseio.com",
-    projectId: "alfa-edu-ltnov3",
-    storageBucket: "alfa-edu-ltnov3.firebasestorage.app",
-    messagingSenderId: "65492735007",
-    appId: "1:65492735007:web:579b220d5b730e8bc6f12a"
+    apiKey: "AIzaSyC02F-Ka3ftBr4k-uNzUU3d7znjMgQ-zdk",
+    authDomain: "alphaedu-60ef2.firebaseapp.com",
+    databaseURL: "https://alphaedu-60ef2-default-rtdb.firebaseio.com/",
+    projectId: "alphaedu-60ef2",
+    storageBucket: "alphaedu-60ef2.appspot.com",
+    messagingSenderId: "850593200345",
+    appId: "1:850593200345:web:abf53a5b5cd6c255f4e6c8"
   };
 
-  const app = initializeApp(firebaseConfig);
-
+  const app = initializeApp(firebaseConfig );
   const auth = getAuth(app);
+  const db = getDatabase(app);
 
-  const form = document.querySelector("form");
-  form.addEventListener("submit", (e) => {
-    e.preventDefault(); 
+  const registerForm = document.getElementById("registerForm");
+  const submitButton = document.querySelector(".submit-btn");
+  const registrationContainer = document.getElementById("registrationContainer");
+  const successContainer = document.getElementById("successContainer");
 
+  // Função para mostrar o modal de erro (reutilizada)
+  function showModal(title, message) {
+      // Se você tiver um modal de erro, pode chamá-lo aqui.
+      // Por enquanto, usaremos o alert.
+      alert(`${title}\n\n${message}`);
+  }
+
+  registerForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    submitButton.disabled = true;
+    submitButton.textContent = "Aguarde...";
+
+    const username = document.getElementById("username").value;
     const email = document.getElementById("email").value;
+    const userType = document.getElementById("user-type").value;
     const password = document.getElementById("senha").value;
+    const confirmPassword = document.getElementById("confirmar-senha").value;
 
-    if (!email || !password) {
-      alert("Preencha e-mail e senha.");
+    if (password !== confirmPassword) {
+      showModal("Erro de Senha", "As senhas não coincidem.");
+      submitButton.disabled = false;
+      submitButton.textContent = "Inscrever-se";
       return;
     }
 
-   
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-       
-        const user = userCredential.user;
-        console.log("Usuário cadastrado:", user.email);
-        
-        window.location.href = "painel.html";
-      })
-      .catch((error) => {
-        console.error(error.code, error.message);
-        alert("OH NÃO VOCE COMETEU UM ERRO TERRÍVEL, se liga: " + error.message);
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      await set(ref(db, 'users/' + user.uid), {
+        uid: user.uid,
+        username: username,
+        email: email,
+        userType: userType,
+        createdAt: new Date().toISOString()
       });
+
+      // Esconde o formulário e mostra a mensagem de sucesso
+      registrationContainer.style.display = "none";
+      successContainer.style.display = "flex";
+      lucide.createIcons(); // Recria os ícones para a tela de sucesso
+
+    } catch (error) {
+      console.error("Ocorreu um erro:", error.code, error.message);
+      submitButton.disabled = false;
+      submitButton.textContent = "Inscrever-se";
+
+      if (error.code === 'auth/email-already-in-use') {
+        showModal("Erro de Cadastro", "Este e-mail já está em uso. Tente fazer login ou use um e-mail diferente.");
+      } else if (error.code === 'auth/weak-password') {
+        showModal("Senha Fraca", "A senha é muito fraca. Tente uma senha mais forte com pelo menos 6 caracteres.");
+      } else {
+        showModal("Erro Inesperado", "Ocorreu um erro ao criar sua conta. Tente novamente.");
+      }
+    }
   });
 </script>
-
-
+<script src="js/scriptRegistrar.js"></script> 
 </body>
-
 </html>

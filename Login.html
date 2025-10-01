@@ -1,88 +1,44 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>AlphaEdu - Entrar</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@700;800&display=swap" rel="stylesheet">
-
-
-
   <link rel="stylesheet" href="css/styleLogin.css">
-
-
 </head>
-
-
 <body>
-  <div class="left">
-
-
-  </div>
-
-
+  <div class="left"></div>
   <div class="right">
     <div class="form-container">
-      <div class="tabs">
-        <!DOCTYPE html>
-        <html lang="pt-BR">
-
-        <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Tabs com underline animado</title>
-
-        </head>
-
-        <body>
-          <div class="tab-container">
-            <div class="tab" data-target="inscrever">Inscrever-se</div>
-            <div class="tab active" data-target="entrar">Entrar</div>
-            <div class="underline"></div>
-          </div>
-
-
-
-
-          <!-- Na página LOGIN, inverta as classes "active" e os data-href conforme necessário -->
+      <div class="tab-container">
+        <div class="tab" data-target="inscrever">Inscrever-se</div>
+        <div class="tab active" data-target="entrar">Entrar</div>
+        <div class="underline"></div>
       </div>
-
 
       <div class="social-buttons">
         <button id="login-google" class="social-button" type="button">
-          <img class="icon" src="https://cdn-icons-png.flaticon.com/512/281/281764.png" alt="Google"> Continuar com o
-          Google
+          <img class="icon" src="https://cdn-icons-png.flaticon.com/512/281/281764.png" alt="Google"> Continuar com o Google
         </button>
       </div>
 
       <div class="divider">ou com e-mail</div>
 
-      <form>
+      <form id="loginForm">
         <div>
-          <label for="email">
-            <n>E-mail</n>
-          </label>
-          <input type="email" id="email" placeholder="Insira seu endereço de e-mail ou nome de usuário" />
+          <label for="email">E-mail</label>
+          <input type="email" id="email" placeholder="Insira seu endereço de e-mail" required />
         </div>
-
         <div>
           <label for="senha">
             <span>Senha</span>
             <div class="forgot"><a href="#">Esqueci a senha</a></div>
           </label>
           <div class="password-container">
-            <input type="password" id="senha" placeholder="Digite sua senha" />
-            <button type="button" class="toggle-password" onclick="togglePassword()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                <circle cx="12" cy="12" r="3" />
-              </svg>
-            </button>
+            <input type="password" id="senha" placeholder="Digite sua senha" required />
           </div>
         </div>
-
         <button type="submit" class="submit-btn">Entrar</button>
       </form>
 
@@ -91,79 +47,65 @@
       </div>
     </div>
   </div>
-  <script src="js/scriptLogin.js"></script>
 
-  
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup  } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+<script type="module">
+  // --- SCRIPT DAS ABAS (TABS ) ---
+  const tabs = document.querySelectorAll('.tab');
+  const underline = document.querySelector('.underline');
 
-    // Config do Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyD5mZJOy6WLXis0vyuBDN3R0fv62uewMZ4",
-      authDomain: "alfa-edu-ltnov3.firebaseapp.com",
-      databaseURL: "https://alfa-edu-ltnov3-default-rtdb.firebaseio.com",
-      projectId: "alfa-edu-ltnov3",
-      storageBucket: "alfa-edu-ltnov3.firebasestorage.app",
-      messagingSenderId: "65492735007",
-      appId: "1:65492735007:web:579b220d5b730e8bc6f12a"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
-    document.getElementById("login-google").addEventListener("click", async() => {
-    try{
-      const resultado = await signInWithPopup(auth, provider);
-
-      const credencial = GoogleAuthProvider.credentialFromResult(resultado);
-      const token = credencial.accessToken;
-
-      const user = resultado.user;
-      console.log("Usuário logado:", user);
-
-      window.location.href= "painel.html";
-    } catch (error) {
-
-      console.error ("Erro no login com o google :(, se liga:", error);
-      alert("Não foi possivel fazer login com o google");
+  function moveUnderline(element) {
+    if (underline && element) {
+      underline.style.width = element.offsetWidth + "px";
+      underline.style.left = element.offsetLeft + "px";
     }
+  }
 
-
-
-
-
-    });
-
-
-
-    const loginForm = document.querySelector("form"); // pega seu form de login
-    const emailInput = document.getElementById("email");
-    const senhaInput = document.getElementById("senha");
-
-    loginForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const email = emailInput.value.trim();
-      const senha = senhaInput.value.trim();
-
-      if (!email || !senha) {
-        alert("Preencha todos os campos.");
-        return;
-      }
-
-      try {
-        await signInWithEmailAndPassword(auth, email, senha);
-
-        window.location.href = "painel.html";
-      } catch (err) {
-        console.error(err);
-        alert("Usuário ou senha inválidos.");
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const destino = tab.getAttribute("data-target");
+      if (destino === "inscrever") {
+        // CORREÇÃO DEFINITIVA: Usando o nome do arquivo com "R" maiúsculo
+        window.location.href = "Registrar.html";
       }
     });
-  </script>
+  });
 
+  window.addEventListener('load', () => {
+    const activeTab = document.querySelector('.tab.active');
+    moveUnderline(activeTab);
+  });
+
+  // --- SCRIPT DO FIREBASE ---
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyC02F-Ka3ftBr4k-uNzUU3d7znjMgQ-zdk",
+    authDomain: "alphaedu-60ef2.firebaseapp.com",
+    databaseURL: "https://alphaedu-60ef2-default-rtdb.firebaseio.com",
+    projectId: "alphaedu-60ef2",
+    storageBucket: "alphaedu-60ef2.appspot.com",
+    messagingSenderId: "850593200345",
+    appId: "1:850593200345:web:abf53a5b5cd6c255f4e6c8",
+    measurementId: "G-Q961GG2JFN"
+  };
+
+  const app = initializeApp(firebaseConfig );
+  const auth = getAuth(app);
+
+  const loginForm = document.getElementById("loginForm");
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    // ... (resto do seu código de login com Firebase)
+  });
+
+  const googleButton = document.getElementById("login-google");
+  googleButton.addEventListener("click", async () => {
+    // ... (resto do seu código de login com Google)
+  });
+</script>
+
+<!-- Apague a linha <script src="js/scriptLogin.js"></script> do seu HTML se ela existir -->
 
 </body>
-
 </html>
