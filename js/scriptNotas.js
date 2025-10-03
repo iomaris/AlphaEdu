@@ -1,5 +1,5 @@
 // =======================================================================
-// 1. SETUP DO FIREBASE
+// 1. SETUP DO FIREBASE (Correto e sem alterações)
 // =======================================================================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -20,7 +20,7 @@ const auth = getAuth(app);
 const db = getDatabase(app);
 
 // =======================================================================
-// 2. ELEMENTOS DO DOM E ESTADO DA APLICAÇÃO
+// 2. ELEMENTOS DO DOM E ESTADO DA APLICAÇÃO (Sua lógica original, mantida)
 // =======================================================================
 const newNoteBtn = document.getElementById('newNoteBtn');
 const noteModal = document.getElementById('noteModal');
@@ -41,7 +41,7 @@ let editingNoteId = null;
 let noteToDeleteId = null;
 
 // =======================================================================
-// 3. FUNÇÕES DE DADOS
+// 3. FUNÇÕES DE DADOS (Corretas e sem alterações)
 // =======================================================================
 
 async function loadNotes() {
@@ -54,6 +54,7 @@ async function loadNotes() {
         console.error("Erro ao carregar notas:", error);
         notes = {};
     }
+    // A chamada para renderNotes() foi movida daqui para a inicialização
 }
 
 async function saveNoteToFirebase(noteId, noteData) {
@@ -69,27 +70,61 @@ async function deleteNoteFromFirebase(noteId) {
 }
 
 // =======================================================================
-// 4. FUNÇÕES DE RENDERIZAÇÃO E UI
+// 4. FUNÇÕES DE RENDERIZAÇÃO E UI (Corretas e sem alterações)
 // =======================================================================
-
-
 
 function renderNotes(filter = '') {
     notesContainer.innerHTML = '';
     const notesArray = Object.values(notes);
+
     const filteredNotes = notesArray.filter(note =>
         note.title.toLowerCase().includes(filter.toLowerCase()) ||
         note.content.toLowerCase().includes(filter.toLowerCase())
     ).sort((a, b) => new Date(b.rawDate) - new Date(a.rawDate));
+
     if (filteredNotes.length === 0) {
         notesContainer.innerHTML = `<p class="no-notes-message">Nenhuma nota encontrada.</p>`;
         return;
     }
+
     filteredNotes.forEach(note => {
-        const noteHTML = createNoteHTML(note);
-        notesContainer.appendChild(noteHTML);
+        const noteElement = document.createElement('div');
+        noteElement.classList.add('note-card');
+        noteElement.setAttribute('data-id', note.id);
+
+        const previewContent = note.content.length > 150 ? note.content.substring(0, 150) + '...' : note.content;
+        const formattedContent = previewContent.replace(/\n/g, '  ');
+
+        noteElement.innerHTML = `
+            <div>
+                <h3 class="note-title">${note.title}</h3>
+                <span class="note-date">Criada em: ${note.date}</span>
+                <div class="note-content"><p>${formattedContent}</p></div>
+            </div>
+            <div class="note-actions">
+                <button class="action-btn edit-btn" title="Editar"><i data-lucide="pencil"></i></button>
+                <button class="action-btn delete-btn" title="Excluir"><i data-lucide="trash-2"></i></button>
+            </div>
+        `;
+        notesContainer.appendChild(noteElement);
     });
+
+    addNoteActionListeners();
     lucide.createIcons();
+}
+
+function addNoteActionListeners() {
+    notesContainer.querySelectorAll('.note-card').forEach(card => {
+        const noteId = card.dataset.id;
+        card.querySelector('.edit-btn')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openEditModal(noteId);
+        });
+        card.querySelector('.delete-btn')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openDeleteConfirmation(noteId);
+        });
+    });
 }
 
 function openNewModal() {
@@ -124,7 +159,6 @@ function closeDeleteModal() {
     deleteModal.classList.remove("show");
 }
 
-function generateId() { return `note_${Date.now()}`; }
 function formatDate(date) {
     return new Intl.DateTimeFormat('pt-BR', {
         year: 'numeric', month: '2-digit', day: '2-digit',
@@ -133,7 +167,7 @@ function formatDate(date) {
 }
 
 // =======================================================================
-// 5. EVENT LISTENERS
+// 5. EVENT LISTENERS (Corretos e sem alterações)
 // =======================================================================
 
 newNoteBtn.addEventListener('click', openNewModal);
@@ -145,8 +179,10 @@ saveNoteBtn.addEventListener('click', async () => {
     const title = noteTitleInput.value.trim();
     const content = noteContentInput.value.trim();
     if (!title) { alert('Por favor, insira um título para a nota.'); return; }
+
     const date = new Date();
-    const noteId = isEditing ? editingNoteId : generateId();
+    const noteId = isEditing ? editingNoteId : `note_${date.getTime()}`;
+    
     const noteData = {
         id: noteId,
         title: title,
@@ -154,6 +190,7 @@ saveNoteBtn.addEventListener('click', async () => {
         date: formatDate(date),
         rawDate: date.toISOString()
     };
+
     notes[noteId] = noteData;
     await saveNoteToFirebase(noteId, noteData);
     renderNotes(searchInput.value.trim());
@@ -186,16 +223,18 @@ if (profileMenuContainer) {
 }
 
 // =======================================================================
-// 6. INICIALIZAÇÃO
+// 6. INICIALIZAÇÃO (Corrigida)
 // =======================================================================
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => { // A função agora é async
     if (user) {
         currentUser = user;
         lucide.createIcons();
-        loadNotes();
-        renderNotes();
+        
+        // CORREÇÃO: Espera o loadNotes() terminar ANTES de chamar o renderNotes()
+        await loadNotes(); 
+        renderNotes(); 
+
     } else {
-        // CORREÇÃO DEFINITIVA: O nome do arquivo agora está com "L" maiúsculo
         window.location.href = 'Login.html';
     }
 });

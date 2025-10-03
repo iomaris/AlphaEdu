@@ -107,7 +107,7 @@ function renderCollections(filter = '') {
             <div class="card-footer">
                 <span class="card-info">${cardCount} flashcards</span>
                 <div class="card-actions">
-                    <a href="flashcard.html?collection=${collection.id}" class="study-btn">Estudar</a>
+                    <a href="flashcards.html?collection=${collection.id}" class="study-btn">Estudar</a>
                     <button class="edit-btn" title="Editar Coleção"><i data-lucide="edit"></i></button>
                     <button class="delete-btn" title="Excluir Coleção"><i data-lucide="trash-2"></i></button>
                 </div>
