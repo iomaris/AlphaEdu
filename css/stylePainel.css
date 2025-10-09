@@ -1,22 +1,20 @@
 /* ================================================== */
-/* ===== ARQUIVO CSS COMPLETO: stylePainel.css ===== */
+/* ===== CSS FINAL, COMPLETO E CORRIGIDO ===== */
 /* ================================================== */
 
-/* --- 1. PALETA DE CORES FUTURISTA --- */
 :root {
   --bg-dark: #0a0f1e;
   --bg-panel: #121a2f;
-  --primary-blue: #2563eb;   /* Azul principal */
-  --blue-light: #3b82f6;     /* Azul claro neon */
-  --blue-glow: #60a5fa;      /* Efeito de brilho */
+  --primary-blue: #2563eb;
+  --blue-light: #3b82f6;
+  --blue-glow: #60a5fa;
   --text-light: #e2e8f0;
   --text-muted: #94a3b8;
   --white: #ffffff;
   --accent: #38bdf8;
-  --danger: #ef4444; /* Laranja para ações de "sair" */
+  --danger: #ef4444;
 }
 
-/* --- RESET GLOBAL --- */
 * {
   margin: 0;
   padding: 0;
@@ -32,98 +30,115 @@ body {
   overflow: hidden;
 }
 
-/* --- Ícones Lucide --- */
 i[data-lucide] {
-    width: 18px;
-    height: 18px;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
 }
 
-/* ================================================== */
-/* ===== ARQUIVO CSS COMPLETO: stylePainel.css ===== */
-/* ================================================== */
-
-/* ... (todo o início do seu CSS permanece igual) ... */
-
-/* --- 2. SIDEBAR --- */
+/* --- 1. SIDEBAR --- */
 .sidebar {
-  width: 240px;
+  width: 260px;
   background: linear-gradient(180deg, #111827, #0f172a);
-  /* ✅ ALTERAÇÃO 1: Ajuste no padding geral da sidebar */
-  padding: 20px 15px; /* Aumenta o espaço nas laterais para alinhar melhor */
+  padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  position: fixed;
   height: 100%;
-  border-right: 1px solid rgba(59, 130, 246, 0.2);
+  border-right: 1px solid rgba(59, 130, 246, 0.15);
   z-index: 100;
+  transition: width 0.3s ease-in-out, padding 0.3s ease-in-out;
+  flex-shrink: 0;
 }
 
-/* ✅ ALTERAÇÃO 2: Bloco da logo completamente refeito */
-.sidebar-logo {
+.sidebar-header {
   display: flex;
+  justify-content: flex-end;
   align-items: center;
-  gap: 12px; /* Aumenta um pouco o espaço entre logo e texto */
+  height: 45px;
   margin-bottom: 25px;
-  /* Remove o padding interno para que ele se alinhe com a sidebar */
-  padding: 0; 
 }
 
-.sidebar-logo img {
-  height: 45px; /* Reduz um pouco a altura para caber melhor */
-  width: auto;
-  /* Impede que a imagem encolha se o espaço for pequeno */
-  flex-shrink: 0; 
+#toggle-sidebar-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  display: flex;
+  transition: all 0.2s;
 }
 
-.sidebar-logo span {
-  font-size: 22px;
-  font-weight: 700;
-  color: #ffffff;
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
+#toggle-sidebar-btn:hover {
+  color: var(--text-light);
+  background: rgba(59, 130, 246, 0.15);
 }
-
 
 .sidebar nav a {
   display: flex;
   align-items: center;
-  gap: 10px;
-
-  padding: 12px 10px; 
+  gap: 15px;
+  padding: 14px;
   border-radius: 8px;
   text-decoration: none;
-  color: var(--text-light);
+  color: var(--text-muted);
   margin-bottom: 8px;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   font-weight: 500;
+  font-size: 15px;
+  white-space: nowrap; /* Impede que o texto quebre linha durante a transição */
 }
 
-
-
 .sidebar nav a:hover {
-  background: rgba(59, 130, 246, 0.15);
-  color: var(--blue-light);
-  box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+  background: var(--bg-panel);
+  color: var(--text-light);
 }
 
 .sidebar nav a.active {
   background: var(--primary-blue);
   color: var(--white);
-  font-weight: 700;
-  box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
+  font-weight: 600;
+  box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
 }
 
-/* --- MENU DE PERFIL NA SIDEBAR --- */
+/* --- 2. ESTADO DA SIDEBAR FECHADA --- */
+.sidebar.hidden {
+  width: 88px;
+  padding: 20px 15px;
+}
+
+.sidebar.hidden .sidebar-header {
+  justify-content: center;
+}
+
+.sidebar.hidden nav a span,
+.sidebar.hidden .profile-info {
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+  margin-left: -15px; /* Ajuda a esconder o texto mais rápido */
+}
+
+.sidebar.hidden nav a {
+  justify-content: center;
+  padding: 14px;
+}
+
+.sidebar.hidden .profile-button {
+  justify-content: center;
+}
+
+/* --- 3. MENU DE PERFIL --- */
 .sidebar-bottom-menu {
-  position: relative;
-  padding-top: 12px;
-  border-top: 1px solid rgba(59, 130, 246, 0.2);
+  border-top: 1px solid rgba(59, 130, 246, 0.15);
+  padding-top: 15px;
 }
 
 .profile-button {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   width: 100%;
   padding: 8px;
   border-radius: 8px;
@@ -132,10 +147,11 @@ i[data-lucide] {
   cursor: pointer;
   color: var(--white);
   transition: background 0.3s;
+  overflow: hidden;
 }
 
 .profile-button:hover {
-    background: rgba(59, 130, 246, 0.1);
+  background: var(--bg-panel);
 }
 
 .profile-avatar {
@@ -151,11 +167,30 @@ i[data-lucide] {
   flex-shrink: 0;
 }
 
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.profile-info .username {
+  font-weight: 600;
+  color: var(--text-light);
+  font-size: 15px;
+}
+
+.profile-info .email {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
 .profile-dropdown-sidebar {
   position: absolute;
-  bottom: 70px;
-  left: 10px;
-  width: 220px;
+  bottom: 80px;
+  left: 15px;
+  width: 230px;
   background: #1e293b;
   border-radius: 12px;
   border: 1px solid rgba(59, 130, 246, 0.3);
@@ -209,12 +244,15 @@ i[data-lucide] {
   color: var(--blue-light);
 }
 
-.dropdown-item.logout, .dropdown-item[style*="color: #f59e0b"] {
-    color: var(--danger);
+.dropdown-item.logout,
+.dropdown-item[style*="color: #f59e0b"] {
+  color: var(--danger);
 }
-.dropdown-item.logout:hover, .dropdown-item[style*="color: #f59e0b"]:hover {
-    background: rgba(245, 158, 11, 0.15);
-    color: var(--danger);
+
+.dropdown-item.logout:hover,
+.dropdown-item[style*="color: #f59e0b"]:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--danger);
 }
 
 .dropdown-divider {
@@ -223,9 +261,8 @@ i[data-lucide] {
   margin: 8px 0;
 }
 
-/* --- 3. LAYOUT PRINCIPAL --- */
+/* --- 4. CONTEÚDO PRINCIPAL (MAIN) --- */
 .main {
-  margin-left: 240px;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -250,37 +287,37 @@ i[data-lucide] {
   color: var(--text-muted);
 }
 
-/* --- 4. GRID DO PAINEL --- */
+/* --- 5. GRID DO DASHBOARD (RESTAURADO PARA O ORIGINAL DO USUÁRIO) --- */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr; 
+  grid-template-columns: 2fr 1fr;
   gap: 30px;
   align-items: start;
 }
 
 #class-panel {
-    grid-column: 1 / 2;
+  grid-column: 1 / 2;
 }
 
 .right-column {
-    grid-column: 2 / 3;
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
+  grid-column: 2 / 3;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
 }
 
+/* Se não houver avisos, a coluna da direita se move para a coluna 1 */
+.dashboard-grid:has(#class-panel[style*="display: none"]) .right-column {
+  grid-column: 1 / 2;
+}
+
+/* --- 6. ITENS DO GRID (WIDGETS) --- */
 .grid-item {
   background: var(--bg-panel);
   border-radius: 16px;
   padding: 24px;
   border: 1px solid rgba(59, 130, 246, 0.2);
   box-shadow: 0 0 15px rgba(37, 99, 235, 0.15);
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.grid-item:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 0 25px rgba(59, 130, 246, 0.4);
 }
 
 .card-header {
@@ -295,11 +332,6 @@ i[data-lucide] {
   font-weight: 600;
   color: var(--blue-light);
   text-shadow: 0 0 6px var(--blue-glow);
-}
-
-/* --- 5. WIDGETS --- */
-.notices-container {
-    grid-column: 1 / 2;
 }
 
 .notice-list {
@@ -317,11 +349,6 @@ i[data-lucide] {
   padding: 16px;
   background: #1e293b;
   box-shadow: 0 0 12px rgba(59, 130, 246, 0.2);
-  transition: 0.3s;
-}
-
-.notice-card:hover {
-  box-shadow: 0 0 18px rgba(59, 130, 246, 0.4);
 }
 
 .notice-card h4 {
@@ -343,7 +370,6 @@ i[data-lucide] {
   color: var(--accent);
 }
 
-/* --- CALENDÁRIO MINI --- */
 .mini-calendar-header {
   display: flex;
   justify-content: space-between;
@@ -353,19 +379,20 @@ i[data-lucide] {
 }
 
 .mini-calendar-header button {
-    background: none;
-    border: none;
-    color: var(--blue-glow);
-    cursor: pointer;
-    padding: 4px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.2s;
+  background: none;
+  border: none;
+  color: var(--blue-glow);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
 }
+
 .mini-calendar-header button:hover {
-    background: rgba(59, 130, 246, 0.2);
+  background: rgba(59, 130, 246, 0.2);
 }
 
 .mini-calendar-weekdays {
@@ -394,8 +421,9 @@ i[data-lucide] {
   transition: all 0.3s ease;
   color: var(--text-muted);
 }
+
 .mini-day.current-month {
-    color: var(--text-light);
+  color: var(--text-light);
 }
 
 .mini-day.today {
@@ -411,31 +439,31 @@ i[data-lucide] {
 }
 
 .view-all-btn {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 8px 16px;
-    background: none;
-    border: 1px solid var(--blue-light);
-    color: var(--blue-light);
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 500;
-    transition: all 0.3s;
-}
-.view-all-btn:hover {
-    background: var(--blue-light);
-    color: var(--bg-dark);
-    box-shadow: 0 0 12px var(--blue-light);
+  display: inline-block;
+  margin-top: 20px;
+  padding: 8px 16px;
+  background: none;
+  border: 1px solid var(--blue-light);
+  color: var(--blue-light);
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s;
 }
 
-/* ✅ ATIVIDADE 1 e 2: Estilos para o novo widget de Bloco de Notas */
+.view-all-btn:hover {
+  background: var(--blue-light);
+  color: var(--bg-dark);
+  box-shadow: 0 0 12px var(--blue-light);
+}
+
 .mini-notes-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  max-height: 150px; /* Altura máxima para o widget */
+  max-height: 150px;
   overflow-y: auto;
-  padding-right: 8px; /* Espaço para a barra de rolagem */
+  padding-right: 8px;
 }
 
 .mini-note-card {
@@ -451,7 +479,7 @@ i[data-lucide] {
   color: var(--text-light);
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; /* Adiciona "..." se o título for muito longo */
+  text-overflow: ellipsis;
 }
 
 .mini-note-card p {
@@ -459,10 +487,9 @@ i[data-lucide] {
   color: var(--text-muted);
   margin-top: 4px;
 }
-/* Fim da alteração */
 
-
-/* --- 6. MODAL E BOTÃO FAB (sem alterações) --- */
+/* --- 7. MODAIS E BOTÃO FAB --- */
+/* Estilos para o modal de entrada de turma */
 .modal {
   position: fixed;
   z-index: 1000;
@@ -475,6 +502,9 @@ i[data-lucide] {
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease, visibility 0.3s ease;
+  display: flex; /* Centraliza o conteúdo */
+  align-items: center;
+  justify-content: center;
 }
 
 .modal.show {
@@ -486,13 +516,13 @@ i[data-lucide] {
   transform: translateY(-20px);
   transition: transform 0.3s ease;
   background: var(--bg-panel);
-  margin: 15% auto;
   padding: 24px;
   border: 1px solid rgba(59, 130, 246, 0.3);
   width: 90%;
   max-width: 450px;
   border-radius: 16px;
   box-shadow: 0 0 40px rgba(59, 130, 246, 0.3);
+  text-align: left; /* Alinha o texto à esquerda para formulários */
 }
 
 .modal.show .modal-content {
@@ -511,6 +541,7 @@ i[data-lucide] {
 .modal-header h4 {
   font-size: 18px;
   color: var(--blue-light);
+  text-shadow: 0 0 6px var(--blue-glow); /* Adiciona brilho ao título */
 }
 
 .close-btn {
@@ -529,21 +560,21 @@ i[data-lucide] {
 }
 
 .modal p {
-    color: var(--text-muted);
-    margin-bottom: 20px;
-    font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+  font-size: 14px;
 }
 
 .form-group {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .form-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-light);
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-light);
 }
 
 #class-code-input {
@@ -559,12 +590,12 @@ i[data-lucide] {
 }
 
 #class-code-input:focus {
-    border-color: var(--blue-light);
-    box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+  border-color: var(--blue-light);
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
 }
 
 .modal-actions {
-    text-align: right;
+  text-align: right;
 }
 
 .btn-save {
@@ -584,31 +615,156 @@ i[data-lucide] {
 }
 
 .fab {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 56px;
-    height: 56px;
-    background: var(--primary-blue);
-    color: white;
-    border-radius: 50%;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.6);
-    cursor: pointer;
-    transition: all 0.3s;
-    z-index: 999;
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 56px;
+  height: 56px;
+  background: var(--primary-blue);
+  color: white;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.6);
+  cursor: pointer;
+  transition: all 0.3s;
+  z-index: 999;
 }
 
 .fab:hover {
-    background: var(--blue-light);
-    transform: translateY(-3px);
-    box-shadow: 0 6px 25px rgba(59, 130, 246, 0.7);
+  background: var(--blue-light);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 25px rgba(59, 130, 246, 0.7);
 }
 
 .fab i {
-    width: 24px;
-    height: 24px;
+  width: 24px;
+  height: 24px;
 }
+
+/* Estilos para os modais personalizados (showAlert, showConfirm) */
+.custom-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(10, 15, 30, 0.8);
+  backdrop-filter: blur(5px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.custom-modal-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.custom-modal {
+  background: linear-gradient(145deg, #1e293b, #121a2f); /* Gradiente sutil */
+  padding: 30px;
+  border-radius: 16px;
+  border: 1px solid var(--blue-light); /* Borda mais proeminente */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 60px rgba(59, 130, 246, 0.4); /* Sombra mais profunda e brilho */
+  width: 90%;
+  max-width: 450px; /* Aumentado um pouco o max-width */
+  text-align: center;
+  transform: scale(0.95);
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 25px; /* Espaçamento entre título, texto e botões */
+  position: relative; /* Para o pseudo-elemento */
+  overflow: hidden; /* Garante que o pseudo-elemento não vaze */
+}
+
+/* Pseudo-elemento para um efeito de brilho sutil no fundo */
+.custom-modal::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+  transform: rotate(45deg);
+  opacity: 0.5;
+  z-index: 0;
+  transition: opacity 0.3s ease;
+}
+
+.custom-modal-overlay.show .custom-modal {
+  transform: scale(1);
+}
+
+.custom-modal-title {
+  font-size: 28px; /* Aumentado o tamanho da fonte */
+  color: var(--blue-light);
+  font-weight: 800; /* Mais negrito */
+  text-shadow: 0 0 15px var(--blue-glow); /* Brilho mais intenso */
+  margin-bottom: 0;
+  position: relative; /* Para ficar acima do pseudo-elemento */
+  z-index: 1;
+}
+
+.custom-modal-text {
+  font-size: 17px; /* Aumentado um pouco o tamanho da fonte */
+  color: var(--text-light); /* Texto mais claro */
+  line-height: 1.7;
+  margin-bottom: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.custom-modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px; /* Aumentado o espaçamento entre os botões */
+  margin-top: 15px; /* Mais margem acima dos botões */
+  position: relative;
+  z-index: 1;
+}
+
+.custom-modal-buttons button {
+  padding: 14px 32px; /* Aumentado o padding */
+  border: none;
+  border-radius: 10px; /* Bordas mais arredondadas */
+  cursor: pointer;
+  font-weight: 700; /* Mais negrito */
+  font-size: 17px; /* Aumentado o tamanho da fonte */
+  transition: all 0.3s ease-in-out;
+  min-width: 120px; /* Garante um tamanho mínimo maior */
+  letter-spacing: 0.5px; /* Pequeno espaçamento entre letras */
+}
+
+.custom-modal-buttons .btn-primary {
+  background: var(--primary-blue);
+  color: white;
+  box-shadow: 0 5px 20px rgba(37, 99, 235, 0.4); /* Sombra para o botão primário */
+}
+
+.custom-modal-buttons .btn-primary:hover {
+  background: var(--blue-light);
+  box-shadow: 0 0 20px var(--blue-light), 0 0 30px rgba(59, 130, 246, 0.6); /* Brilho mais intenso no hover */
+  transform: translateY(-2px); /* Efeito de leve elevação */
+}
+
+.custom-modal-buttons .btn-secondary {
+  background: #334155;
+  color: var(--text-light);
+  border: 1px solid rgba(59, 130, 246, 0.3); /* Borda sutil para o secundário */
+}
+
+.custom-modal-buttons .btn-secondary:hover {
+  background: #475569;
+  box-shadow: 0 0 15px rgba(71, 85, 105, 0.4); /* Sombra no hover */
+  transform: translateY(-2px); /* Efeito de leve elevação */
+}
+

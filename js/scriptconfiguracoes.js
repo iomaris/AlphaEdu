@@ -1,6 +1,8 @@
 // =======================================================================
-// 1. SETUP DO FIREBASE (Adicionado)
+// ===== SCRIPTCONFIGURACAO.JS - VERSÃO COMPLETA E AUTÔNOMA =====
 // =======================================================================
+
+// --- 1. IMPORTS E SETUP DO FIREBASE ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, deleteUser } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getDatabase, ref, get, set, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
@@ -19,123 +21,155 @@ const app = initializeApp(firebaseConfig );
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-// =======================================================================
-// 2. ELEMENTOS DO DOM E ESTADO (Sua lógica original, mantida)
-// =======================================================================
-const darkModeToggle = document.getElementById('dark-mode-toggle');
-const emailNotificationsToggle = document.getElementById('email-notifications-toggle');
-const deleteAccountBtn = document.querySelector('.btn-danger');
+// --- 2. LÓGICA GLOBAL (SIDEBAR, PERFIL, AUTH) ---
+document.addEventListener('DOMContentLoaded', () => {
+    // Elementos da UI Global
+    const sidebar = document.querySelector('.sidebar');
+    const mainContent = document.querySelector('.main');
+    const toggleBtn = document.getElementById('toggle-sidebar-btn');
+    const profileMenuButton = document.getElementById('profile-menu-button');
+    const profileDropdown = document.getElementById('profile-dropdown');
+    const profileAvatar = document.querySelector('.profile-avatar');
+    const profileUsername = document.querySelector('.profile-info .username');
+    const profileEmail = document.querySelector('.profile-info .email');
+    const dropdownUsername = document.querySelector('#profile-dropdown .username');
+    const dropdownEmail = document.querySelector('#profile-dropdown .email');
+    const leaveClassBtn = document.getElementById('leave-class-btn');
 
-const profileMenuContainer = document.getElementById('profile-menu-container');
-const profileMenuButton = document.getElementById('profile-menu-button');
-const profileDropdown = document.getElementById('profile-dropdown');
+    // Lógica para abrir/fechar a sidebar
+    if (toggleBtn && sidebar && mainContent) {
+        const setSidebarState = (isHidden) => {
+            sidebar.classList.toggle('hidden', isHidden);
+            mainContent.style.paddingLeft = isHidden ? '118px' : '290px';
+            localStorage.setItem('sidebarState', isHidden ? 'hidden' : 'visible');
+        };
 
-let currentUser = null;
+        toggleBtn.addEventListener('click', () => {
+            setSidebarState(!sidebar.classList.contains('hidden'));
+        });
 
-// =======================================================================
-// 3. FUNÇÕES DE DADOS (Adicionadas para usar Firebase)
-// =======================================================================
+        const savedState = localStorage.getItem('sidebarState');
+        setSidebarState(savedState === 'hidden');
+    }
 
-/**
- * Carrega todas as configurações do usuário do Firebase e atualiza a UI.
- */
-async function loadUserSettings() {
-    if (!currentUser) return;
-    const settingsRef = ref(db, `users/${currentUser.uid}/settings`);
-    try {
-        const snapshot = await get(settingsRef);
-        if (snapshot.exists()) {
-            const settings = snapshot.val();
-            
-            // Atualiza o toggle de Modo Escuro
-            darkModeToggle.checked = settings.theme === 'dark';
-            applyTheme(settings.theme);
+    // Lógica do menu de perfil
+    if (profileMenuButton) {
+        profileMenuButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profileDropdown.classList.toggle('show');
+        });
+    }
+    window.addEventListener('click', () => {
+        if (profileDropdown) profileDropdown.classList.remove('show');
+    });
 
-            // Atualiza o toggle de Notificações
-            // Se a configuração não existir, o padrão é 'true' (marcado)
-            emailNotificationsToggle.checked = settings.notifications?.email !== false;
+    // Autenticação e carregamento de dados do usuário
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            lucide.createIcons();
+            const userRef = ref(db, `users/${user.uid}`);
+            const snapshot = await get(userRef);
 
+            if (snapshot.exists()) {
+                const userData = snapshot.val();
+                const username = userData.username || 'Usuário';
+                const email = user.email;
+                const avatarInitials = (username[0] || 'U') + (username.split(' ')[1]?.[0] || '');
+
+                if (profileAvatar) profileAvatar.textContent = avatarInitials;
+                if (profileUsername) profileUsername.textContent = username;
+                if (profileEmail) profileEmail.textContent = email;
+                if (dropdownUsername) dropdownUsername.textContent = username;
+                if (dropdownEmail) dropdownEmail.textContent = email;
+                if (leaveClassBtn) leaveClassBtn.style.display = userData.classCode ? 'flex' : 'none';
+            }
+            // Inicializa a lógica específica da página de Configurações
+            initializeSettingsPage(user);
         } else {
-            // Valores padrão se não houver configurações salvas
-            darkModeToggle.checked = false;
-            applyTheme('light');
-            emailNotificationsToggle.checked = true;
+            window.location.href = 'Login.html';
         }
-    } catch (error) {
-        console.error("Erro ao carregar configurações:", error);
-    }
-}
-
-/**
- * Salva uma configuração específica no Firebase.
- * Ex: saveUserSetting('theme', 'dark');
- * Ex: saveUserSetting('notifications/email', false);
- */
-async function saveUserSetting(path, value) {
-    if (!currentUser) return;
-    const settingRef = ref(db, `users/${currentUser.uid}/settings/${path}`);
-    try {
-        await set(settingRef, value);
-    } catch (error) {
-        console.error(`Erro ao salvar configuração '${path}':`, error);
-    }
-}
-
-/**
- * Aplica o tema (dark/light) ao corpo do documento.
- */
-function applyTheme(theme) {
-    document.body.classList.toggle('dark-mode', theme === 'dark');
-}
-
-// =======================================================================
-// 4. EVENT LISTENERS (Modificados para usar Firebase)
-// =======================================================================
-
-// Listener para o toggle de Modo Escuro
-darkModeToggle?.addEventListener('change', () => {
-    const theme = darkModeToggle.checked ? 'dark' : 'light';
-    applyTheme(theme);
-    saveUserSetting('theme', theme);
+    });
 });
 
-// Listener para o toggle de Notificações por E-mail
-emailNotificationsToggle?.addEventListener('change', () => {
-    const wantsNotifications = emailNotificationsToggle.checked;
-    saveUserSetting('notifications/email', wantsNotifications);
-});
+// --- 3. LÓGICA ESPECÍFICA DA PÁGINA DE CONFIGURAÇÕES ---
+function initializeSettingsPage(user) {
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    const emailNotificationsToggle = document.getElementById('email-notifications-toggle');
+    const deleteAccountBtn = document.getElementById('delete-account-btn');
 
-// Listener para o botão de Excluir Conta
-deleteAccountBtn?.addEventListener('click', async () => {
-    const confirmation = prompt("Esta ação é IRREVERSÍVEL. Você perderá todos os seus dados (notas, arquivos, etc).\n\nPara confirmar, digite 'EXCLUIR' na caixa abaixo.");
-    
-    if (confirmation === 'EXCLUIR') {
-        if (!currentUser) {
-            alert("Erro: Usuário não encontrado. Faça login novamente.");
-            return;
-        }
-        
+    const loadUserSettings = async () => {
+        const settingsRef = ref(db, `users/${user.uid}/settings`);
         try {
-            // 1. Exclui todos os dados do usuário do Realtime Database
-            const userDbRef = ref(db, `users/${currentUser.uid}`);
-            await remove(userDbRef);
-            
-            // 2. Exclui o usuário do sistema de autenticação do Firebase
-            // Esta é a parte mais crítica.
-            await deleteUser(currentUser);
-            
-            alert("Sua conta foi excluída com sucesso. Você será redirecionado.");
-            window.location.href = 'inicial.html';
-
+            const snapshot = await get(settingsRef);
+            if (snapshot.exists()) {
+                const settings = snapshot.val();
+                // O modo escuro é gerenciado pelo CSS, então não aplicamos classe aqui.
+                // Apenas garantimos que o toggle reflita o estado salvo.
+                darkModeToggle.checked = settings.theme === 'dark';
+                emailNotificationsToggle.checked = settings.notifications?.email !== false;
+            } else {
+                // Valores padrão se não houver configurações salvas
+                darkModeToggle.checked = false; // Assumindo que o padrão é light
+                emailNotificationsToggle.checked = true;
+            }
         } catch (error) {
-            console.error("Erro ao excluir conta:", error);
-            alert("Ocorreu um erro ao excluir sua conta. Pode ser necessário fazer login novamente para completar esta ação. Se o erro persistir, contate o suporte.");
-            // Erros comuns aqui incluem 'auth/requires-recent-login'
+            console.error("Erro ao carregar configurações:", error);
         }
-    } else {
-        alert("Ação cancelada. Sua conta não foi excluída.");
-    }
-});
+    };
+
+    const saveUserSetting = async (path, value) => {
+        const settingRef = ref(db, `users/${user.uid}/settings/${path}`);
+        try {
+            await set(settingRef, value);
+        } catch (error) {
+            console.error(`Erro ao salvar configuração '${path}':`, error);
+        }
+    };
+
+    // Listener para o toggle de Modo Escuro
+    darkModeToggle.addEventListener('change', () => {
+        const theme = darkModeToggle.checked ? 'dark' : 'light';
+        // Apenas salva a preferência. O CSS deve cuidar da aplicação do tema.
+        saveUserSetting('theme', theme);
+        // Se precisar forçar a mudança sem recarregar a página, adicione/remova uma classe no <body>
+        document.body.classList.toggle('dark-mode', darkModeToggle.checked);
+    });
+
+    // Listener para o toggle de Notificações por E-mail
+    emailNotificationsToggle.addEventListener('change', () => {
+        const wantsNotifications = emailNotificationsToggle.checked;
+        saveUserSetting('notifications/email', wantsNotifications);
+    });
+
+    // Listener para o botão de Excluir Conta
+    deleteAccountBtn.addEventListener('click', async () => {
+        const confirmation = prompt("Esta ação é IRREVERSÍVEL. Você perderá todos os seus dados (notas, arquivos, etc.).\n\nPara confirmar, digite 'EXCLUIR' na caixa abaixo.");
+        
+        if (confirmation === 'EXCLUIR') {
+            try {
+                // 1. Exclui todos os dados do usuário do Realtime Database
+                const userDbRef = ref(db, `users/${user.uid}`);
+                await remove(userDbRef);
+                
+                // 2. Exclui o usuário do sistema de autenticação do Firebase
+                await deleteUser(user);
+                
+                alert("Sua conta foi excluída com sucesso. Você será redirecionado.");
+                window.location.href = 'inicial.html';
+
+            } catch (error) {
+                console.error("Erro ao excluir conta:", error);
+                alert("Ocorreu um erro ao excluir sua conta. Pode ser necessário fazer login novamente para completar esta ação. Se o erro persistir, contate o suporte.");
+            }
+        } else {
+            alert("Ação cancelada. Sua conta não foi excluída.");
+        }
+    });
+
+    // --- Inicialização ---
+    loadUserSettings();
+}
+
 
 // Sua lógica de menu de perfil, mantida intacta
 if (profileMenuContainer) {

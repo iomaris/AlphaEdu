@@ -1,6 +1,8 @@
 // =======================================================================
-// 1. SETUP DO FIREBASE (Adicionado)
+// ===== SCRIPT CRONOMETRO.JS - VERSÃO COMPLETA E CORRIGIDA =====
 // =======================================================================
+
+// --- 1. IMPORTS E SETUP DO FIREBASE ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
@@ -19,11 +21,115 @@ const app = initializeApp(firebaseConfig );
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-// =======================================================================
-// 2. ELEMENTOS DO DOM E ESTADO (Sua lógica original, mantida)
-// =======================================================================
-lucide.createIcons();
+// --- 2. LÓGICA GLOBAL (SIDEBAR, PERFIL, AUTH) ---
+document.addEventListener('DOMContentLoaded', () => {
+    // Elementos da UI Global
+    const sidebar = document.querySelector('.sidebar');
+    const mainContent = document.querySelector('.main');
+    const toggleBtn = document.getElementById('toggle-sidebar-btn');
+    const profileMenuButton = document.getElementById('profile-menu-button');
+    const profileDropdown = document.getElementById('profile-dropdown');
+    const profileAvatar = document.querySelector('.profile-avatar');
+    const profileUsername = document.querySelector('.profile-info .username');
+    const profileEmail = document.querySelector('.profile-info .email');
+    const dropdownUsername = document.querySelector('#profile-dropdown .username');
+    const dropdownEmail = document.querySelector('#profile-dropdown .email');
+    const leaveClassBtn = document.getElementById('leave-class-btn');
 
+    // Lógica para abrir/fechar a sidebar
+    if (toggleBtn && sidebar && mainContent) {
+        const setSidebarState = (isHidden) => {
+            sidebar.classList.toggle('hidden', isHidden);
+            // Ajusta a margem do conteúdo principal com base no estado
+            mainContent.style.marginLeft = isHidden ? '88px' : '260px';
+            localStorage.setItem('sidebarState', isHidden ? 'hidden' : 'visible');
+        };
+
+        toggleBtn.addEventListener('click', () => {
+            // Alterna o estado atual da sidebar
+            setSidebarState(!sidebar.classList.contains('hidden'));
+        });
+
+        // ===== PONTO CRÍTICO DA CORREÇÃO =====
+        // Verifica o estado salvo no localStorage AO CARREGAR A PÁGINA
+        const savedState = localStorage.getItem('sidebarState');
+        
+        // Aplica o estado salvo IMEDIATAMENTE
+        if (savedState === 'hidden') {
+            // Se o estado salvo for 'hidden', aplica esse estado
+            setSidebarState(true);
+        } else {
+            // Caso contrário (se for 'visible' ou nulo), aplica o estado padrão (aberto)
+            setSidebarState(false);
+        }
+        // =====================================
+    }
+
+    // Lógica do menu de perfil
+    if (profileMenuButton) {
+        profileMenuButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profileDropdown.classList.toggle('show');
+        });
+    }
+    window.addEventListener('click', () => {
+        if (profileDropdown) profileDropdown.classList.remove('show');
+    });
+
+    // Autenticação e carregamento de dados do usuário
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            lucide.createIcons();
+            const userRef = ref(db, `users/${user.uid}`);
+            const snapshot = await get(userRef);
+
+            if (snapshot.exists()) {
+                const userData = snapshot.val();
+                const username = userData.username || 'Usuário';
+                const email = user.email;
+                const avatarInitials = (username[0] || 'U') + (username.split(' ')[1]?.[0] || '');
+
+                // Atualiza a UI com os dados do usuário
+                if (profileAvatar) profileAvatar.textContent = avatarInitials;
+                if (profileUsername) profileUsername.textContent = username;
+                if (profileEmail) profileEmail.textContent = email;
+                if (dropdownUsername) dropdownUsername.textContent = username;
+                if (dropdownEmail) dropdownEmail.textContent = email;
+                if (leaveClassBtn) leaveClassBtn.style.display = userData.classCode ? 'flex' : 'none';
+            }
+            // Carrega as configurações específicas do cronômetro
+            loadUserSettings(user);
+        } else {
+            window.location.href = 'Login.html';
+        }
+    });
+
+    // --- LÓGICA ESPECÍFICA DO CRONÔMETRO ---
+    const tabPomodoro = document.getElementById("tab-pomodoro");
+    const tabTimer = document.getElementById("tab-timer");
+    const pomodoroTab = document.getElementById("pomodoro-tab");
+    const timerTab = document.getElementById("timer-tab");
+    const settingsEl = document.getElementById("pomodoro-settings");
+
+    tabPomodoro.addEventListener("click", () => {
+        pomodoroTab.classList.add("active");
+        timerTab.classList.remove("active");
+        tabPomodoro.classList.add("active");
+        tabTimer.classList.remove("active");
+        if(settingsEl) settingsEl.style.display = 'block';
+    });
+
+    tabTimer.addEventListener("click", () => {
+        pomodoroTab.classList.remove("active");
+        timerTab.classList.add("active");
+        tabPomodoro.classList.remove("active");
+        tabTimer.classList.add("active");
+        if(settingsEl) settingsEl.style.display = 'none';
+    });
+});
+
+
+// --- 3. LÓGICA E ESTADO DO CRONÔMETRO ---
 const pomodoroMinutesEl = document.getElementById("pomodoro-minutes");
 const pomodoroSecondsEl = document.getElementById("pomodoro-seconds");
 const customMinutesEl = document.getElementById("custom-minutes");
@@ -32,21 +138,16 @@ const customMinutesInput = document.getElementById("custom-minutes-input");
 const customSecondsInput = document.getElementById("custom-seconds-input");
 const pomodoroLengthInput = document.getElementById("pomodoro-length");
 
-let currentUser = null; // (Adicionado)
+let pomodoroInterval, customInterval;
+let pomodoroTime = 25 * 60, pomodoroRemaining = pomodoroTime;
+let customRemaining = 0;
 
-// --- LÓGICA DO POMODORO (Sua lógica original, com pequenas adaptações) ---
-let pomodoroInterval;
-let pomodoroTime = 25 * 60; // Valor padrão
-let pomodoroRemaining = pomodoroTime;
-
+// Funções do Pomodoro
 function updatePomodoroDisplay() {
-    const minutes = Math.floor(pomodoroRemaining / 60).toString().padStart(2, '0');
-    const seconds = (pomodoroRemaining % 60).toString().padStart(2, '0');
-    pomodoroMinutesEl.textContent = minutes;
-    pomodoroSecondsEl.textContent = seconds;
+    pomodoroMinutesEl.textContent = Math.floor(pomodoroRemaining / 60).toString().padStart(2, '0');
+    pomodoroSecondsEl.textContent = (pomodoroRemaining % 60).toString().padStart(2, '0');
 }
-
-window.startPomodoro = function() {
+window.startPomodoro = () => {
     if (pomodoroInterval) return;
     pomodoroInterval = setInterval(() => {
         if (pomodoroRemaining > 0) {
@@ -58,31 +159,16 @@ window.startPomodoro = function() {
             alert("Pomodoro finalizado! Hora de uma pausa.");
         }
     }, 1000);
-}
+};
+window.pausePomodoro = () => { clearInterval(pomodoroInterval); pomodoroInterval = null; };
+window.resetPomodoro = () => { pausePomodoro(); pomodoroRemaining = pomodoroTime; updatePomodoroDisplay(); };
 
-window.pausePomodoro = function() {
-    clearInterval(pomodoroInterval);
-    pomodoroInterval = null;
-}
-
-window.resetPomodoro = function() {
-    pausePomodoro();
-    pomodoroRemaining = pomodoroTime;
-    updatePomodoroDisplay();
-}
-
-// --- LÓGICA DO TEMPORIZADOR (Sua lógica original, mantida intacta) ---
-let customInterval;
-let customRemaining = 0;
-
+// Funções do Temporizador Customizado
 function updateCustomDisplay() {
-    const minutes = Math.floor(customRemaining / 60).toString().padStart(2, '0');
-    const seconds = (customRemaining % 60).toString().padStart(2, '0');
-    customMinutesEl.textContent = minutes;
-    customSecondsEl.textContent = seconds;
+    customMinutesEl.textContent = Math.floor(customRemaining / 60).toString().padStart(2, '0');
+    customSecondsEl.textContent = (customRemaining % 60).toString().padStart(2, '0');
 }
-
-window.startCustomTimer = function() {
+window.startCustomTimer = () => {
     if (customInterval) return;
     if (customRemaining === 0) {
         const min = parseInt(customMinutesInput.value) || 0;
@@ -100,127 +186,38 @@ window.startCustomTimer = function() {
             alert("Tempo finalizado!");
         }
     }, 1000);
-}
-
-window.pauseCustomTimer = function() {
-    clearInterval(customInterval);
-    customInterval = null;
-}
-
-window.resetCustomTimer = function() {
+};
+window.pauseCustomTimer = () => { clearInterval(customInterval); customInterval = null; };
+window.resetCustomTimer = () => {
     pauseCustomTimer();
     customRemaining = 0;
     customMinutesInput.value = '';
     customSecondsInput.value = '';
     updateCustomDisplay();
-}
+};
 
-// =======================================================================
-// 3. FUNÇÕES DE DADOS (Adicionadas para usar Firebase)
-// =======================================================================
-
-/**
- * Carrega as configurações do cronômetro do usuário a partir do Firebase.
- */
-async function loadUserSettings() {
-    if (!currentUser) return;
-    const settingsRef = ref(db, `users/${currentUser.uid}/settings/pomodoro`);
+// Funções de Configurações (Firebase)
+window.applySettings = async () => {
+    const length = parseInt(pomodoroLengthInput.value) || 25;
+    pomodoroTime = length * 60;
+    resetPomodoro();
+    const user = auth.currentUser;
+    if (!user) return;
     try {
-        const snapshot = await get(settingsRef);
+        await set(ref(db, `users/${user.uid}/settings/pomodoro`), { duration: length });
+        alert("Configurações salvas!");
+    } catch (error) { console.error("Erro ao salvar configurações:", error); }
+};
+
+async function loadUserSettings(user) {
+    try {
+        const snapshot = await get(ref(db, `users/${user.uid}/settings/pomodoro`));
         if (snapshot.exists()) {
             const settings = snapshot.val();
             pomodoroTime = (settings.duration || 25) * 60;
             pomodoroLengthInput.value = settings.duration || 25;
-        } else {
-            // Se não houver configurações salvas, usa o padrão
-            pomodoroLengthInput.value = 25;
-            pomodoroTime = 25 * 60;
         }
-    } catch (error) {
-        console.error("Erro ao carregar configurações:", error);
-        pomodoroLengthInput.value = 25; // Usa o padrão em caso de erro
-        pomodoroTime = 25 * 60;
-    }
-    // Inicializa o display com o tempo correto
+    } catch (error) { console.error("Erro ao carregar configurações:", error); }
     resetPomodoro();
+    updateCustomDisplay();
 }
-
-/**
- * Salva a duração do Pomodoro no Firebase.
- */
-async function savePomodoroDuration(duration) {
-    if (!currentUser) return;
-    const settingsRef = ref(db, `users/${currentUser.uid}/settings/pomodoro`);
-    try {
-        await set(settingsRef, { duration: duration });
-        alert("Configurações salvas com sucesso!");
-    } catch (error) {
-        console.error("Erro ao salvar configurações:", error);
-        alert("Não foi possível salvar as configurações.");
-    }
-}
-
-// =======================================================================
-// 4. EVENT LISTENERS (Sua lógica original, com uma adaptação)
-// =======================================================================
-
-// Função de aplicar configurações adaptada para usar Firebase
-window.applySettings = function() {
-    const length = parseInt(pomodoroLengthInput.value) || 25;
-    pomodoroTime = length * 60;
-    resetPomodoro();
-    savePomodoroDuration(length); // Salva a configuração no Firebase
-}
-
-// Sua lógica de controle de abas, mantida intacta
-const tabPomodoro = document.getElementById("tab-pomodoro");
-const tabTimer = document.getElementById("tab-timer");
-const pomodoroTab = document.getElementById("pomodoro-tab");
-const timerTab = document.getElementById("timer-tab");
-const settings = document.getElementById("pomodoro-settings");
-
-tabPomodoro.addEventListener("click", () => {
-    pomodoroTab.classList.add("active");
-    timerTab.classList.remove("active");
-    tabPomodoro.classList.add("active");
-    tabTimer.classList.remove("active");
-    settings.classList.remove("hidden");
-});
-
-tabTimer.addEventListener("click", () => {
-    pomodoroTab.classList.remove("active");
-    timerTab.classList.add("active");
-    tabPomodoro.classList.remove("active");
-    tabTimer.classList.add("active");
-    settings.classList.add("hidden");
-});
-
-// Sua lógica de menu de perfil, mantida intacta
-const profileMenuContainer = document.getElementById('profile-menu-container');
-const profileMenuButton = document.getElementById('profile-menu-button');
-const profileDropdown = document.getElementById('profile-dropdown');
-
-if (profileMenuContainer && profileMenuButton && profileDropdown) {
-    profileMenuButton.addEventListener('click', function(event) {
-        event.stopPropagation();
-        profileDropdown.classList.toggle('show');
-    });
-    window.addEventListener('click', function(event) {
-        if (!profileMenuContainer.contains(event.target)) {
-            profileDropdown.classList.remove('show');
-        }
-    });
-}
-
-// =======================================================================
-// 5. INICIALIZAÇÃO (Modificada para usar Firebase)
-// =======================================================================
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        currentUser = user;
-        loadUserSettings(); // Carrega as configurações do usuário
-        updateCustomDisplay(); // Inicializa o temporizador customizado
-    } else {
-        window.location.href = 'Login.html';
-    }
-});

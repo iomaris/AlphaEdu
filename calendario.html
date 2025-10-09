@@ -7,55 +7,50 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="css/styleCalendario.css">
-  
-  <!-- 
-    CORREÇÃO DEFINITIVA:
-    1. O script principal agora é do tipo "module".
-    2. Ele é carregado no final do <body> para garantir que o HTML exista.
-  -->
 </head>
 <body>
 
-<!-- Sidebar (Permanece igual ) -->
+<!-- ===== NOVA SIDEBAR (IDÊNTICA À DO PAINEL ) ===== -->
 <div class="sidebar">
   <div class="sidebar-main-navigation">
-    <div class="sidebar-logo">
-      <img src="imagens/logo.png" alt="AlphaEdu Logo">
-      <span>AlphaEdu</span>
+    <div class="sidebar-header">
+      <button id="toggle-sidebar-btn"><i data-lucide="menu"></i></button>
     </div>
     <nav>
-      <a href="painel.html"><i data-lucide="layout-dashboard"></i> Painel</a>
-      <a href="cronometro.html"><i data-lucide="timer"></i> Cronômetro</a>
-      <a href="calendario.html" class="active"><i data-lucide="calendar"></i> Calendário</a>
-      <a href="bloco_de_notas.html"><i data-lucide="notebook-pen"></i> Bloco de Notas</a>
-      <a href="arquivos.html"><i data-lucide="folder-archive"></i> Meus Arquivos</a>
-      <a href="colecao.html"><i data-lucide="layers"></i> Flashcards</a>
+      <a href="painel.html"><i data-lucide="layout-dashboard"></i> <span>Painel</span></a>
+      <a href="cronometro.html"><i data-lucide="timer"></i> <span>Cronômetro</span></a>
+      <a href="calendario.html" class="active"><i data-lucide="calendar"></i> <span>Calendário</span></a>
+      <a href="bloco_de_notas.html"><i data-lucide="notebook-pen"></i> <span>Bloco de Notas</span></a>
+      <a href="arquivos.html"><i data-lucide="folder-archive"></i> <span>Meus Arquivos</span></a>
+      <a href="colecao.html"><i data-lucide="layers"></i> <span>Flashcards</span></a>
     </nav>
   </div>
   <div id="profile-menu-container" class="sidebar-bottom-menu">
-    <button id="profile-menu-button" class="bottom-menu-item profile-button">
-      <span class="profile-avatar">AT</span>
+    <button id="profile-menu-button" class="profile-button">
+      <span class="profile-avatar"></span>
+      <div class="profile-info">
+        <span class="username">Carregando...</span>
+        <span class="email"></span>
+      </div>
     </button>
     <div id="profile-dropdown" class="profile-dropdown-sidebar">
-      <div class="dropdown-header">
-        <span class="username">Aluno Teste</span>
-        <span class="email">aluno.teste@email.com</span>
-      </div>
+      <div class="dropdown-header"><span class="username"></span><span class="email"></span></div>
       <a href="perfil.html" class="dropdown-item"><i data-lucide="user-cog"></i><span>Editar Perfil</span></a>
       <a href="configuracao.html" class="dropdown-item"><i data-lucide="settings"></i><span>Configurações</span></a>
       <div class="dropdown-divider"></div>
+      <a href="#" id="leave-class-btn" class="dropdown-item" style="color: #f59e0b; display: none;"><i data-lucide="user-x"></i><span>Sair da Turma</span></a>
       <a href="inicial.html" class="dropdown-item logout"><i data-lucide="log-out"></i><span>Sair</span></a>
     </div>
   </div>
 </div>
 
-<!-- Conteúdo Principal (Permanece igual) -->
+<!-- Conteúdo Principal -->
 <div class="main">
-  <div class="banner">
-    <i data-lucide="calendar"></i>
-    <h3>Calendário Interativo</h3>
+  <header class="main-header">
+    <h1>Calendário Interativo</h1>
     <p>Visualize, crie e gerencie seus eventos acadêmicos e pessoais.</p>
-  </div>
+  </header>
+
   <div class="panel">
     <div class="calendar-wrapper">
       <div class="calendar">
@@ -72,7 +67,7 @@
     </div>
     <div class="events-wrapper">
       <div class="events">
-        <h3 id="events-title"></h3>
+        <h3 id="events-title">Eventos do dia</h3>
         <button class="add-event-btn" id="add-event-btn"><i data-lucide="plus"></i> Novo Evento</button>
         <div class="event-list" id="event-list"></div>
       </div>
@@ -80,7 +75,7 @@
   </div>
 </div>
 
-<!-- Modais (Permanecem iguais) -->
+<!-- Modais -->
 <div class="modal" id="event-modal">
   <div class="modal-content">
     <div class="modal-header"><h4>Novo Evento</h4><button class="close-btn" id="close-modal">&times;</button></div>
@@ -89,19 +84,18 @@
       <div class="form-group"><label for="event-date">Data</label><input type="date" id="event-date" required></div>
       <div class="form-group"><label for="event-type">Tipo</label><select id="event-type" required><option value="Tarefa">Tarefa</option><option value="Prova">Prova</option><option value="Reunião">Reunião</option><option value="Outro">Outro</option></select></div>
       <div class="form-group"><label for="event-desc">Descrição (Opcional)</label><textarea id="event-desc" placeholder="Digite uma descrição..."></textarea></div>
-      <div class="modal-actions"><button type="button" class="btn-cancel" id="cancel-btn">Cancelar</button><button type="submit" class="btn-save">Adicionar</button></div>
+      <div class="modal-actions"><button type="button" class="btn-cancel" id="cancel-btn">Cancelar</button><button type="submit" class="btn-save">Salvar</button></div>
     </form>
   </div>
 </div>
 <div id="confirm-delete-modal" class="modal">
   <div class="modal-content" style="max-width: 450px;">
     <div class="modal-header"><h4>Confirmar Exclusão</h4><button id="close-confirm-modal-btn" class="close-btn">&times;</button></div>
-    <div class="modal-body"><i data-lucide="alert-triangle" class="confirm-icon"></i><p id="confirm-modal-text">Você tem certeza?</p></div>
+    <div class="modal-body"><i data-lucide="alert-triangle" class="confirm-icon"></i><p id="confirm-modal-text">Tem certeza que deseja excluir este evento?</p></div>
     <div class="modal-actions"><button type="button" id="cancel-delete-btn" class="btn-secondary">Cancelar</button><button type="button" id="confirm-delete-btn" class="btn-danger">Sim, Excluir</button></div>
   </div>
 </div>
 
-<!-- O SCRIPT AGORA É CARREGADO AQUI, NO FINAL -->
 <script type="module" src="js/scriptCalendario.js"></script>
 
 </body>

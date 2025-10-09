@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>AlphaEdu - Painel do Professor</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #c7c7c7;
+      color: #333;
+    }
+
+
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+
+
+    .sidebar {
+      width: 250px;
+      background-color: #fafafa;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding-top: 20px;
+       height: 100vh;
+    }
+
+
+    .logo {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+
+    .menu {
+      width: 100%;
+    }
+
+
+    .menu-item {
+      text-decoration: none;
+      color: #333;
+      font-size: 15px;
+      padding: 15px 25px;
+      border-radius: 30px;
+      cursor: pointer;
+      user-select: none;
+      display: block;
+      width: 100%;
+      margin: 5px 0;
+    }
+
+
+    .menu-item:hover {
+      background-color: #ced4da;
+      transition: background-color 0.3s ease;
+    }
+
+
+    .menu-item:active {
+      background-color: #dee2e6; /* Cor de fundo quando o item é pressionado */
+    }
+
+
+
+
+    .main-content {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+    }
+
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
+
+
+    .card h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+
+    .button-group {
+      display: flex;
+      gap: 20px;
+    }
+    .turmas-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+
+.turma-card {
+  background-color: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  width: calc(25% - 20px);
+  min-width: 250px;
+}
+
+
+.turma-card h3 {
+  font-size: 18px;
+  color: #343a40;
+  margin-bottom: 10px;
+}
+
+
+.turma-card p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+
+.turma-nome {
+  color: #343a40;
+  font-weight: 600;
+}
+
+
+    .button {
+      background-color: #6c757d;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+
+    .calendar-area {
+      display: flex;
+      gap: 0px;
+    }
+
+
+    .calendar, .event-panel {
+      background: white;
+      padding: 200px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+
+    .calendar {
+      flex: 1;
+    }
+
+
+    .calendar-header {
+      display: none;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+
+    .calendar-header button {
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+
+    .calendar-days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+
+    .calendar-dates {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      gap: 5px;
+    }
+
+
+    .calendar-dates div {
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+
+    .calendar-dates div:hover {
+      background-color: #dcdcdc;
+    }
+
+
+    .selected {
+      background-color: #6c758d;
+      color: white;
+    }
+
+
+    .event-panel {
+      width: 300px;
+    }
+
+
+    .event-panel h4 {
+      margin-bottom: 10px;
+    }
+
+
+    .event-panel button {
+      background-color: #5a6168;
+      color: white;
+      padding: 0px 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-bottom: 15px;
+    }
+
+
+    .event-panel ul {
+      list-style: none;
+      padding-left: 10px;
+    }
+
+
+    .event-panel .empty {
+      text-align: center;
+      color: #888;
+      font-size: 14px;
+    }
+   
+    .evento {
+      display: flex;
+     justify-content: space-between;
+     align-items: center;
+     padding: 8px;
+     border-radius: 4px;
+     background-color: #f2f2f2;
+     margin-bottom: 5px;
+    }
+
+
+   .evento-titulo {
+     font-weight: 500;
+     flex: 1;
+    }
+
+
+   .evento-acoes button {
+     background: none;
+     border: none;
+     cursor: pointer;
+     font-size: 18px;
+     margin-left: 8px;
+    }
+
+
+    .hidden {
+      display: none;
+    }
+
+
+    .gerenciar-avisos-header {
+      background-color: white;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin-bottom: 25px;
+      text-align: center;
+      color: #333;
+    }
+
+
+    .gerenciar-avisos-header svg {
+      width: 40px;
+      height: 40px;
+      stroke: #343a40;
+      margin-bottom: 10px;
+    }
+
+
+    .gerenciar-avisos-header h2 {
+      font-weight: 700;
+      font-size: 28px;
+      margin-bottom: 5px;
+    }
+
+
+    .gerenciar-avisos-header p {
+      font-size: 14px;
+      color: #666;
+    }
+
+
+    .search-add-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+
+    .search-add-row input[type="search"] {
+      width: 70%;
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+
+    .search-add-row button {
+      background-color: #343a40;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+
+    .search-add-row button svg {
+      stroke: white;
+      width: 16px;
+      height: 16px;
+    }
+
+
+    .aviso-card {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
+      padding: 20px 25px;
+      margin-bottom: 15px;
+      position: relative;
+    }
+
+
+    .aviso-card h3 {
+      margin-bottom: 6px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+
+    .aviso-card .publicado-por {
+      font-size: 12px;
+      margin-bottom: 12px;
+      color: #555;
+    }
+
+
+    .aviso-card .publicado-por a {
+      color: #343a40;
+      text-decoration: none;
+    }
+
+
+    .aviso-card p {
+      font-size: 14px;
+      line-height: 1.4;
+      color: #333;
+    }
+
+
+    .btn-group-aviso {
+     position: absolute;
+     top: 80px;
+     right: 25px;
+     display: flex;
+     gap: 10px;
+    }
+
+
+
+
+    .btn-aviso {
+     border: none;
+     border-radius: 5px;
+     padding: 6px 10px;
+     cursor: pointer;
+     font-size: 14px;
+     transition: background-color 0.3s ease;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+    }
+
+
+
+
+    .btn-edit {
+      background-color: #f0f0f0;
+      color: #333;
+    }
+
+
+    .btn-edit:hover {
+      background-color: #ced4da;
+    }
+
+
+    .btn-delete {
+      background-color: #e02424;
+      color: white;
+    }
+
+
+    .btn-delete:hover {
+      background-color: #b71c1c;
+    }
+
+
+    .btn-aviso svg {
+      width: 16px;
+      height: 16px;
+      stroke-width: 2;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+  <div class="logo">📘 AlphaEdu</div>
+  <nav class="menu">
+    <div class="menu-item active" onclick="showPage('painel')">🏠 Painel</div>
+    <div class="menu-item" onclick="showPage('calendario')">📅 Calendário</div>
+    <div class="menu-item" onclick="showPage('avisos')">📢 Gerenciar Avisos</div>
+  </nav>
+  <div class="bottom-menu">
+    <div class="menu-item">⚙️ Configurações</div>
+    <div class="menu-item sair">🔴 Sair</div>
+  </div>
+</aside>
+
+
+
+
+    <main class="main-content">
+      <!-- Painel Principal -->
+      <section id="painel">
+        <div class="card">
+          <h2>Bem-vindo(a) ao AlphaEdu, Professor Teste!</h2>
+          <p>Gerencie avisos e acompanhe o calendário acadêmico.</p>
+        </div>
+         <!-- Lista de Turmas -->
+<div class="turmas-container">
+    <div class="turma-card">
+      <h3>📘 <span class="turma-nome">Turma 101A</span></h3>
+      <p><strong>Disciplina:</strong> Matemática Avançada</p>
+      <p>📅 Segundas e Quartas, 08:00 - 09:30</p>
+      <p><strong>Ano:</strong> 2024</p>
+      <div class="turma-acoes">
+        <button class="btn-editar-turma" title="Editar">✏️</button>
+        <button class="btn-excluir-turma" title="Excluir">🗑️</button>
+      </div>
+    </div>
+    <div class="turma-card">
+      <h3>📘 <span class="turma-nome">Turma 102A</span></h3>
+      <p><strong>Disciplina:</strong> Física Moderna</p>
+      <p>📅 Segundas e Quartas, 10:00 - 11:30</p>
+      <p><strong>Ano:</strong> 2024</p>
+      <div class="turma-acoes">
+        <button class="btn-editar-turma" title="Editar">✏️</button>
+        <button class="btn-excluir-turma" title="Excluir">🗑️</button>
+      </div>
+    </div>
+    <div class="turma-card">
+      <h3>📘 <span class="turma-nome">Turma 202B</span></h3>
+      <p><strong>Disciplina:</strong> História do Brasil</p>
+      <p>📅 Terças e Quintas, 10:00 - 11:30</p>
+      <p><strong>Ano:</strong> 2024</p>
+      <div class="turma-acoes">
+        <button class="btn-editar-turma" title="Editar">✏️</button>
+        <button class="btn-excluir-turma" title="Excluir">🗑️</button>
+      </div>
+    </div>
+    <div class="turma-card">
+      <h3>📘 <span class="turma-nome">Turma 301C</span></h3>
+      <p><strong>Disciplina:</strong> Literatura Clássica</p>
+      <p>📅 Sextas, 14:00 - 15:30</p>
+      <p><strong>Ano:</strong> 2024</p>
+      <div class="turma-acoes">
+        <button class="btn-editar-turma" title="Editar">✏️</button>
+        <button class="btn-excluir-turma" title="Excluir">🗑️</button>
+      </div>
+    </div>
+  </div>
+ 
+        <div class="button-group" style="display:none;">
+          <button class="button" onclick="showPage('calendario')">📅 Ver Calendário</button>
+          <button class="button" onclick="showPage('avisos')">📢 Gerenciar Avisos</button>
+        </div>
+      </section>
+
+
+      <!-- Calendário -->
+      <section id="calendario" class="hidden">
+        <div class="card" style="margin-bottom: 20px;">
+          <h2>📅 Calendário Interativo</h2>
+          <p>Visualize, crie e gerencie seus eventos acadêmicos e pessoais.</p>
+        </div>
+
+
+        <div class="calendar-area">
+          <div class="calendar">
+            <div class="calendar-header">
+              <button onclick="prevMonth()">&lt;</button>
+              <h3 id="monthYear"></h3>
+              <button onclick="nextMonth()">&gt;</button>
+            </div>
+            <div class="calendar-days">
+              <div>dom</div><div>seg</div><div>ter</div><div>qua</div><div>qui</div><div>sex</div><div>sab</div>
+            </div>
+            <div class="calendar-dates" id="calendarDates"></div>
+          </div>
+
+
+          <div class="event-panel">
+            <h4 id="eventTitle">Eventos para --/--/----</h4>
+            <button onclick="addEvent()">➕ Novo Evento</button>
+            <ul id="eventList">
+              <li class="empty">Nenhum evento para esta data.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- Gerenciar Avisos -->
+      <section id="avisos" class="hidden">
+        <div class="gerenciar-avisos-header">
+          <!-- Ícone megafone inline SVG -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 8a3 3 0 00-3-3v12a3 3 0 003-3h3l4 4V4l-4 4h-3z" />
+          </svg>
+          <h2>Gerenciar Avisos</h2>
+          <p>Crie, edite e visualize os avisos para os alunos.</p>
+        </div>
+
+
+        <div class="search-add-row">
+          <input type="search" id="searchAvisos" placeholder="Buscar avisos..." oninput="filterAvisos()" />
+          <button onclick="novoAviso()">
+            <!-- Ícone + -->
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Novo Aviso
+          </button>
+        </div>
+
+
+        <div id="avisosList">
+        </div>
+      </section>
+    </main>
+  </div>
+
+
+  <script>
+
+
+  document.addEventListener("click", function (e) {
+    if (e.target.classList.contains("btn-excluir-turma")) {
+      const card = e.target.closest(".turma-card");
+      if (confirm("Tem certeza que deseja excluir esta turma?")) {
+        card.remove();
+      }
+    }
+
+
+    if (e.target.classList.contains("btn-editar-turma")) {
+      const card = e.target.closest(".turma-card");
+      const nomeEl = card.querySelector(".turma-nome");
+      const disciplinaEl = card.querySelector("p:nth-of-type(1)");
+      const horarioEl = card.querySelector("p:nth-of-type(2)");
+      const anoEl = card.querySelector("p:nth-of-type(3)");
+
+
+      const novoNome = prompt("Editar nome da turma:", nomeEl.textContent);
+      const novaDisciplina = prompt("Editar disciplina:", disciplinaEl.textContent.replace("Disciplina: ", ""));
+      const novoHorario = prompt("Editar horário:", horarioEl.textContent.replace("📅 ", ""));
+      const novoAno = prompt("Editar ano:", anoEl.textContent.replace("Ano: ", ""));
+
+
+      if (novoNome) nomeEl.textContent = novoNome;
+      if (novaDisciplina) disciplinaEl.innerHTML = `<strong>Disciplina:</strong> ${novaDisciplina}`;
+      if (novoHorario) horarioEl.textContent = `📅 ${novoHorario}`;
+      if (novoAno) anoEl.innerHTML = `<strong>Ano:</strong> ${novoAno}`;
+    }
+  });
+
+
+
+
+    function showPage(page) {
+      document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('section').forEach(sec => sec.classList.add('hidden'));
+
+
+      document.getElementById(page).classList.remove('hidden');
+
+
+      const menuItems = document.querySelectorAll('.menu-item');
+      menuItems.forEach(item => {
+        if (item.textContent.toLowerCase().includes(page)) {
+          item.classList.add('active');
+        }
+      });
+
+
+      if (page === 'calendario') {
+        renderCalendar();
+        renderEvents();
+      }
+      if (page === 'avisos') {
+        renderAvisos();
+      }
+    }
+
+
+    const monthYear = document.getElementById('monthYear');
+    const calendarDates = document.getElementById('calendarDates');
+    const eventTitle = document.getElementById('eventTitle');
+    const eventList = document.getElementById('eventList');
+
+
+    const months = [
+      'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+      'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+    ];
+
+
+    let currentDate = new Date();
+    let selectedDate = new Date();
+    let events = {};
+
+
+    function renderCalendar() {
+      calendarDates.innerHTML = '';
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth();
+      monthYear.textContent = `${months[month]} ${year}`;
+
+
+      let firstDay = new Date(year, month, 1).getDay();
+      const lastDate = new Date(year, month + 1, 0).getDate();
+
+
+      for (let i = 0; i < firstDay; i++) {
+        calendarDates.innerHTML += '<div></div>';
+      }
+
+
+      for (let day = 1; day <= lastDate; day++) {
+        const date = new Date(year, month, day);
+        const div = document.createElement('div');
+        div.textContent = day;
+
+
+        if (date.toDateString() === selectedDate.toDateString()) {
+          div.classList.add('selected');
+        }
+
+
+        div.onclick = () => {
+          selectedDate = date;
+          renderCalendar();
+          renderEvents();
+        };
+
+
+        calendarDates.appendChild(div);
+      }
+    }
+
+
+    function prevMonth() {
+      currentDate.setMonth(currentDate.getMonth() - 1);
+      renderCalendar();
+    }
+
+
+    function nextMonth() {
+      currentDate.setMonth(currentDate.getMonth() + 1);
+      renderCalendar();
+    }
+
+
+    function renderEvents() {
+      const key = selectedDate.toISOString().split('T')[0];
+      const dateFormatted = key.split('-').reverse().join('/');
+      eventTitle.textContent = `Eventos para ${dateFormatted}`;
+      const dateEvents = events[key] || [];
+      eventList.innerHTML = '';
+
+
+      if (dateEvents.length === 0) {
+        eventList.innerHTML = `<li class="empty">Nenhum evento para esta data.</li>`;
+      } else {
+        dateEvents.forEach((e) => {
+          const li = document.createElement('li');
+          li.textContent = `• ${e}`;
+          eventList.appendChild(li);
+        });
+      }
+    }
+
+
+    function addEvent() {
+      const title = prompt("Digite o título do evento:");
+      if (!title) return;
+
+
+      const key = selectedDate.toISOString().split('T')[0];
+      if (!events[key]) events[key] = [];
+      events[key].push(title);
+
+
+      renderEvents();
+    }
+     
+  function addEvent() {
+    const eventText = prompt("Digite o título do evento:");
+    if (!eventText) return;
+
+
+    const eventList = document.getElementById("eventList");
+
+
+    // Remove o aviso "Nenhum evento"
+    const emptyItem = eventList.querySelector(".empty");
+    if (emptyItem) emptyItem.remove();
+
+
+    const li = document.createElement("li");
+    li.classList.add("evento");
+    li.innerHTML = `
+      <span class="evento-titulo">${eventText}</span>
+      <div class="evento-acoes">
+        <button class="btn-editar" title="Editar">✏️</button>
+        <button class="btn-excluir" title="Excluir">🗑️</button>
+      </div>
+    `;
+
+
+    eventList.appendChild(li);
+  }
+
+
+  // Evento global para editar e excluir
+  document.addEventListener("click", function (e) {
+    if (e.target.classList.contains("btn-excluir")) {
+      const li = e.target.closest("li");
+      li.remove();
+
+
+      // Se nenhum evento sobrar, mostrar texto vazio
+      const eventList = document.getElementById("eventList");
+      if (eventList.children.length === 0) {
+        eventList.innerHTML = '<li class="empty">Nenhum evento para esta data.</li>';
+      }
+    }
+
+
+    if (e.target.classList.contains("btn-editar")) {
+      const li = e.target.closest("li");
+      const titulo = li.querySelector(".evento-titulo");
+      const novoTexto = prompt("Editar título do evento:", titulo.textContent);
+      if (novoTexto) {
+        titulo.textContent = novoTexto;
+      }
+    }
+  });
+
+
+    let avisos = [
+      {
+        id: 1,
+        titulo: "Entrega de Trabalhos de Ciências",
+        autor: "Prof. Ana",
+        data: "2024-07-11T14:30",
+        texto: "O prazo final para entrega dos trabalhos de Ciências é dia 20/07. Não haverá prorrogação."
+      },
+      {
+        id: 2,
+        titulo: "Alteração de Horário da Aula de Português",
+        autor: "Prof. Silva",
+        data: "2024-07-10T09:00",
+        texto: "A aula de Português da próxima terça-feira (15/07) foi antecipada para as 08:00."
+      },
+      {
+        id: 3,
+        titulo: "Festa Junina da Escola",
+        autor: "Prof. Silva",
+        data: "2024-06-20T10:00",
+        texto: "Nossa tradicional Festa Junina será realizada no dia 29/06, a partir das 16h, no pátio da escola. Contamos com a presença de todos!"
+      }
+    ];
+
+
+    const avisosList = document.getElementById('avisosList');
+    const searchInput = document.getElementById('searchAvisos');
+
+
+    function renderAvisos() {
+      const filtro = searchInput.value.toLowerCase();
+      avisosList.innerHTML = '';
+
+
+      const filtrados = avisos.filter(aviso =>
+        aviso.titulo.toLowerCase().includes(filtro) ||
+        aviso.texto.toLowerCase().includes(filtro) ||
+        aviso.autor.toLowerCase().includes(filtro)
+      );
+
+
+      if (filtrados.length === 0) {
+        avisosList.innerHTML = '<p style="color: #666;">Nenhum aviso encontrado.</p>';
+        return;
+      }
+
+
+      filtrados.forEach(aviso => {
+        const card = document.createElement('div');
+        card.className = 'aviso-card';
+
+
+        const dataFormatada = new Date(aviso.data).toLocaleString('pt-BR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+
+
+        card.innerHTML = `
+          <h3>${aviso.titulo}</h3>
+          <div class="publicado-por">
+            Publicado por <a href="#">${aviso.autor}</a> em ${dataFormatada}
+          </div>
+          <p>${aviso.texto}</p>
+          <div class="btn-group-aviso">
+            <button class="btn-aviso btn-edit" onclick="editarAviso(${aviso.id})">✏️</button>
+            <button class="btn-aviso btn-delete" onclick="excluirAviso(${aviso.id})">🗑️</button>
+          </div>
+        `;
+
+
+        avisosList.appendChild(card);
+      });
+    }
+
+
+    function filterAvisos() {
+      renderAvisos();
+    }
+
+
+    function novoAviso() {
+      const titulo = prompt("Título do aviso:");
+      if (!titulo) return;
+      const texto = prompt("Texto do aviso:");
+      if (!texto) return;
+
+
+      const novoAviso = {
+        id: Date.now(),
+        titulo,
+        autor: "Professor Teste",
+        data: new Date().toISOString(),
+        texto
+      };
+
+
+      avisos.unshift(novoAviso);
+      renderAvisos();
+    }
+
+
+    function editarAviso(id) {
+      const aviso = avisos.find(a => a.id === id);
+      if (!aviso) return;
+
+
+      const novoTitulo = prompt("Editar título:", aviso.titulo);
+      if (novoTitulo === null) return;
+      const novoTexto = prompt("Editar texto:", aviso.texto);
+      if (novoTexto === null) return;
+
+
+      aviso.titulo = novoTitulo.trim() || aviso.titulo;
+      aviso.texto = novoTexto.trim() || aviso.texto;
+      renderAvisos();
+    }
+
+
+    function excluirAviso(id) {
+      if (confirm("Deseja realmente excluir este aviso?")) {
+        avisos = avisos.filter(a => a.id !== id);
+        renderAvisos();
+      }
+    }
+
+
+    renderCalendar();
+    renderEvents();
+  </script>
+</body>
+</html>

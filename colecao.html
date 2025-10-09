@@ -10,38 +10,35 @@
 </head>
 <body>
 
-<!-- Sidebar Padrão -->
+<!-- ===== NOVA SIDEBAR (PADRÃO DO PROJETO ) ===== -->
 <div class="sidebar">
-
-     
-    <div class="sidebar-main-navigation">
-      
-  <div class="sidebar-logo">
-    <img src="imagens/logo.png" alt="AlphaEdu Logo">
-  
-    <span>AlphaEdu</span>
-  </div>
+  <div class="sidebar-main-navigation">
+    <div class="sidebar-header">
+      <button id="toggle-sidebar-btn"><i data-lucide="menu"></i></button>
+    </div>
     <nav>
-      <a href="painel.html"><i data-lucide="layout-dashboard"></i> Painel</a>
-      <a href="cronometro.html"><i data-lucide="timer"></i> Cronômetro</a>
-      <a href="calendario.html"><i data-lucide="calendar"></i> Calendário</a>
-      <a href="bloco_de_notas.html"><i data-lucide="notebook-pen"></i> Bloco de Notas</a>
-      <a href="arquivos.html"><i data-lucide="folder-archive"></i> Meus Arquivos</a>
-      <a href="colecao.html" class="active"><i data-lucide="layers"></i> Flashcards</a>
+      <a href="painel.html"><i data-lucide="layout-dashboard"></i> <span>Painel</span></a>
+      <a href="cronometro.html"><i data-lucide="timer"></i> <span>Cronômetro</span></a>
+      <a href="calendario.html"><i data-lucide="calendar"></i> <span>Calendário</span></a>
+      <a href="bloco_de_notas.html"><i data-lucide="notebook-pen"></i> <span>Bloco de Notas</span></a>
+      <a href="arquivos.html"><i data-lucide="folder-archive"></i> <span>Meus Arquivos</span></a>
+      <a href="colecao.html" class="active"><i data-lucide="layers"></i> <span>Flashcards</span></a>
     </nav>
   </div>
   <div id="profile-menu-container" class="sidebar-bottom-menu">
-    <button id="profile-menu-button" class="bottom-menu-item profile-button">
-      <span class="profile-avatar">AT</span>
+    <button id="profile-menu-button" class="profile-button">
+      <span class="profile-avatar"></span>
+      <div class="profile-info">
+        <span class="username">Carregando...</span>
+        <span class="email"></span>
+      </div>
     </button>
     <div id="profile-dropdown" class="profile-dropdown-sidebar">
-      <div class="dropdown-header">
-        <span class="username">Aluno Teste</span>
-        <span class="email">aluno.teste@email.com</span>
-      </div>
+      <div class="dropdown-header"><span class="username"></span><span class="email"></span></div>
       <a href="perfil.html" class="dropdown-item"><i data-lucide="user-cog"></i><span>Editar Perfil</span></a>
       <a href="configuracao.html" class="dropdown-item"><i data-lucide="settings"></i><span>Configurações</span></a>
       <div class="dropdown-divider"></div>
+      <a href="#" id="leave-class-btn" class="dropdown-item" style="color: #f59e0b; display: none;"><i data-lucide="user-x"></i><span>Sair da Turma</span></a>
       <a href="inicial.html" class="dropdown-item logout"><i data-lucide="log-out"></i><span>Sair</span></a>
     </div>
   </div>
@@ -49,11 +46,10 @@
 
 <!-- Conteúdo Principal -->
 <div class="main">
-    <div class="banner">
-        <i data-lucide="layers"></i>
-        <h3>Minhas Coleções de Flashcards</h3>
+    <header class="main-header">
+        <h1>Minhas Coleções de Flashcards</h1>
         <p>Crie, gerencie e estude suas coleções de flashcards.</p>
-    </div>
+    </header>
 
     <div class="panel">
         <div class="toolbar">
@@ -82,7 +78,7 @@
                 <input type="text" id="collection-name" placeholder="Ex: Biologia Celular" required>
             </div>
             <div class="form-group">
-                <label for="collection-description">Descrição (Opcional  )</label>
+                <label for="collection-description">Descrição (Opcional)</label>
                 <textarea id="collection-description" rows="3" placeholder="Ex: Capítulos 1 a 3 do livro"></textarea>
             </div>
             <div class="modal-actions">
@@ -111,11 +107,7 @@
     </div>
 </div>
 
-
 <script type="module" src="js/scriptColecao.js"></script>
-
-
-
 
 </body>
 </html>

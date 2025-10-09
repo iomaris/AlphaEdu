@@ -6,42 +6,39 @@
   <title>AlphaEdu - Editar Perfil</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="stylesheet" href="css/stylePerfil.css"> 
+  <link rel="stylesheet" href="css/stylePerfil.css">
 </head>
 <body>
 
-<!-- Sidebar Padrão -->
+<!-- ===== NOVA SIDEBAR (PADRÃO DO PROJETO ) ===== -->
 <div class="sidebar">
-
-     
   <div class="sidebar-main-navigation">
-    
-<div class="sidebar-logo">
-  <img src="imagens/logo.png" alt="AlphaEdu Logo">
-
-  <span>AlphaEdu</span>
-</div>
+    <div class="sidebar-header">
+      <button id="toggle-sidebar-btn"><i data-lucide="menu"></i></button>
+    </div>
     <nav>
-      <a href="painel.html"><i data-lucide="layout-dashboard"></i> Painel</a>
-      <a href="cronometro.html"><i data-lucide="timer"></i> Cronômetro</a>
-      <a href="calendario.html"><i data-lucide="calendar"></i> Calendário</a>
-      <a href="bloco_de_notas.html"><i data-lucide="notebook-pen"></i> Bloco de Notas</a>
-      <a href="arquivos.html" class="active"><i data-lucide="folder-archive"></i> Meus Arquivos</a>
-      <a href="colecao.html"><i data-lucide="layers"></i> Flashcards</a>
+      <a href="painel.html"><i data-lucide="layout-dashboard"></i> <span>Painel</span></a>
+      <a href="cronometro.html"><i data-lucide="timer"></i> <span>Cronômetro</span></a>
+      <a href="calendario.html"><i data-lucide="calendar"></i> <span>Calendário</span></a>
+      <a href="bloco_de_notas.html"><i data-lucide="notebook-pen"></i> <span>Bloco de Notas</span></a>
+      <a href="arquivos.html"><i data-lucide="folder-archive"></i> <span>Meus Arquivos</span></a>
+      <a href="colecao.html"><i data-lucide="layers"></i> <span>Flashcards</span></a>
     </nav>
   </div>
   <div id="profile-menu-container" class="sidebar-bottom-menu">
-    <button id="profile-menu-button" class="bottom-menu-item profile-button">
-      <span class="profile-avatar">AT</span>
+    <button id="profile-menu-button" class="profile-button">
+      <span class="profile-avatar"></span>
+      <div class="profile-info">
+        <span class="username">Carregando...</span>
+        <span class="email"></span>
+      </div>
     </button>
     <div id="profile-dropdown" class="profile-dropdown-sidebar">
-      <div class="dropdown-header">
-        <span class="username">Aluno Teste</span>
-        <span class="email">aluno.teste@email.com</span>
-      </div>
-      <a href="perfil.html" class="dropdown-item"><i data-lucide="user-cog"></i><span>Editar Perfil</span></a>
+      <div class="dropdown-header"><span class="username"></span><span class="email"></span></div>
+      <a href="perfil.html" class="dropdown-item active"><i data-lucide="user-cog"></i><span>Editar Perfil</span></a>
       <a href="configuracao.html" class="dropdown-item"><i data-lucide="settings"></i><span>Configurações</span></a>
       <div class="dropdown-divider"></div>
+      <a href="#" id="leave-class-btn" class="dropdown-item" style="color: #f59e0b; display: none;"><i data-lucide="user-x"></i><span>Sair da Turma</span></a>
       <a href="inicial.html" class="dropdown-item logout"><i data-lucide="log-out"></i><span>Sair</span></a>
     </div>
   </div>
@@ -50,18 +47,19 @@
 <!-- Conteúdo Principal -->
 <div class="main">
   <header class="main-header">
-    <h1></h1>
+    <h1>Editar Perfil</h1>
+    <p>Mantenha seus dados pessoais e de acesso atualizados.</p>
   </header>
 
   <div class="panel">
     <form id="profile-form">
       <div class="form-group">
         <label for="profile-name">Nome Completo</label>
-        <input type="text" id="profile-name" value="Aluno Teste">
+        <input type="text" id="profile-name" placeholder="Carregando..." required>
       </div>
       <div class="form-group">
         <label for="profile-email">Endereço de E-mail</label>
-        <input type="email" id="profile-email" value="aluno.teste@email.com" disabled>
+        <input type="email" id="profile-email" placeholder="Carregando..." disabled>
         <small>O e-mail não pode ser alterado.</small>
       </div>
       <div class="form-group">
@@ -76,6 +74,6 @@
 </div>
 
 <script type="module" src="js/scriptPerfil.js"></script>
- 
+
 </body>
 </html>

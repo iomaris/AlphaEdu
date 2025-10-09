@@ -1,591 +1,622 @@
-/* ================================================== */
-/* ===== ARQUIVO CSS COMPLETO: styleCalendario.css ===== */
-/* ================================================== */
 
-/* --- 1. PALETA DE CORES FUTURISTA (IDÊNTICA À DO PAINEL) --- */
 :root {
-    --bg-dark: #0a0f1e;
-    --bg-panel: #121a2f;
-    --primary-blue: #2563eb;
-    --blue-light: #3b82f6;
-    --blue-glow: #60a5fa;
-    --text-light: #e2e8f0;
-    --text-muted: #94a3b8;
-    --white: #ffffff;
-    --accent: #38bdf8;
-    --danger: #ef4444;
-    --danger-hover: #f87171;
-    /* Nova variável para a borda dos painéis */
-    --panel-border: rgba(59, 130, 246, 0.2);
-  }
-  
-  /* --- RESET GLOBAL --- */
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Inter', sans-serif;
-  }
-  
-  body {
-    display: flex;
-    height: 100vh;
-    /* FUNDO ESCURO */
-    background: radial-gradient(circle at top left, #0f172a, var(--bg-dark) 70%);
-    color: var(--text-light);
-    overflow: hidden;
-  }
-  
-  /* --- 2. SIDEBAR (DESIGN IDÊNTICO AO DO PAINEL) --- */
-/* --- 2. SIDEBAR --- */
+  --bg-dark: #0a0f1e;
+  --bg-panel: #121a2f;
+  --primary-blue: #2563eb;
+  --blue-light: #3b82f6;
+  --blue-glow: #60a5fa;
+  --text-light: #e2e8f0;
+  --text-muted: #94a3b8;
+  --white: #ffffff;
+  --accent: #38bdf8;
+  --danger: #ef4444;
+  --danger-hover: #f87171;
+  --panel-border: rgba(59, 130, 246, 0.2);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  display: flex;
+  height: 100vh;
+  background: radial-gradient(circle at top left, #0f172a, var(--bg-dark) 70%);
+  color: var(--text-light);
+  overflow: hidden;
+}
+
+i[data-lucide] {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* --- 2. SIDEBAR (ESTILOS DO PAINEL) --- */
 .sidebar {
-    width: 240px;
-    background: linear-gradient(180deg, #111827, #0f172a);
-    /* ✅ ALTERAÇÃO 1: Ajuste no padding geral da sidebar */
-    padding: 20px 15px; /* Aumenta o espaço nas laterais para alinhar melhor */
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    position: fixed;
-    height: 100%;
-    border-right: 1px solid rgba(59, 130, 246, 0.2);
-    z-index: 100;
-  }
-  
-  /* ✅ ALTERAÇÃO 2: Bloco da logo completamente refeito */
-  .sidebar-logo {
-    display: flex;
-    align-items: center;
-    gap: 12px; /* Aumenta um pouco o espaço entre logo e texto */
-    margin-bottom: 25px;
-    /* Remove o padding interno para que ele se alinhe com a sidebar */
-    padding: 0; 
-  }
-  
-  .sidebar-logo img {
-    height: 45px; /* Reduz um pouco a altura para caber melhor */
-    width: auto;
-    /* Impede que a imagem encolha se o espaço for pequeno */
-    flex-shrink: 0; 
-  }
-  
-  .sidebar-logo span {
-    font-size: 22px;
-    font-weight: 700;
-    color: #ffffff;
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
-  }
-  
-  
-  .sidebar nav a {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  
-    padding: 12px 10px; 
-    border-radius: 8px;
-    text-decoration: none;
-    color: var(--text-light);
-    margin-bottom: 8px;
-    transition: all 0.3s ease;
-    font-weight: 500;
-  }
-  
-  .sidebar nav a:hover {
-    background: rgba(59, 130, 246, 0.15);
-    color: var(--blue-light);
-    box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
-  }
-  
-  .sidebar nav a.active {
-    background: var(--primary-blue);
-    color: var(--white);
-    font-weight: 700;
-    box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
-  }
-  
-  .sidebar-bottom-menu {
-    position: relative;
-    padding-top: 12px;
-    border-top: 1px solid var(--panel-border);
-  }
-  
-  .profile-button {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    padding: 8px;
-    border-radius: 8px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--white);
-  }
-  
-  .profile-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: var(--blue-light);
-    color: var(--bg-dark);
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .profile-dropdown-sidebar {
-    position: absolute; bottom: 70px; left: 10px; width: 220px; background: #1e293b; border-radius: 12px; border: 1px solid rgba(59, 130, 246, 0.3); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); padding: 8px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: opacity 0.3s, transform 0.3s; z-index: 110;
-  }
-  .profile-dropdown-sidebar.show { opacity: 1; visibility: visible; transform: translateY(0); }
-  .dropdown-header { padding: 12px; border-bottom: 1px solid var(--panel-border); margin-bottom: 8px; }
-  .dropdown-header .username { display: block; font-weight: 600; color: var(--text-light); }
-  .dropdown-header .email { display: block; font-size: 12px; color: var(--text-muted); }
-  .dropdown-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 6px; text-decoration: none; color: var(--text-light); font-size: 14px; transition: background 0.2s; }
-  .dropdown-item:hover { background: rgba(59, 130, 246, 0.15); color: var(--blue-light); }
-  .dropdown-item.logout { color: var(--danger); }
-  .dropdown-item.logout:hover { background: rgba(245, 158, 11, 0.15); }
-  .dropdown-divider { height: 1px; background: var(--panel-border); margin: 8px 0; }
-  
-  /* --- 3. CONTEÚDO PRINCIPAL (MANTENDO SEU LAYOUT) --- */
-  .main {
-      margin-left: 240px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      padding: 30px;
-      gap: 30px;
-      height: 100vh;
-      overflow-y: auto;
-  }
-  
-  .banner {
-      text-align: center;
-      background: var(--bg-panel);
-      padding: 40px 20px;
-      border-radius: 16px;
-      border: 1px solid var(--panel-border);
-      box-shadow: 0 0 15px rgba(37, 99, 235, 0.15);
-  }
-  
-  .banner i {
-      width: 40px;
-      height: 40px;
-      color: var(--accent);
-      margin-bottom: 10px;
-      text-shadow: 0 0 10px var(--accent);
-  }
-  
-  .banner h3 {
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--blue-glow);
-      margin-bottom: 5px;
-      text-shadow: 0 0 12px rgba(59, 130, 246, 0.7);
-  }
-  
-  .banner p {
-      color: var(--text-muted);
-      font-size: 14px;
-  }
-  
-  /* SEU LAYOUT ORIGINAL MANTIDO */
-  .panel {
-      display: flex;
-      gap: 22px;
-      flex: 1;
-      max-width: 1100px;
-      margin: 0 auto;
-      overflow: hidden;
-  }
-  
-  .calendar, .events {
-      background: var(--bg-panel);
-      border-radius: 16px;
-      border: 1px solid var(--panel-border);
-      box-shadow: 0 0 15px rgba(37, 99, 235, 0.15);
-      padding: 20px;
-  }
-  
-  .calendar {
-      flex: 2;
-      min-width: 500px;
-  }
-  
-  .events {
-      flex: 1;
-      min-width: 320px;
-      display: flex;
-      flex-direction: column;
-      align-self: stretch;
-  }
-  
-  .calendar-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-  }
-  
-  .calendar-header button {
-      background: transparent;
-      border: 1px solid var(--panel-border);
-      padding: 8px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      color: var(--blue-glow);
-      transition: all 0.2s;
-  }
-  
-  .calendar-header button:hover {
-      background: rgba(59, 130, 246, 0.2);
-      border-color: var(--blue-light);
-  }
-  
-  .month-year {
-      font-size: 18px;
-      font-weight: 600;
-      text-transform: capitalize;
-      color: var(--text-light);
-  }
-  
-  .weekdays {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 8px;
-      margin-bottom: 12px;
-  }
-  
-  .weekdays div {
-      text-align: center;
-      font-weight: 600;
-      color: var(--blue-light);
-      font-size: 12px;
-      padding: 8px 0;
-  }
-  
-  .days {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 10px;
-  }
-  
-  .day {
-      position: relative;
-      height: 55px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-size: 14px;
-  }
-  
-  .day:hover {
-      background: rgba(59, 130, 246, 0.1);
-  }
-  
-  .day.today {
-      border: 1px solid var(--blue-light);
-      font-weight: 700;
-      color: var(--blue-light);
-  }
-  
-  .day.selected {
-      background: var(--primary-blue);
-      color: var(--white);
-      font-weight: 700;
-      box-shadow: 0 0 10px var(--primary-blue);
-  }
-  
-  .day.other-month {
-      color: var(--text-muted);
-      opacity: 0.5;
-  }
-  
-  .event-dot {
-      position: absolute;
-      bottom: 8px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 6px;
-      height: 6px;
-      background: var(--accent);
-      border-radius: 50%;
-  }
-  
-  .day.selected .event-dot {
-      background: var(--white);
-  }
-  
-  .events h3 {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 16px;
-      color: var(--blue-light);
-  }
-  
-  .add-event-btn {
-      background: var(--primary-blue);
-      color: var(--white);
-      border: none;
-      padding: 12px 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: all 0.3s;
-  }
-  
-  .add-event-btn:hover {
-      background: var(--blue-light);
-      box-shadow: 0 0 12px var(--blue-light);
-  }
-  
-  .event-list {
-      flex: 1;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      color: var(--text-muted);
-      font-size: 14px;
-      min-height: 150px;
-      padding-right: 8px;
-  }
-  
-  .event-card {
-      background: #1e293b;
-      border: 1px solid var(--panel-border);
-      border-radius: 10px;
-      padding: 12px 14px;
-      margin-bottom: 12px;
-      text-align: left;
-      width: 100%;
-  }
-  
-  .event-title {
-    color: var(--text-light);
-    font-weight: 500;
-    /* CORREÇÃO DEFINITIVA: Permite que palavras longas quebrem em qualquer ponto */
-    word-break: break-all;
+  width: 260px;
+  background: linear-gradient(180deg, #111827, #0f172a);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  border-right: 1px solid var(--panel-border);
+  z-index: 100;
+  transition: width 0.3s ease-in-out, padding 0.3s ease-in-out;
+  flex-shrink: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 45px;
+  margin-bottom: 25px;
+}
+
+#toggle-sidebar-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  display: flex;
+  transition: all 0.2s;
+}
+
+#toggle-sidebar-btn:hover {
+  color: var(--text-light);
+  background: rgba(59, 130, 246, 0.15);
+}
+
+.sidebar nav a {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.sidebar nav a:hover {
+  background: var(--bg-panel);
+  color: var(--text-light);
+}
+
+.sidebar nav a.active {
+  background: var(--primary-blue);
+  color: var(--white);
+  font-weight: 600;
+  box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+}
+
+/* --- 3. ESTADO DA SIDEBAR FECHADA --- */
+.sidebar.hidden {
+  width: 88px;
+  padding: 20px 15px;
+}
+
+.sidebar.hidden .sidebar-header {
+  justify-content: center;
+}
+
+.sidebar.hidden nav a span,
+.sidebar.hidden .profile-info {
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+  margin-left: -15px;
+}
+
+.sidebar.hidden nav a {
+  justify-content: center;
+  padding: 14px;
+}
+
+.sidebar.hidden .profile-button {
+  justify-content: center;
+}
+
+/* --- 4. MENU DE PERFIL --- */
+.sidebar-bottom-menu {
+  border-top: 1px solid var(--panel-border);
+  padding-top: 15px;
+}
+
+.profile-button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--white);
+  transition: background 0.3s;
+  overflow: hidden;
+}
+
+.profile-button:hover {
+  background: var(--bg-panel);
+}
+
+.profile-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--blue-light);
+  color: var(--bg-dark);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.profile-info .username {
+  font-weight: 600;
+  color: var(--text-light);
+  font-size: 15px;
+}
+
+.profile-info .email {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.profile-dropdown-sidebar {
+  position: absolute;
+  bottom: 80px;
+  left: 15px;
+  width: 230px;
+  background: #1e293b;
+  border-radius: 12px;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  padding: 8px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: opacity 0.3s, transform 0.3s;
+  z-index: 110;
+}
+
+.profile-dropdown-sidebar.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-header { padding: 12px; border-bottom: 1px solid var(--panel-border); margin-bottom: 8px; }
+.dropdown-header .username { display: block; font-weight: 600; color: var(--text-light); }
+.dropdown-header .email { display: block; font-size: 12px; color: var(--text-muted); }
+.dropdown-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 6px; text-decoration: none; color: var(--text-light); font-size: 14px; transition: background 0.2s; }
+.dropdown-item:hover { background: rgba(59, 130, 246, 0.15); color: var(--blue-light); }
+.dropdown-item.logout, .dropdown-item[style*="color: #f59e0b"] { color: var(--danger); }
+.dropdown-item.logout:hover, .dropdown-item[style*="color: #f59e0b"]:hover { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+.dropdown-divider { height: 1px; background: var(--panel-border); margin: 8px 0; }
+
+/* --- 5. CONTEÚDO PRINCIPAL (MAIN) --- */
+.main {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  gap: 30px;
+  height: 100vh;
+  overflow-y: auto;
+  transition: padding-left 0.3s ease-in-out;
+  padding-left: 290px; /* (260px da sidebar + 30px de espaçamento) */
+  align-items: center;
+}
+
+.main-header {
+  width: 100%;
+  max-width: 1100px;
+  text-align: left;
+}
+
+.main-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--blue-glow);
+  text-shadow: 0 0 12px rgba(59, 130, 246, 0.7);
+}
+
+.main-header p {
+  font-size: 16px;
+  color: var(--text-muted);
+}
+
+/* --- 6. ESTILOS ESPECÍFICOS DO CALENDÁRIO --- */
+.panel {
+  display: flex;
+  gap: 22px;
+  flex: 1;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.calendar-wrapper, .events-wrapper {
+  background: var(--bg-panel);
+  border-radius: 16px;
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 0 15px rgba(37, 99, 235, 0.15);
+  padding: 20px;
+}
+
+.calendar-wrapper {
+  flex: 2;
+  min-width: 500px;
+}
+
+.events-wrapper {
+  flex: 1;
+  min-width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.calendar-header button {
+  background: transparent;
+  border: 1px solid var(--panel-border);
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--blue-glow);
+  transition: all 0.2s;
+}
+
+.calendar-header button:hover {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: var(--blue-light);
+}
+
+.month-year {
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: capitalize;
+  color: var(--text-light);
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.weekdays div {
+  text-align: center;
+  font-weight: 600;
+  color: var(--blue-light);
+  font-size: 12px;
+  padding: 8px 0;
+}
+
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+}
+
+.day {
+  position: relative;
+  height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+}
+
+.day:hover {
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.day.today {
+  border: 1px solid var(--blue-light);
+  font-weight: 700;
+  color: var(--blue-light);
+}
+
+.day.selected {
+  background: var(--primary-blue);
+  color: var(--white);
+  font-weight: 700;
+  box-shadow: 0 0 10px var(--primary-blue);
+}
+
+.day.other-month {
+  color: var(--text-muted);
+  opacity: 0.5;
+}
+
+.event-dot {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+}
+
+.day.selected .event-dot {
+  background: var(--white);
+}
+
+.events h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--blue-light);
+}
+
+.add-event-btn {
+  background: var(--primary-blue);
+  color: var(--white);
+  border: none;
+  padding: 12px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s;
+}
+
+.add-event-btn:hover {
+  background: var(--blue-light);
+  box-shadow: 0 0 12px var(--blue-light);
+}
+
+.event-list {
+  flex: 1;
+  overflow-y: auto;
+  color: var(--text-muted);
+  font-size: 14px;
+  min-height: 150px;
+  padding-right: 8px;
+}
+
+.event-card {
+  background: #1e293b;
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  text-align: left;
+  width: 100%;
+}
+
+.event-title {
+  color: var(--text-light);
+  font-weight: 500;
+  word-break: break-all;
 }
 
 .event-desc {
-    color: var(--text-muted); /* Adicionando uma cor para consistência */
-    font-size: 13px;
-    line-height: 1.5;
-    /* CORREÇÃO DEFINITIVA: Permite que palavras longas quebrem em qualquer ponto */
-    word-break: break-all;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.5;
+  word-break: break-all;
 }
 
-
-  
-  .event-type {
-      display: inline-block;
-      font-size: 12px;
-      background: var(--bg-dark);
-      color: var(--text-muted);
-      padding: 2px 8px;
-      border-radius: 6px;
-      margin-bottom: 6px;
-  }
-  
-  .event-card-footer {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      gap: 8px;
-      margin-top: 12px;
-      padding-top: 8px;
-      border-top: 1px solid var(--panel-border);
-  }
-  
-  .event-action-btn {
-      background: none;
-      border: none;
-      padding: 4px;
-      cursor: pointer;
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      transition: all 0.2s;
-  }
-  
-  .event-action-btn:hover {
-      background-color: rgba(59, 130, 246, 0.2);
-      color: var(--blue-light);
-  }
-  
-  .event-action-btn.delete:hover {
-      color: var(--danger-hover);
-      background-color: rgba(239, 68, 68, 0.2);
-  }
-  
-  .event-action-btn i {
-      width: 16px;
-      height: 16px;
-  }
-  
-  /* --- Modal --- */
-  .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      inset: 0;
-      background-color: rgba(10, 15, 30, 0.8);
-      backdrop-filter: blur(5px);
-      align-items: center;
-      justify-content: center;
-  }
-  
-  .modal.show {
-      display: flex;
-  }
-  
-  .modal-content {
-      background: var(--bg-panel);
-      border-radius: 12px;
-      padding: 24px;
-      width: 400px;
-      max-width: 90%;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-      position: relative;
-      border: 1px solid var(--panel-border);
-  }
-  
-  .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--panel-border);
-  }
-  
-  .modal-header h4 {
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--blue-light);
-  }
-  
-  .close-btn {
-      background: none;
-      border: none;
-      font-size: 20px;
-      color: var(--text-muted);
-      cursor: pointer;
-      padding: 4px;
-  }
-  
-  .form-group {
-      margin-bottom: 16px;
-  }
-  
-  .form-group label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: 500;
-      font-size: 14px;
-      color: var(--text-light);
-  }
-  
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid var(--panel-border);
-      border-radius: 6px;
-      font-size: 14px;
-      background: #1e293b;
-      color: var(--text-light);
-      transition: all 0.3s;
-  }
-  
-  .form-group input:focus,
-  .form-group select:focus,
-  .form-group textarea:focus {
-      outline: none;
-      border-color: var(--blue-light);
-      box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
-  }
-  
-  .modal-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 12px;
-      margin-top: 20px;
-  }
-  
-  .btn-cancel {
-      background: transparent;
-      color: var(--text-muted);
-      border: 1px solid var(--panel-border);
-      padding: 10px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: all 0.3s;
-  }
-  .btn-cancel:hover {
-      background: #1e293b;
-      color: var(--text-light);
-  }
-  
-  .btn-save {
-      background: var(--primary-blue);
-      color: var(--white);
-      border: none;
-      padding: 10px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 500;
-      transition: all 0.3s;
-  }
-  .btn-save:hover {
-      background: var(--blue-light);
-      box-shadow: 0 0 12px var(--blue-light);
-  }
-  /* Estilização da barra de rolagem para Webkit (Chrome, Safari, Edge) */
-.event-title::-webkit-scrollbar,
-.event-desc::-webkit-scrollbar {
-    height: 6px; /* Altura da barra de rolagem horizontal */
+.event-type {
+  display: inline-block;
+  font-size: 12px;
+  background: var(--bg-dark);
+  color: var(--text-muted);
+  padding: 2px 8px;
+  border-radius: 6px;
+  margin-bottom: 6px;
 }
 
-.event-title::-webkit-scrollbar-track,
-.event-desc::-webkit-scrollbar-track {
-    background: transparent; /* Fundo da trilha invisível */
+.event-card-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--panel-border);
 }
 
-.event-title::-webkit-scrollbar-thumb,
-.event-desc::-webkit-scrollbar-thumb {
-    background-color: var(--primary-blue); /* Cor da barra */
-    border-radius: 3px;
+.event-action-btn {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
 }
 
-.event-title::-webkit-scrollbar-thumb:hover,
-.event-desc::-webkit-scrollbar-thumb:hover {
-    background-color: var(--blue-light); /* Cor da barra ao passar o mouse */
+.event-action-btn:hover {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: var(--blue-light);
 }
-/* ================================================== */
-/* ===== CÓDIGO PARA ADICIONAR AO FINAL DO CSS ===== */
-/* ================================================== */
 
-/* --- ESTILOS PARA O MODAL DE CONFIRMAÇÃO --- */
+.event-action-btn.delete:hover {
+  color: var(--danger-hover);
+  background-color: rgba(239, 68, 68, 0.2);
+}
+
+.event-action-btn i {
+  width: 16px;
+  height: 16px;
+}
+
+/* --- 7. ESTILOS DOS MODAIS --- */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  background-color: rgba(10, 15, 30, 0.8);
+  backdrop-filter: blur(5px);
+  align-items: center;
+  justify-content: center;
+}
+
+.modal.show {
+  display: flex;
+}
+
+.modal-content {
+  background: var(--bg-panel);
+  border-radius: 12px;
+  padding: 24px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  position: relative;
+  border: 1px solid var(--panel-border);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.modal-header h4 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--blue-light);
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--text-light);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  font-size: 14px;
+  background: #1e293b;
+  color: var(--text-light);
+  transition: all 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--blue-light);
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.btn-cancel, .btn-secondary {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--panel-border);
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+.btn-cancel:hover, .btn-secondary:hover {
+  background: #1e293b;
+  color: var(--text-light);
+}
+
+.btn-save {
+  background: var(--primary-blue);
+  color: var(--white);
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+.btn-save:hover {
+  background: var(--blue-light);
+  box-shadow: 0 0 12px var(--blue-light);
+}
+
 .modal-body {
-    padding: 10px 0;
+  padding: 10px 0;
 }
 
 .confirm-icon {
@@ -603,21 +634,6 @@
   text-align: center;
 }
 
-.btn-secondary {
-  padding: 10px 20px;
-  background: transparent;
-  color: var(--text-muted);
-  border: 1px solid var(--panel-border);
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.3s;
-}
-.btn-secondary:hover {
-  background: #1e293b;
-  color: var(--text-light);
-}
-
 .btn-danger {
   background: var(--danger);
   color: #fff;
@@ -632,6 +648,79 @@
 .btn-danger:hover {
   background: var(--danger-hover);
   box-shadow: 0 0 12px var(--danger-hover);
+}
+
+/* --- 8. MEDIA QUERIES PARA RESPONSIVIDADE --- */
+@media (max-width: 980px) {
+  body { 
+    flex-direction: column; 
+    overflow: auto; 
+    height: auto;
+  }
+  .sidebar { 
+    position: static; 
+    width: 100%; 
+    height: auto; 
+    flex-direction: row; 
+    align-items: center; 
+    padding: 10px 20px;
+  }
+  .sidebar-header {
+    margin-bottom: 0;
+  }
+  .sidebar-main-navigation { 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    flex-grow: 1; 
+  }
+  .sidebar nav { 
+    display: flex; 
+    flex-direction: row; 
+    gap: 10px;
+  }
+  .sidebar nav a {
+    margin-bottom: 0;
+    padding: 10px;
+  }
+  .sidebar nav a span {
+    display: none; /* Esconde o texto dos links em telas menores */
+  }
+  .sidebar-bottom-menu { 
+    border-top: none; 
+    padding-top: 0; 
+  }
+  .profile-info {
+    display: none; /* Esconde nome e email ao lado do avatar */
+  }
+  .main { 
+    margin-left: 0; 
+    padding: 20px;
+    padding-left: 20px; /* Reseta o padding */
+  }
+  .panel { 
+    flex-direction: column; 
+  }
+  .calendar-wrapper, .events-wrapper { 
+    min-width: 0; 
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar nav {
+    flex-wrap: wrap; /* Permite que os ícones quebrem a linha */
+    justify-content: center;
+  }
+  .day { 
+    height: 45px; 
+  }
+  .main {
+    padding: 15px;
+    padding-left: 15px;
+  }
+  .panel {
+    gap: 15px;
+  }
 }
 
 

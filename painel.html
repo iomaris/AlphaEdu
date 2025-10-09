@@ -10,37 +10,30 @@
 </head>
 <body>
 
-<!-- Sidebar (Permanece igual ) -->
 <div class="sidebar">
-
-     
   <div class="sidebar-main-navigation">
-    
-<div class="sidebar-logo">
-  <img src="imagens/logo.png" alt="AlphaEdu Logo">
-
-  <span>AlphaEdu</span>
-</div>
-
-  
+    <div class="sidebar-header">
+      <button id="toggle-sidebar-btn"><i data-lucide="menu"></i></button>
+    </div>
     <nav>
-      <a href="painel.html" class="active"><i data-lucide="layout-dashboard"></i> Painel</a>
-      <a href="cronometro.html"><i data-lucide="timer"></i> Cronômetro</a>
-      <a href="calendario.html"><i data-lucide="calendar"></i> Calendário</a>
-      <a href="bloco_de_notas.html"><i data-lucide="notebook-pen"></i> Bloco de Notas</a>
-      <a href="arquivos.html" ><i data-lucide="folder-archive"></i> Meus Arquivos</a>
-      <a href="colecao.html"><i data-lucide="layers"></i> Flashcards</a>
+      <a href="painel.html" class="active"><i data-lucide="layout-dashboard"></i> <span>Painel</span></a>
+      <a href="cronometro.html"><i data-lucide="timer"></i> <span>Cronômetro</span></a>
+      <a href="calendario.html"><i data-lucide="calendar"></i> <span>Calendário</span></a>
+      <a href="bloco_de_notas.html"><i data-lucide="notebook-pen"></i> <span>Bloco de Notas</span></a>
+      <a href="arquivos.html" ><i data-lucide="folder-archive"></i> <span>Meus Arquivos</span></a>
+      <a href="colecao.html"><i data-lucide="layers"></i> <span>Flashcards</span></a>
     </nav>
   </div>
   <div id="profile-menu-container" class="sidebar-bottom-menu">
-    <button id="profile-menu-button" class="bottom-menu-item profile-button">
+    <button id="profile-menu-button" class="profile-button">
       <span class="profile-avatar">AT</span>
-    </button>
-    <div id="profile-dropdown" class="profile-dropdown-sidebar">
-      <div class="dropdown-header">
+      <div class="profile-info">
         <span class="username">Aluno Teste</span>
         <span class="email">aluno.teste@email.com</span>
       </div>
+    </button>
+    <div id="profile-dropdown" class="profile-dropdown-sidebar">
+      <div class="dropdown-header"><span class="username">Aluno Teste</span><span class="email">aluno.teste@email.com</span></div>
       <a href="perfil.html" class="dropdown-item"><i data-lucide="user-cog"></i><span>Editar Perfil</span></a>
       <a href="configuracao.html" class="dropdown-item"><i data-lucide="settings"></i><span>Configurações</span></a>
       <div class="dropdown-divider"></div>
@@ -50,68 +43,41 @@
   </div>
 </div>
 
-<!-- Conteúdo Principal Reestruturado -->
 <div class="main">
   <header class="main-header">
-    <h1 id="welcome-message">Bem-vindo(a) de volta, Aluno Teste!</h1>
-    <p>Este é o seu centro de controle. Acompanhe seus avisos, atividades e progresso.</p>
+    <div class="header-text">
+        <h1 id="welcome-message">Bem-vindo(a) de volta, Mariana!</h1>
+        <p>Este é o seu centro de controle. Acompanhe seus avisos, atividades e progresso.</p>
+    </div>
   </header>
 
   <div class="dashboard-grid">
-    <!-- Coluna Esquerda: Avisos (só aparece para usuário com código) -->
     <div id="class-panel" class="grid-item notices-container" style="display: none;">
-      <div class="card-header">
-        <i data-lucide="megaphone"></i>
-        <h3>Avisos Importantes</h3>
-      </div>
+      <div class="card-header"><i data-lucide="megaphone"></i><h3>Avisos Importantes</h3></div>
       <div class="notice-list">
-        <div class="notice-card">
-          <h4>Entrega de Trabalhos de Ciências</h4>
-          <p>O prazo final para entrega dos trabalhos de Ciências é dia 20/07.</p>
-          <div class="meta">Publicado por: <strong>Prof. Ana</strong></div>
-        </div>
-        <div class="notice-card">
-          <h4>Alteração de Horário da Aula de Português</h4>
-          <p>A aula de Português da próxima terça-feira (15/07) foi antecipada para as 08:00.</p>
-          <div class="meta">Publicado por: <strong>Prof. Silva</strong></div>
-        </div>
+        <div class="notice-card"><h4>Entrega de Trabalhos de Ciências</h4><p>O prazo final para entrega dos trabalhos de Ciências é dia 20/07.</p><div class="meta">Publicado por: <strong>Prof. Ana</strong></div></div>
+        <div class="notice-card"><h4>Alteração de Horário da Aula de Português</h4><p>A aula de Português da próxima terça-feira (15/07) foi antecipada para as 08:00.</p><div class="meta">Publicado por: <strong>Prof. Silva</strong></div></div>
       </div>
     </div>
-
-    <!-- Coluna Direita: Widgets (sempre visível) -->
     <div class="right-column">
       <div class="grid-item upcoming-activities">
         <div class="card-header"><i data-lucide="calendar-clock"></i><h3>Atividades Próximas</h3></div>
         <div class="mini-calendar">
-          <div class="mini-calendar-header">
-            <button id="mini-prev-month"><i data-lucide="chevron-left"></i></button>
-            <span id="mini-month-year"></span>
-            <button id="mini-next-month"><i data-lucide="chevron-right"></i></button>
-          </div>
+          <div class="mini-calendar-header"><button id="mini-prev-month"><i data-lucide="chevron-left"></i></button><span id="mini-month-year"></span><button id="mini-next-month"><i data-lucide="chevron-right"></i></button></div>
           <div class="mini-calendar-weekdays"><span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span></div>
           <div class="mini-calendar-days" id="mini-calendar-days"></div>
         </div>
         <a href="calendario.html" class="view-all-btn">Ver todas as atividades</a>
       </div>
-      
-      <!-- ✅ ATIVIDADE 1 e 2: Bloco de Progresso substituído pelo Bloco de Notas -->
       <div id="notepad-preview" class="grid-item">
-        <div class="card-header">
-          <i data-lucide="notebook-pen"></i>
-          <h3>Últimas Notas</h3>
-        </div>
-        <div id="mini-notes-list" class="mini-notes-list">
-          <!-- As notas salvas aparecerão aqui -->
-        </div>
+        <div class="card-header"><i data-lucide="notebook-pen"></i><h3>Últimas Notas</h3></div>
+        <div id="mini-notes-list" class="mini-notes-list"></div>
         <a href="bloco_de_notas.html" class="view-all-btn">Ver todas as notas</a>
       </div>
-      <!-- Fim da alteração -->
-
     </div>
   </div>
 </div>
 
-<!-- Modal para Entrar na Turma (Permanece igual) -->
 <div id="joinClassModal" class="modal">
   <div class="modal-content">
     <div class="modal-header">
@@ -130,7 +96,20 @@
 </div>
 <button id="openJoinModalBtn" class="fab" style="display: none;"><i data-lucide="users"></i></button>
 
+<div id="custom-modal-overlay" class="custom-modal-overlay">
+  <div class="custom-modal">
+    <h3 id="custom-modal-title"></h3>
+    <p id="custom-modal-text"></p>
+    <div id="custom-modal-buttons" class="custom-modal-buttons">
+      <button id="custom-modal-cancel-btn" class="btn-secondary">Cancelar</button>
+      <button id="custom-modal-ok-btn" class="btn-primary">OK</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/global.js"></script>
 <script type="module" src="js/scriptPainel.js"></script>
 
 </body>
 </html>
+

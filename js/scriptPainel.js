@@ -1,6 +1,7 @@
-// =======================================================================
-// 1. SETUP DO FIREBASE (Adicionado)
-// =======================================================================
+// ==================================================
+// ===== SCRIPTPAINEL.JS - VERSÃO ÚNICA E COMPLETA =====
+// ==================================================
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
@@ -19,206 +20,197 @@ const app = initializeApp(firebaseConfig );
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-// =======================================================================
-// 2. ELEMENTOS DO DOM E ESTADO (Sua lógica original, com adaptações)
-// =======================================================================
-const painelAvisos = document.getElementById('class-panel');
-const openModalBtn = document.getElementById('openJoinModalBtn');
-const welcomeMessage = document.getElementById('welcome-message');
-const leaveClassBtn = document.getElementById('leave-class-btn');
-const closeModalBtn = document.getElementById('closeJoinModalBtn');
-const modal = document.getElementById('joinClassModal');
-const joinForm = document.getElementById('joinClassForm');
-const codeInput = document.getElementById('class-code-input');
-const profileMenuContainer = document.getElementById('profile-menu-container');
-const profileMenuButton = document.getElementById('profile-menu-button');
-const profileDropdown = document.getElementById('profile-dropdown');
-const miniNotesList = document.getElementById('mini-notes-list');
-const miniMonthYearEl = document.getElementById('mini-month-year');
-const miniDaysEl = document.getElementById('mini-calendar-days');
-const miniPrevBtn = document.getElementById('mini-prev-month');
-const miniNextBtn = document.getElementById('mini-next-month');
+document.addEventListener('DOMContentLoaded', () => {
+    // --- ELEMENTOS DO DOM ---
+    const sidebar = document.querySelector('.sidebar');
+    const mainContent = document.querySelector('.main');
+    const toggleBtn = document.getElementById('toggle-sidebar-btn');
+    const profileMenuButton = document.getElementById('profile-menu-button');
+    const profileDropdown = document.getElementById('profile-dropdown');
+    const welcomeMessage = document.getElementById('welcome-message');
+    const profileAvatar = document.querySelector('.profile-avatar');
+    const dropdownUsername = document.querySelector('#profile-dropdown .username');
+    const dropdownEmail = document.querySelector('#profile-dropdown .email');
+    const leaveClassBtn = document.getElementById('leave-class-btn');
+    const openModalBtn = document.getElementById('openJoinModalBtn');
+    const modal = document.getElementById('joinClassModal');
+    const closeModalBtn = document.getElementById('closeJoinModalBtn');
+    const joinForm = document.getElementById('joinClassForm');
+    const codeInput = document.getElementById('class-code-input');
+    const customModalOverlay = document.getElementById('custom-modal-overlay');
+    const customModalTitle = document.getElementById('custom-modal-title');
+    const customModalText = document.getElementById('custom-modal-text');
+    const customModalOkBtn = document.getElementById('custom-modal-ok-btn');
+    const customModalCancelBtn = document.getElementById('custom-modal-cancel-btn');
+    const miniNotesList = document.getElementById('mini-notes-list');
+    const miniMonthYearEl = document.getElementById('mini-month-year');
+    const miniDaysEl = document.getElementById('mini-calendar-days');
+    const miniPrevBtn = document.getElementById('mini-prev-month');
+    const miniNextBtn = document.getElementById('mini-next-month');
+    const painelAvisos = document.getElementById('class-panel');
+    const dashboardGrid = document.querySelector('.dashboard-grid');
 
-let currentUser = null;
-let userData = {};
-let miniCurrentDate = new Date();
-let userEvents = {}; // Para armazenar os eventos do calendário
+    let miniCurrentDate = new Date();
 
-// =======================================================================
-// 3. FUNÇÕES DE DADOS (Adicionadas para usar Firebase)
-// =======================================================================
-
-/**
- * Carrega todos os dados necessários do usuário do Firebase.
- */
-async function loadAllUserData() {
-    if (!currentUser) return;
-    const userRef = ref(db, `users/${currentUser.uid}`);
-    try {
-        const snapshot = await get(userRef);
-        if (snapshot.exists()) {
-            userData = snapshot.val();
-            // Carrega os dados específicos dos widgets
-            userEvents = userData.calendarEvents || {};
-        }
-    } catch (error) {
-        console.error("Erro ao carregar dados do usuário:", error);
-    }
-    // Após carregar os dados, atualiza toda a UI
-    updateUserInterface();
-    renderMiniCalendar();
-    renderMiniNotes();
-}
-
-/**
- * Salva o código da turma no perfil do usuário no Firebase.
- */
-async function saveClassCode(classCode) {
-    if (!currentUser) return;
-    const classCodeRef = ref(db, `users/${currentUser.uid}/classCode`);
-    await set(classCodeRef, classCode);
-    userData.classCode = classCode; // Atualiza o objeto local
-    updateUserInterface();
-}
-
-/**
- * Remove o código da turma do perfil do usuário.
- */
-async function removeClassCode() {
-    if (!currentUser) return;
-    const classCodeRef = ref(db, `users/${currentUser.uid}/classCode`);
-    await set(classCodeRef, null); // Usar set(null) é o mesmo que remover
-    delete userData.classCode; // Remove do objeto local
-    updateUserInterface();
-}
-
-// =======================================================================
-// 4. FUNÇÕES DE RENDERIZAÇÃO E UI (Sua lógica original, adaptada para Firebase)
-// =======================================================================
-
-function updateUserInterface() {
-    const userHasCode = !!userData.classCode;
-    const rightColumn = document.querySelector('.right-column');
-
-    // Atualiza a mensagem de boas-vindas e o menu de perfil
-    welcomeMessage.textContent = `Bem-vindo(a) de volta, ${userData.username || 'Usuário'}!`;
-    profileDropdown.querySelector('.username').textContent = userData.username || 'Usuário';
-    profileDropdown.querySelector('.email').textContent = currentUser.email;
-    profileMenuButton.querySelector('.profile-avatar').textContent = (userData.username || 'U').substring(0, 2).toUpperCase();
-
-    // Lógica para exibir/ocultar painéis baseada no código da turma
-    if (userHasCode) {
-        painelAvisos.style.display = 'block';
-        rightColumn.style.gridColumn = '2 / 3';
-        openModalBtn.style.display = 'none';
-        leaveClassBtn.style.display = 'flex';
-    } else {
-        painelAvisos.style.display = 'none';
-        rightColumn.style.gridColumn = '1 / 2';
-        openModalBtn.style.display = 'flex';
-        leaveClassBtn.style.display = 'none';
-    }
-}
-
-function renderMiniCalendar() {
-    if (!miniMonthYearEl || !miniDaysEl) return;
-    const year = miniCurrentDate.getFullYear();
-    const month = miniCurrentDate.getMonth();
-    const monthNames = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
-    miniMonthYearEl.textContent = `${monthNames[month]} ${year}`;
-    miniDaysEl.innerHTML = '';
-
-    const firstDay = new Date(year, month, 1).getDay();
-    const lastDate = new Date(year, month + 1, 0).getDate();
-
-    for (let i = 0; i < firstDay; i++) {
-        miniDaysEl.innerHTML += `<div class="mini-day other-month"></div>`;
+    // --- LÓGICA DA SIDEBAR E PERFIL ---
+    if (toggleBtn) {
+        const setSidebarState = (isHidden) => {
+            if (sidebar && mainContent) {
+                sidebar.classList.toggle('hidden', isHidden);
+                mainContent.classList.toggle('full-width', isHidden);
+                localStorage.setItem('sidebarState', isHidden ? 'hidden' : 'visible');
+            }
+        };
+        toggleBtn.addEventListener('click', () => setSidebarState(!sidebar.classList.contains('hidden')));
+        const savedState = localStorage.getItem('sidebarState');
+        setSidebarState(savedState === 'hidden');
     }
 
-    for (let i = 1; i <= lastDate; i++) {
-        const dayKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
-        const hasEvent = userEvents[dayKey] && userEvents[dayKey].length > 0;
-        const isToday = new Date(year, month, i).toDateString() === new Date().toDateString() ? 'today' : '';
-        const eventClass = hasEvent ? 'has-event' : '';
-        miniDaysEl.innerHTML += `<div class="mini-day current-month ${isToday} ${eventClass}">${i}</div>`;
-    }
-}
-
-function renderMiniNotes() {
-    if (!miniNotesList) return;
-    const notes = userData.notes || {};
-    const notesArray = Object.values(notes).sort((a, b) => new Date(b.rawDate) - new Date(a.rawDate));
-    
-    miniNotesList.innerHTML = '';
-
-    if (notesArray.length > 0) {
-        const recentNotes = notesArray.slice(0, 3);
-        recentNotes.forEach(note => {
-            const noteCard = document.createElement('div');
-            noteCard.className = 'mini-note-card';
-            noteCard.innerHTML = `
-                <h5>${note.title || 'Nota sem título'}</h5>
-                <p>${new Date(note.rawDate).toLocaleDateString('pt-BR')}</p>
-            `;
-            miniNotesList.appendChild(noteCard);
+    if (profileMenuButton) {
+        profileMenuButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profileDropdown.classList.toggle('show');
         });
-    } else {
-        miniNotesList.innerHTML = '<p class="no-items-message">Nenhuma nota encontrada.</p>';
     }
-}
+    window.addEventListener('click', () => {
+        if (profileDropdown) profileDropdown.classList.remove('show');
+    });
 
-// =======================================================================
-// 5. EVENT LISTENERS (Sua lógica original, adaptada para Firebase)
-// =======================================================================
+    // --- AUTENTICAÇÃO E CARREGAMENTO DE DADOS ---
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            lucide.createIcons();
+            loadPageData(user);
+        } else {
+            window.location.href = 'Login.html';
+        }
+    });
 
-openModalBtn?.addEventListener('click', () => modal.classList.add('show'));
-closeModalBtn?.addEventListener('click', () => modal.classList.remove('show'));
-modal?.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('show'); });
+    async function loadPageData(user) {
+        const userRef = ref(db, `users/${user.uid}`);
+        const snapshot = await get(userRef);
+        const userData = snapshot.exists() ? snapshot.val() : {};
+        
+        // Atualiza UI Global
+        const username = userData.username || 'Usuário';
+        if (welcomeMessage) welcomeMessage.textContent = `Bem-vindo(a) de volta, ${username}!`;
+        if (profileAvatar) profileAvatar.textContent = (username[0] || 'U') + (username.split(' ')[1]?.[0] || '');
+        if (dropdownUsername) dropdownUsername.textContent = username;
+        if (dropdownEmail) dropdownEmail.textContent = user.email;
+        
+        const userHasCode = !!userData.classCode;
+        if (leaveClassBtn) leaveClassBtn.style.display = userHasCode ? 'flex' : 'none';
+        if (openModalBtn) openModalBtn.style.display = userHasCode ? 'none' : 'flex';
 
-joinForm?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const classCode = codeInput.value.trim();
-    if (classCode) {
-        await saveClassCode(classCode);
-        alert(`Código "${classCode}" aceito! Bem-vindo(a) à turma.`);
-        modal.classList.remove('show');
-    } else {
-        alert('Por favor, insira um código de turma.');
+        // Atualiza UI Específica do Painel
+        if (painelAvisos) painelAvisos.style.display = userHasCode ? 'block' : 'none';
+        if (dashboardGrid) dashboardGrid.classList.toggle('full-width', !userHasCode);
+        renderMiniCalendar(userData.calendarEvents || {});
+        renderMiniNotes(userData.notes || {});
     }
-});
 
-leaveClassBtn?.addEventListener('click', async (e) => {
-    e.preventDefault();
-    if (confirm('Tem certeza que deseja sair da turma?')) {
-        await removeClassCode();
-        alert('Você saiu da turma.');
+    // --- FUNÇÕES ESPECÍFICAS DO PAINEL ---
+    function renderMiniCalendar(userEvents) {
+        if (!miniMonthYearEl || !miniDaysEl) return;
+        const year = miniCurrentDate.getFullYear();
+        const month = miniCurrentDate.getMonth();
+        const monthNames = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+        miniMonthYearEl.textContent = `${monthNames[month]} ${year}`;
+        miniDaysEl.innerHTML = '';
+        const firstDay = new Date(year, month, 1).getDay();
+        const lastDate = new Date(year, month + 1, 0).getDate();
+        for (let i = 0; i < firstDay; i++) { miniDaysEl.innerHTML += `<div class="mini-day"></div>`; }
+        for (let i = 1; i <= lastDate; i++) {
+            const isToday = new Date(year, month, i).toDateString() === new Date().toDateString() ? 'today' : '';
+            miniDaysEl.innerHTML += `<div class="mini-day current-month ${isToday}">${i}</div>`;
+        }
     }
-});
 
-miniPrevBtn?.addEventListener('click', () => {
-    miniCurrentDate.setMonth(miniCurrentDate.getMonth() - 1);
-    renderMiniCalendar();
-});
+    function renderMiniNotes(notes = {}) {
+        if (!miniNotesList) return;
+        const notesArray = Object.values(notes).sort((a, b) => new Date(b.rawDate) - new Date(a.rawDate));
+        miniNotesList.innerHTML = '';
+        if (notesArray.length > 0) {
+            notesArray.slice(0, 3).forEach(note => {
+                miniNotesList.innerHTML += `<div class="mini-note-card"><h5>${note.title || 'Nota sem título'}</h5><p>${new Date(note.rawDate).toLocaleDateString('pt-BR')}</p></div>`;
+            });
+        } else {
+            miniNotesList.innerHTML = '<p>Nenhuma nota encontrada.</p>';
+        }
+    }
 
-miniNextBtn?.addEventListener('click', () => {
-    miniCurrentDate.setMonth(miniCurrentDate.getMonth() + 1);
-    renderMiniCalendar();
-});
+    // --- EVENT LISTENERS ---
+    if (miniPrevBtn) miniPrevBtn.addEventListener('click', () => { miniCurrentDate.setMonth(miniCurrentDate.getMonth() - 1); loadPageData(auth.currentUser); });
+    if (miniNextBtn) miniNextBtn.addEventListener('click', () => { miniCurrentDate.setMonth(miniCurrentDate.getMonth() + 1); loadPageData(auth.currentUser); });
 
-if (profileMenuContainer) {
-    profileMenuButton.addEventListener('click', (e) => { e.stopPropagation(); profileDropdown.classList.toggle('show'); });
-    window.addEventListener('click', (e) => { if (!profileMenuContainer.contains(e.target)) profileDropdown.classList.remove('show'); });
-}
+    // --- LÓGICA DOS MODAIS ---
+    function showAlert(title, message) { /* ...código do showAlert... */ }
+    function showConfirm(title, message) { /* ...código do showConfirm... */ }
+    // (O código completo das funções está abaixo)
 
-// =======================================================================
-// 6. INICIALIZAÇÃO (Modificada para usar Firebase)
-// =======================================================================
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        currentUser = user;
-        lucide.createIcons();
-        loadAllUserData(); // Ponto de entrada principal
-    } else {
-        window.location.href = 'Login.html';
+    if (openModalBtn) openModalBtn.addEventListener('click', () => modal.classList.add('show'));
+    if (closeModalBtn) closeModalBtn.addEventListener('click', () => modal.classList.remove('show'));
+    if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('show'); });
+
+    if (joinForm) {
+        joinForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const classCode = codeInput.value.trim();
+            const user = auth.currentUser;
+            if (classCode && user) {
+                await set(ref(db, `users/${user.uid}/classCode`), classCode);
+                modal.classList.remove('show');
+                await showAlert('Sucesso!', `Código "${classCode}" aceito! Bem-vindo(a) à turma.`);
+                loadPageData(user);
+            } else {
+                await showAlert('Atenção', 'Por favor, insira um código de turma.');
+            }
+        });
+    }
+
+    if (leaveClassBtn) {
+        leaveClassBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const user = auth.currentUser;
+            const confirmed = await showConfirm('Sair da Turma', 'Tem certeza que deseja sair da turma?');
+            if (confirmed && user) {
+                await set(ref(db, `users/${user.uid}/classCode`), null);
+                await showAlert('Aviso', 'Você saiu da turma.');
+                loadPageData(user);
+            }
+        });
+    }
+
+    function showAlert(title, message) {
+        customModalTitle.textContent = title;
+        customModalText.textContent = message;
+        customModalCancelBtn.style.display = 'none';
+        customModalOkBtn.textContent = 'OK';
+        customModalOverlay.classList.add('show');
+        return new Promise((resolve) => {
+            customModalOkBtn.onclick = () => {
+                customModalOverlay.classList.remove('show');
+                resolve(true);
+            };
+        });
+    }
+
+    function showConfirm(title, message) {
+        customModalTitle.textContent = title;
+        customModalText.textContent = message;
+        customModalCancelBtn.style.display = 'inline-block';
+        customModalOkBtn.textContent = 'Confirmar';
+        customModalCancelBtn.textContent = 'Cancelar';
+        customModalOverlay.classList.add('show');
+        return new Promise((resolve) => {
+            customModalOkBtn.onclick = () => {
+                customModalOverlay.classList.remove('show');
+                resolve(true);
+            };
+            customModalCancelBtn.onclick = () => {
+                customModalOverlay.classList.remove('show');
+                resolve(false);
+            };
+        });
     }
 });

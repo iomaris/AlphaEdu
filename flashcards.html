@@ -10,38 +10,35 @@
 </head>
 <body>
 
-<!-- Sidebar Padrão -->
+<!-- ===== NOVA SIDEBAR (PADRÃO DO PROJETO ) ===== -->
 <div class="sidebar">
-
-     
   <div class="sidebar-main-navigation">
-    
-<div class="sidebar-logo">
-  <img src="imagens/logo.png" alt="AlphaEdu Logo">
-
-  <span>AlphaEdu</span>
-</div>
+    <div class="sidebar-header">
+      <button id="toggle-sidebar-btn"><i data-lucide="menu"></i></button>
+    </div>
     <nav>
-      <a href="painel.html"><i data-lucide="layout-dashboard"></i> Painel</a>
-      <a href="cronometro.html"><i data-lucide="timer"></i> Cronômetro</a>
-      <a href="calendario.html"><i data-lucide="calendar"></i> Calendário</a>
-      <a href="bloco_de_notas.html"><i data-lucide="notebook-pen"></i> Bloco de Notas</a>
-      <a href="arquivos.html"><i data-lucide="folder-archive"></i> Meus Arquivos</a>
-      <a href="colecao.html" class="active"><i data-lucide="layers"></i> Flashcards</a>
+      <a href="painel.html"><i data-lucide="layout-dashboard"></i> <span>Painel</span></a>
+      <a href="cronometro.html"><i data-lucide="timer"></i> <span>Cronômetro</span></a>
+      <a href="calendario.html"><i data-lucide="calendar"></i> <span>Calendário</span></a>
+      <a href="bloco_de_notas.html"><i data-lucide="notebook-pen"></i> <span>Bloco de Notas</span></a>
+      <a href="arquivos.html"><i data-lucide="folder-archive"></i> <span>Meus Arquivos</span></a>
+      <a href="colecao.html" class="active"><i data-lucide="layers"></i> <span>Flashcards</span></a>
     </nav>
   </div>
   <div id="profile-menu-container" class="sidebar-bottom-menu">
-    <button id="profile-menu-button" class="bottom-menu-item profile-button">
-      <span class="profile-avatar">AT</span>
+    <button id="profile-menu-button" class="profile-button">
+      <span class="profile-avatar"></span>
+      <div class="profile-info">
+        <span class="username">Carregando...</span>
+        <span class="email"></span>
+      </div>
     </button>
     <div id="profile-dropdown" class="profile-dropdown-sidebar">
-      <div class="dropdown-header">
-        <span class="username">Aluno Teste</span>
-        <span class="email">aluno.teste@email.com</span>
-      </div>
+      <div class="dropdown-header"><span class="username"></span><span class="email"></span></div>
       <a href="perfil.html" class="dropdown-item"><i data-lucide="user-cog"></i><span>Editar Perfil</span></a>
       <a href="configuracao.html" class="dropdown-item"><i data-lucide="settings"></i><span>Configurações</span></a>
       <div class="dropdown-divider"></div>
+      <a href="#" id="leave-class-btn" class="dropdown-item" style="color: #f59e0b; display: none;"><i data-lucide="user-x"></i><span>Sair da Turma</span></a>
       <a href="inicial.html" class="dropdown-item logout"><i data-lucide="log-out"></i><span>Sair</span></a>
     </div>
   </div>
@@ -49,36 +46,36 @@
 
 <!-- Conteúdo Principal -->
 <div class="main">
-  <div class="content">
-    <div class="banner">
-      <i data-lucide="layers"></i>
-      <h3>Flashcards de Estudo</h3>
-      <p>Crie e revise flashcards para um aprendizado interativo e eficaz.</p>
-    </div>
+  <header class="main-header">
+    <h1 id="collection-title">Carregando coleção...</h1>
+    <p id="collection-description">Revise os flashcards para um aprendizado interativo e eficaz.</p>
+  </header>
+
+  <div class="panel">
     <div class="toolbar">
-      <input type="text" class="search" placeholder="Buscar flashcards...">
-      <!-- 
-        <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-        AQUI ESTÁ A CORREÇÃO: O ID agora é "add", como o JavaScript espera.
-        <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-      -->
-      <button class="btn-primary" id="add"><i data-lucide="plus"></i> Novo Flashcard</button>
+      <a href="colecao.html" class="back-btn"><i data-lucide="arrow-left"></i> Voltar para Coleções</a>
+      <button class="btn-primary" id="add-card-btn"><i data-lucide="plus"></i> Novo Flashcard</button>
     </div>
+
     <div class="flashcard-container">
       <div class="flashcard" id="flashcard">
         <div class="flashcard-face flashcard-front" id="card-front"></div>
         <div class="flashcard-face flashcard-back" id="card-back"></div>
       </div>
     </div>
+
     <div class="tags" id="tags"></div>
     <div class="counter" id="counter"></div>
-    <div class="controls">
-      <button class="btn" id="prev"><i data-lucide="arrow-left"></i> Anterior</button>
-      <button class="btn" id="shuffle"><i data-lucide="shuffle"></i> Embaralhar</button>
-      <button class="btn" id="edit"><i data-lucide="edit"></i> Editar</button>
-      <button class="btn" id="delete"><i data-lucide="trash-2"></i> Excluir</button>
-      <button class="btn" id="next">Próximo <i data-lucide="arrow-right"></i></button>
-    </div>
+
+    <!-- Encontre este bloco de código -->
+<div class="controls">
+  <button class="btn" id="prev"><i data-lucide="arrow-left"></i> Anterior</button>
+  <button class="btn" id="shuffle"><i data-lucide="shuffle"></i> Embaralhar</button>
+  <button class="btn" id="edit"><i data-lucide="edit"></i> Editar</button>
+  <button class="btn" id="delete"><i data-lucide="trash-2"></i> Excluir</button>
+  <button class="btn" id="next">Próximo <i data-lucide="arrow-right"></i></button>
+</div>
+
   </div>
 </div>
 
@@ -99,7 +96,7 @@
             <textarea id="modal-resposta" rows="4" placeholder="Digite a resposta aqui..." required></textarea>
         </div>
         <div class="form-group">
-            <label for="modal-tags">Tags (separadas por vírgula )</label>
+            <label for="modal-tags">Tags (separadas por vírgula)</label>
             <input type="text" id="modal-tags" placeholder="Ex: geografia, história, química">
         </div>
         <div class="modal-actions">
@@ -128,9 +125,7 @@
   </div>
 </div>
 
-<!-- Scripts -->
 <script type="module" src="js/scriptFlashCard.js"></script>
-
 
 </body>
 </html>
