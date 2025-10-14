@@ -10,6 +10,7 @@
 </head>
 <body>
 
+<!-- Sidebar (sem alterações ) -->
 <div class="sidebar">
   <div class="sidebar-main-navigation">
     <div class="sidebar-header">
@@ -26,14 +27,14 @@
   </div>
   <div id="profile-menu-container" class="sidebar-bottom-menu">
     <button id="profile-menu-button" class="profile-button">
-      <span class="profile-avatar">AT</span>
+      <span class="profile-avatar"></span>
       <div class="profile-info">
-        <span class="username">Aluno Teste</span>
-        <span class="email">aluno.teste@email.com</span>
+        <span class="username">Carregando...</span>
+        <span class="email"></span>
       </div>
     </button>
     <div id="profile-dropdown" class="profile-dropdown-sidebar">
-      <div class="dropdown-header"><span class="username">Aluno Teste</span><span class="email">aluno.teste@email.com</span></div>
+      <div class="dropdown-header"><span class="username"></span><span class="email"></span></div>
       <a href="perfil.html" class="dropdown-item"><i data-lucide="user-cog"></i><span>Editar Perfil</span></a>
       <a href="configuracao.html" class="dropdown-item"><i data-lucide="settings"></i><span>Configurações</span></a>
       <div class="dropdown-divider"></div>
@@ -43,22 +44,26 @@
   </div>
 </div>
 
+<!-- Conteúdo Principal -->
 <div class="main">
   <header class="main-header">
     <div class="header-text">
-        <h1 id="welcome-message">Bem-vindo(a) de volta, Mariana!</h1>
+        <h1 id="welcome-message">Bem-vindo(a) de volta!</h1>
         <p>Este é o seu centro de controle. Acompanhe seus avisos, atividades e progresso.</p>
     </div>
   </header>
 
+  <!-- ================================================== -->
+  <!-- ===== ESTRUTURA DO GRID RESTAURADA E CORRIGIDA ===== -->
+  <!-- ================================================== -->
   <div class="dashboard-grid">
+    
     <div id="class-panel" class="grid-item notices-container" style="display: none;">
       <div class="card-header"><i data-lucide="megaphone"></i><h3>Avisos Importantes</h3></div>
-      <div class="notice-list">
-        <div class="notice-card"><h4>Entrega de Trabalhos de Ciências</h4><p>O prazo final para entrega dos trabalhos de Ciências é dia 20/07.</p><div class="meta">Publicado por: <strong>Prof. Ana</strong></div></div>
-        <div class="notice-card"><h4>Alteração de Horário da Aula de Português</h4><p>A aula de Português da próxima terça-feira (15/07) foi antecipada para as 08:00.</p><div class="meta">Publicado por: <strong>Prof. Silva</strong></div></div>
-      </div>
+      <div class="notice-list"></div>
     </div>
+
+    <!-- A .right-column VOLTOU a existir -->
     <div class="right-column">
       <div class="grid-item upcoming-activities">
         <div class="card-header"><i data-lucide="calendar-clock"></i><h3>Atividades Próximas</h3></div>
@@ -69,15 +74,18 @@
         </div>
         <a href="calendario.html" class="view-all-btn">Ver todas as atividades</a>
       </div>
+      
       <div id="notepad-preview" class="grid-item">
         <div class="card-header"><i data-lucide="notebook-pen"></i><h3>Últimas Notas</h3></div>
         <div id="mini-notes-list" class="mini-notes-list"></div>
         <a href="bloco_de_notas.html" class="view-all-btn">Ver todas as notas</a>
       </div>
     </div>
+
   </div>
 </div>
 
+<!-- Modais e FAB (sem alterações) -->
 <div id="joinClassModal" class="modal">
   <div class="modal-content">
     <div class="modal-header">
@@ -107,9 +115,7 @@
   </div>
 </div>
 
-<script src="js/global.js"></script>
 <script type="module" src="js/scriptPainel.js"></script>
 
 </body>
 </html>
-

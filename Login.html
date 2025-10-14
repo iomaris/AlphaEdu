@@ -49,7 +49,11 @@
   </div>
 
 <script type="module">
-  // --- SCRIPT DAS ABAS (TABS ) ---
+  // =======================================================================
+  // ===== SCRIPT COMPLETO E CORRIGIDO PARA LOGIN.HTML =====
+  // =======================================================================
+
+  // --- 1. SCRIPT DAS ABAS (TABS) ---
   const tabs = document.querySelectorAll('.tab');
   const underline = document.querySelector('.underline');
 
@@ -64,7 +68,6 @@
     tab.addEventListener('click', () => {
       const destino = tab.getAttribute("data-target");
       if (destino === "inscrever") {
-        // CORREÇÃO DEFINITIVA: Usando o nome do arquivo com "R" maiúsculo
         window.location.href = "Registrar.html";
       }
     });
@@ -75,37 +78,112 @@
     moveUnderline(activeTab);
   });
 
-  // --- SCRIPT DO FIREBASE ---
+  // --- 2. SCRIPT DO FIREBASE ---
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getAuth,
+    signInWithEmailAndPassword,
+    GoogleAuthProvider,
+    signInWithPopup
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
   const firebaseConfig = {
-    apiKey: "AIzaSyC02F-Ka3ftBr4k-uNzUU3d7znjMgQ-zdk",
-    authDomain: "alphaedu-60ef2.firebaseapp.com",
-    databaseURL: "https://alphaedu-60ef2-default-rtdb.firebaseio.com",
-    projectId: "alphaedu-60ef2",
-    storageBucket: "alphaedu-60ef2.appspot.com",
-    messagingSenderId: "850593200345",
-    appId: "1:850593200345:web:abf53a5b5cd6c255f4e6c8",
-    measurementId: "G-Q961GG2JFN"
+    apiKey: "AIzaSyBdXV5FGtIgGulzCoOGO7humceFOmA5KVU",
+    authDomain: "alphaedu-1a738.firebaseapp.com",
+    databaseURL: "https://alphaedu-1a738-default-rtdb.firebaseio.com/",
+    projectId: "alphaedu-1a738",
+    storageBucket: "alphaedu-1a738.firebasestorage.app",
+    messagingSenderId: "570881564591",
+    appId: "1:570881564591:web:60c1ed6f8aaa414b27995a",
+    measurementId: "G-M36B97ZQVY"
   };
 
-  const app = initializeApp(firebaseConfig );
+  const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  const db = getDatabase(app);
 
+  // --- 3. FUNÇÃO DE REDIRECIONAMENTO ---
+  async function redirectUser(userId) {
+    const userRef = ref(db, 'users/' + userId);
+    try {
+      const snapshot = await get(userRef);
+      if (snapshot.exists()) {
+        const userData = snapshot.val();
+        if (userData.userType === 'professor') {
+          window.location.href = "telaProfessor.html";
+        } else {
+          window.location.href = "painel.html";
+        }
+      } else {
+        // Se não houver dados no DB, redireciona para o painel padrão
+        console.warn("Dados do usuário não encontrados no Realtime Database. Redirecionando para painel padrão.");
+        window.location.href = "painel.html";
+      }
+    } catch (error) {
+      console.error("Erro ao buscar dados do usuário para redirecionamento:", error);
+      alert("Ocorreu um erro ao carregar seus dados. Redirecionando para o painel padrão.");
+      window.location.href = "painel.html";
+    }
+  }
+
+  // --- 4. LÓGICA DE LOGIN ---
+
+  // Login com E-mail e Senha
   const loginForm = document.getElementById("loginForm");
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    // ... (resto do seu código de login com Firebase)
+    const email = document.getElementById("email").value;
+    const senha = document.getElementById("senha").value;
+    const submitButton = loginForm.querySelector('.submit-btn');
+    submitButton.disabled = true;
+    submitButton.textContent = 'Entrando...';
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, senha);
+      // Se o login for bem-sucedido, chama a função de redirecionamento
+      await redirectUser(userCredential.user.uid);
+    } catch (error) {
+      console.error("Erro no login:", error.code, error.message);
+      alert("E-mail ou senha incorretos. Por favor, tente novamente.");
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = 'Entrar';
+    }
   });
 
+  // Login com Google
   const googleButton = document.getElementById("login-google");
   googleButton.addEventListener("click", async () => {
-    // ... (resto do seu código de login com Google)
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      const userRef = ref(db, 'users/' + user.uid);
+      const snapshot = await get(userRef);
+
+      // Se o usuário NÃO existir (primeiro login com Google), cria um novo registro
+      if (!snapshot.exists()) {
+        await set(userRef, {
+          uid: user.uid,
+          username: user.displayName,
+          email: user.email,
+          userType: 'aluno', // Define 'aluno' como padrão para novos logins com Google
+          createdAt: new Date().toISOString()
+        });
+      }
+      
+      // Após criar (se necessário) ou confirmar que existe, redireciona
+      await redirectUser(user.uid);
+
+    } catch (error) {
+      console.error("Erro no login com Google:", error.code, error.message);
+      alert("Não foi possível fazer login com o Google. Tente novamente.");
+    }
   });
 </script>
-
-<!-- Apague a linha <script src="js/scriptLogin.js"></script> do seu HTML se ela existir -->
+<script type="module" src="js/scriptLogin.js"></script>
 
 </body>
 </html>

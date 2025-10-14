@@ -4,15 +4,16 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyC02F-Ka3ftBr4k-uNzUU3d7znjMgQ-zdk",
-    authDomain: "alphaedu-60ef2.firebaseapp.com",
-    databaseURL: "https://alphaedu-60ef2-default-rtdb.firebaseio.com",
-    projectId: "alphaedu-60ef2",
-    storageBucket: "alphaedu-60ef2.appspot.com",
-    messagingSenderId: "850593200345",
-    appId: "1:850593200345:web:abf53a5b5cd6c255f4e6c8"
-};
+  const firebaseConfig = {
+    apiKey: "AIzaSyBdXV5FGtIgGulzCoOGO7humceFOmA5KVU",
+    authDomain: "alphaedu-1a738.firebaseapp.com",
+    databaseURL: "https://alphaedu-1a738-default-rtdb.firebaseio.com/",
+    projectId: "alphaedu-1a738",
+    storageBucket: "alphaedu-1a738.firebasestorage.app",
+    messagingSenderId: "570881564591",
+    appId: "1:570881564591:web:60c1ed6f8aaa414b27995a",
+    measurementId: "G-M36B97ZQVY"
+  };
 
 const app = initializeApp(firebaseConfig );
 const auth = getAuth(app);

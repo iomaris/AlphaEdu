@@ -24,7 +24,7 @@ tabs.forEach(tab => {
     if (destino === "entrar") {
       // Se já estiver na página de login, não faz nada.
       // Se precisar, pode redirecionar para 'login.html' para garantir.
-      window.location.href = "login.html";
+      window.location.href = "Login.html";
     } else if (destino === "inscrever") {
       // CORREÇÃO: Usar "Registrar.html" com 'R' maiúsculo
       window.location.href = "Registrar.html";

@@ -1,20 +1,21 @@
 // ==================================================
-// ===== SCRIPTPAINEL.JS - VERSÃO ÚNICA E COMPLETA =====
+// ===== SCRIPTPAINEL.JS - VERSÃO FINAL COM AVISOS =====
 // ==================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyC02F-Ka3ftBr4k-uNzUU3d7znjMgQ-zdk",
-    authDomain: "alphaedu-60ef2.firebaseapp.com",
-    databaseURL: "https://alphaedu-60ef2-default-rtdb.firebaseio.com",
-    projectId: "alphaedu-60ef2",
-    storageBucket: "alphaedu-60ef2.appspot.com",
-    messagingSenderId: "850593200345",
-    appId: "1:850593200345:web:abf53a5b5cd6c255f4e6c8"
-};
+  const firebaseConfig = {
+    apiKey: "AIzaSyBdXV5FGtIgGulzCoOGO7humceFOmA5KVU",
+    authDomain: "alphaedu-1a738.firebaseapp.com",
+    databaseURL: "https://alphaedu-1a738-default-rtdb.firebaseio.com/",
+    projectId: "alphaedu-1a738",
+    storageBucket: "alphaedu-1a738.firebasestorage.app",
+    messagingSenderId: "570881564591",
+    appId: "1:570881564591:web:60c1ed6f8aaa414b27995a",
+    measurementId: "G-M36B97ZQVY"
+  };
 
 const app = initializeApp(firebaseConfig );
 const auth = getAuth(app);
@@ -29,6 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const profileDropdown = document.getElementById('profile-dropdown');
     const welcomeMessage = document.getElementById('welcome-message');
     const profileAvatar = document.querySelector('.profile-avatar');
+    const sidebarProfileUsername = document.querySelector('.profile-info .username');
+    const sidebarProfileEmail = document.querySelector('.profile-info .email');
     const dropdownUsername = document.querySelector('#profile-dropdown .username');
     const dropdownEmail = document.querySelector('#profile-dropdown .email');
     const leaveClassBtn = document.getElementById('leave-class-btn');
@@ -48,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const miniPrevBtn = document.getElementById('mini-prev-month');
     const miniNextBtn = document.getElementById('mini-next-month');
     const painelAvisos = document.getElementById('class-panel');
-    const dashboardGrid = document.querySelector('.dashboard-grid');
+    const noticeListContainer = document.querySelector('.notice-list'); // Container dos avisos
 
     let miniCurrentDate = new Date();
 
@@ -57,7 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const setSidebarState = (isHidden) => {
             if (sidebar && mainContent) {
                 sidebar.classList.toggle('hidden', isHidden);
-                mainContent.classList.toggle('full-width', isHidden);
                 localStorage.setItem('sidebarState', isHidden ? 'hidden' : 'visible');
             }
         };
@@ -76,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (profileDropdown) profileDropdown.classList.remove('show');
     });
 
-    // --- AUTENTICAÇÃO E CARREGAMENTO DE DADOS ---
+    // --- PONTO DE ENTRADA PRINCIPAL: AUTENTICAÇÃO ---
     onAuthStateChanged(auth, (user) => {
         if (user) {
             lucide.createIcons();
@@ -86,31 +88,75 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // --- FUNÇÃO ÚNICA PARA CARREGAR DADOS ---
     async function loadPageData(user) {
+        if (!user) return;
         const userRef = ref(db, `users/${user.uid}`);
         const snapshot = await get(userRef);
         const userData = snapshot.exists() ? snapshot.val() : {};
         
-        // Atualiza UI Global
         const username = userData.username || 'Usuário';
+        const email = user.email;
+        const avatarInitials = (username[0] || 'U') + (username.split(' ')[1]?.[0] || '');
+
         if (welcomeMessage) welcomeMessage.textContent = `Bem-vindo(a) de volta, ${username}!`;
-        if (profileAvatar) profileAvatar.textContent = (username[0] || 'U') + (username.split(' ')[1]?.[0] || '');
+        if (profileAvatar) profileAvatar.textContent = avatarInitials;
+        if (sidebarProfileUsername) sidebarProfileUsername.textContent = username;
+        if (sidebarProfileEmail) sidebarProfileEmail.textContent = email;
         if (dropdownUsername) dropdownUsername.textContent = username;
-        if (dropdownEmail) dropdownEmail.textContent = user.email;
+        if (dropdownEmail) dropdownEmail.textContent = email;
         
         const userHasCode = !!userData.classCode;
         if (leaveClassBtn) leaveClassBtn.style.display = userHasCode ? 'flex' : 'none';
         if (openModalBtn) openModalBtn.style.display = userHasCode ? 'none' : 'flex';
 
-        // Atualiza UI Específica do Painel
         if (painelAvisos) painelAvisos.style.display = userHasCode ? 'block' : 'none';
-        if (dashboardGrid) dashboardGrid.classList.toggle('full-width', !userHasCode);
-        renderMiniCalendar(userData.calendarEvents || {});
+        
+        // CORREÇÃO: Chama a nova função para carregar os avisos
+        if (userHasCode) {
+            loadClassNotices(userData.classCode);
+        }
+        
+        renderMiniCalendar();
         renderMiniNotes(userData.notes || {});
     }
 
-    // --- FUNÇÕES ESPECÍFICAS DO PAINEL ---
-    function renderMiniCalendar(userEvents) {
+    // ==================================================
+    // ===== NOVA FUNÇÃO PARA CARREGAR AVISOS DA TURMA =====
+    // ==================================================
+    async function loadClassNotices(classCode) {
+        if (!noticeListContainer) return;
+        
+        // Caminho no DB onde os avisos da turma são salvos (ex: /classes/CODIGO_DA_TURMA/notices)
+        const noticesRef = ref(db, `classes/${classCode}/notices`);
+        try {
+            const snapshot = await get(noticesRef);
+            if (snapshot.exists()) {
+                const notices = snapshot.val();
+                const noticesArray = Object.values(notices).sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                noticeListContainer.innerHTML = ''; // Limpa a lista
+                noticesArray.forEach(notice => {
+                    const noticeCard = document.createElement('div');
+                    noticeCard.className = 'notice-card';
+                    noticeCard.innerHTML = `
+                        <h4>${notice.title}</h4>
+                        <p>${notice.text}</p>
+                        <div class="meta">Publicado por: <strong>${notice.author || 'Professor'}</strong></div>
+                    `;
+                    noticeListContainer.appendChild(noticeCard);
+                });
+            } else {
+                noticeListContainer.innerHTML = '<p>Nenhum aviso importante no momento.</p>';
+            }
+        } catch (error) {
+            console.error("Erro ao carregar avisos da turma:", error);
+            noticeListContainer.innerHTML = '<p>Não foi possível carregar os avisos.</p>';
+        }
+    }
+
+    // --- FUNÇÕES DOS WIDGETS DO PAINEL ---
+    function renderMiniCalendar() {
         if (!miniMonthYearEl || !miniDaysEl) return;
         const year = miniCurrentDate.getFullYear();
         const month = miniCurrentDate.getMonth();
@@ -139,18 +185,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- EVENT LISTENERS ---
-    if (miniPrevBtn) miniPrevBtn.addEventListener('click', () => { miniCurrentDate.setMonth(miniCurrentDate.getMonth() - 1); loadPageData(auth.currentUser); });
-    if (miniNextBtn) miniNextBtn.addEventListener('click', () => { miniCurrentDate.setMonth(miniCurrentDate.getMonth() + 1); loadPageData(auth.currentUser); });
+    // --- EVENT LISTENERS DOS WIDGETS ---
+    if (miniPrevBtn) miniPrevBtn.addEventListener('click', () => {
+        miniCurrentDate.setMonth(miniCurrentDate.getMonth() - 1);
+        loadPageData(auth.currentUser);
+    });
+    if (miniNextBtn) miniNextBtn.addEventListener('click', () => {
+        miniCurrentDate.setMonth(miniCurrentDate.getMonth() + 1);
+        loadPageData(auth.currentUser);
+    });
 
     // --- LÓGICA DOS MODAIS ---
-    function showAlert(title, message) { /* ...código do showAlert... */ }
-    function showConfirm(title, message) { /* ...código do showConfirm... */ }
-    // (O código completo das funções está abaixo)
+    const showModal = (modalEl) => modalEl.classList.add('show');
+    const hideModal = (modalEl) => modalEl.classList.remove('show');
 
-    if (openModalBtn) openModalBtn.addEventListener('click', () => modal.classList.add('show'));
-    if (closeModalBtn) closeModalBtn.addEventListener('click', () => modal.classList.remove('show'));
-    if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('show'); });
+    if (openModalBtn) openModalBtn.addEventListener('click', () => showModal(modal));
+    if (closeModalBtn) closeModalBtn.addEventListener('click', () => hideModal(modal));
+    if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) hideModal(modal); });
 
     if (joinForm) {
         joinForm.addEventListener('submit', async (e) => {
@@ -159,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const user = auth.currentUser;
             if (classCode && user) {
                 await set(ref(db, `users/${user.uid}/classCode`), classCode);
-                modal.classList.remove('show');
+                hideModal(modal);
                 await showAlert('Sucesso!', `Código "${classCode}" aceito! Bem-vindo(a) à turma.`);
                 loadPageData(user);
             } else {
@@ -186,10 +237,10 @@ document.addEventListener('DOMContentLoaded', () => {
         customModalText.textContent = message;
         customModalCancelBtn.style.display = 'none';
         customModalOkBtn.textContent = 'OK';
-        customModalOverlay.classList.add('show');
+        showModal(customModalOverlay);
         return new Promise((resolve) => {
             customModalOkBtn.onclick = () => {
-                customModalOverlay.classList.remove('show');
+                hideModal(customModalOverlay);
                 resolve(true);
             };
         });
@@ -201,14 +252,14 @@ document.addEventListener('DOMContentLoaded', () => {
         customModalCancelBtn.style.display = 'inline-block';
         customModalOkBtn.textContent = 'Confirmar';
         customModalCancelBtn.textContent = 'Cancelar';
-        customModalOverlay.classList.add('show');
+        showModal(customModalOverlay);
         return new Promise((resolve) => {
             customModalOkBtn.onclick = () => {
-                customModalOverlay.classList.remove('show');
+                hideModal(customModalOverlay);
                 resolve(true);
             };
             customModalCancelBtn.onclick = () => {
-                customModalOverlay.classList.remove('show');
+                hideModal(customModalOverlay);
                 resolve(false);
             };
         });

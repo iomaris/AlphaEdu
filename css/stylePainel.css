@@ -288,17 +288,24 @@ i[data-lucide] {
 }
 
 /* --- 5. GRID DO DASHBOARD (RESTAURADO PARA O ORIGINAL DO USUÁRIO) --- */
+/* ================================================== */
+/* ===== CORREÇÃO DO GRID DO DASHBOARD ===== */
+/* ================================================== */
+
 .dashboard-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  /* Cria duas colunas: a primeira com 2 partes do espaço, a segunda com 1 parte */
+  grid-template-columns: 2fr 1fr; 
   gap: 30px;
   align-items: start;
 }
 
+/* Define que o painel de avisos ocupa a primeira coluna */
 #class-panel {
   grid-column: 1 / 2;
 }
 
+/* Define que a coluna da direita (com calendário e notas) ocupa a segunda coluna */
 .right-column {
   grid-column: 2 / 3;
   display: flex;
@@ -306,10 +313,12 @@ i[data-lucide] {
   gap: 30px;
 }
 
-/* Se não houver avisos, a coluna da direita se move para a coluna 1 */
+/* REGRA INTELIGENTE: Se o painel de avisos estiver escondido... */
 .dashboard-grid:has(#class-panel[style*="display: none"]) .right-column {
+  /* ...a coluna da direita passa a ocupar a primeira (e única) coluna. */
   grid-column: 1 / 2;
 }
+
 
 /* --- 6. ITENS DO GRID (WIDGETS) --- */
 .grid-item {
