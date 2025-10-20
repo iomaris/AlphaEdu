@@ -34,7 +34,7 @@ onAuthStateChanged(auth, (user) => {
     // Se ele estiver em uma página de autenticação (Login/Registro), redirecione para o painel.
     if (isAuthPage) {
       console.log("AuthGuard: Redirecionando para o painel...");
-      window.location.href = 'painel.html';
+      window.location.href = 'PainelAluno.html';
     }
     
   } else {

@@ -43,7 +43,7 @@ onAuthStateChanged(auth, (user) => {
         // Usuário está logado
         // Remove os botões de Login/Cadastro e adiciona o de Acessar Painel
         navButtonsContainer.innerHTML = `
-            <a href="painel.html" class="login-btn">Acessar Painel</a>
+            <a href="PainelAluno.html" class="login-btn">Acessar Painel</a>
         `;
     } else {
         // Usuário NÃO está logado

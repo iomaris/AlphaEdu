@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Verificar se o usuário é realmente um professor
                     if (userData.userType !== 'professor') {
                         alert('Acesso negado. Você não tem permissão de professor.');
-                        window.location.href = 'painel.html'; // Redirecionar para o painel do aluno
+                        window.location.href = 'PainelAluno.html'; // Redirecionar para o painel do aluno
                         return;
                     }
 
@@ -278,6 +278,6 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCalendar();
     renderEvents();
     renderAvisos();
-    showPage('painel'); // Mostra a página inicial do painel por padrão
+    showPage('PainelAluno'); // Mostra a página inicial do painel por padrão
 });
 

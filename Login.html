@@ -111,19 +111,19 @@
       if (snapshot.exists()) {
         const userData = snapshot.val();
         if (userData.userType === 'professor') {
-          window.location.href = "telaProfessor.html";
+          window.location.href = "Painel.html";
         } else {
-          window.location.href = "painel.html";
+          window.location.href = "PainelAluno.html";
         }
       } else {
         // Se não houver dados no DB, redireciona para o painel padrão
         console.warn("Dados do usuário não encontrados no Realtime Database. Redirecionando para painel padrão.");
-        window.location.href = "painel.html";
+        window.location.href = "PainelAluno.html";
       }
     } catch (error) {
       console.error("Erro ao buscar dados do usuário para redirecionamento:", error);
       alert("Ocorreu um erro ao carregar seus dados. Redirecionando para o painel padrão.");
-      window.location.href = "painel.html";
+      window.location.href = "PainelAluno.html";
     }
   }
 
