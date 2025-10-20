@@ -1,75 +1,65 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
 import { 
-  getAuth, onAuthStateChanged, updateProfile, updatePassword, signOut 
+  getAuth, onAuthStateChanged, updateProfile, updatePassword, signOut
 } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-// 🔹 Configuração do Firebase (mesma do seu projeto)
-const firebaseConfig = {
-  apiKey: "SUA_API_KEY",
-  authDomain: "SEU_DOMINIO.firebaseapp.com",
-  projectId: "SEU_PROJECT_ID",
-  storageBucket: "SEU_BUCKET.appspot.com",
-  messagingSenderId: "SENDER_ID",
-  appId: "APP_ID"
-};
+// 🔹 Configuração do Firebase (copie do seu painel)
+ const firebaseConfig = {
+    apiKey: "AIzaSyBdXV5FGtIgGulzCoOGO7humceFOmA5KVU",
+    authDomain: "alphaedu-1a738.firebaseapp.com",
+    databaseURL: "https://alphaedu-1a738-default-rtdb.firebaseio.com/",
+    projectId: "alphaedu-1a738",
+    storageBucket: "alphaedu-1a738.firebasestorage.app",
+    messagingSenderId: "570881564591",
+    appId: "1:570881564591:web:60c1ed6f8aaa414b27995a",
+    measurementId: "G-M36B97ZQVY"
+  };
+
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// 🔹 Referências de elementos
-const nomeInput = document.getElementById("nome");
-const emailInput = document.getElementById("email");
-const senhaInput = document.getElementById("senha");
-const form = document.getElementById("perfil-form");
+const nome = document.getElementById("profile-name");
+const email = document.getElementById("profile-email");
+const senha = document.getElementById("profile-password");
+const form = document.getElementById("profile-form");
 const mensagem = document.getElementById("mensagem");
-const logoutBtn = document.getElementById("logout-btn");
 
-// 🔹 Verifica usuário logado
+// Carregar dados do professor logado
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    nomeInput.value = user.displayName || "";
-    emailInput.value = user.email;
-    document.getElementById("profile-username").textContent = user.displayName || "Professor";
-    document.getElementById("profile-email").textContent = user.email;
-    document.getElementById("profile-avatar").textContent = (user.displayName?.[0] || "P").toUpperCase();
+    nome.value = user.displayName || "";
+    email.value = user.email || "";
+    document.querySelector(".username").textContent = user.displayName || "Professor";
+    document.querySelector(".email").textContent = user.email;
+    document.querySelector(".profile-avatar").textContent = (user.displayName?.[0] || "P").toUpperCase();
   } else {
-    window.location.href = "login.html";
+    window.location.href = "Login.html";
   }
 });
 
-// 🔹 Atualizar dados
+// Atualizar dados
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const user = auth.currentUser;
   if (!user) return;
 
-  const novoNome = nomeInput.value.trim();
-  const novaSenha = senhaInput.value.trim();
+  const novoNome = nome.value.trim();
+  const novaSenha = senha.value.trim();
 
   try {
-    // Atualiza nome no perfil e Firestore
     await updateProfile(user, { displayName: novoNome });
-    const ref = doc(db, "usuarios", user.uid);
+    const ref = doc(db, "professores", user.uid);
     await updateDoc(ref, { nome: novoNome });
 
-    // Atualiza senha, se informada
     if (novaSenha) await updatePassword(user, novaSenha);
 
-    mensagem.style.display = "block";
-    mensagem.style.color = "var(--accent)";
     mensagem.textContent = "✅ Dados atualizados com sucesso!";
-    senhaInput.value = "";
+    mensagem.style.color = "var(--accent)";
+    senha.value = "";
   } catch (erro) {
-    console.error(erro);
-    mensagem.style.display = "block";
+    mensagem.textContent = "❌ Erro: " + erro.message;
     mensagem.style.color = "var(--danger)";
-    mensagem.textContent = "❌ Erro ao atualizar: " + erro.message;
   }
-});
-
-// 🔹 Logout
-logoutBtn.addEventListener("click", async () => {
-  await signOut(auth);
-  window.location.href = "login.html";
 });
