@@ -87,6 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = 'Login.html';
         }
     });
+    
 
     // --- FUNÇÃO ÚNICA PARA CARREGAR DADOS ---
     async function loadPageData(user) {
@@ -264,4 +265,5 @@ document.addEventListener('DOMContentLoaded', () => {
             };
         });
     }
+    
 });

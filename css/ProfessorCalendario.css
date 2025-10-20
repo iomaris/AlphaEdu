@@ -1,8 +1,7 @@
 /* ================================================== */
-/* ===== CSS COMPLETO E CORRIGIDO: styleFlashcard.css ===== */
+/* ===== ProfessorCalendario.css - VERSÃO FINAL ===== */
 /* ================================================== */
 
-/* --- 1. VARIÁVEIS GLOBAIS E RESET --- */
 :root {
   --bg-dark: #0a0f1e;
   --bg-panel: #121a2f;
@@ -15,7 +14,7 @@
   --accent: #38bdf8;
   --danger: #ef4444;
   --danger-hover: #f87171;
-  --panel-border: rgba(59, 130, 246, 0.2);
+  --panel-border: rgba(59, 130, 246, 0.15);
 }
 
 * {
@@ -39,7 +38,7 @@ i[data-lucide] {
   flex-shrink: 0;
 }
 
-/* --- 2. SIDEBAR (ESTILOS DO PAINEL) --- */
+/* --- 1. SIDEBAR --- */
 .sidebar {
   width: 260px;
   background: linear-gradient(180deg, #111827, #0f172a);
@@ -108,7 +107,7 @@ i[data-lucide] {
   box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
 }
 
-/* --- 3. ESTADO DA SIDEBAR FECHADA --- */
+/* --- ESTADO DA SIDEBAR FECHADA --- */
 .sidebar.hidden {
   width: 88px;
   padding: 20px 15px;
@@ -135,7 +134,7 @@ i[data-lucide] {
   justify-content: center;
 }
 
-/* --- 4. MENU DE PERFIL --- */
+/* --- MENU DE PERFIL --- */
 .sidebar-bottom-menu {
   border-top: 1px solid var(--panel-border);
   padding-top: 15px;
@@ -220,28 +219,28 @@ i[data-lucide] {
 .dropdown-header .email { display: block; font-size: 12px; color: var(--text-muted); }
 .dropdown-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 6px; text-decoration: none; color: var(--text-light); font-size: 14px; transition: background 0.2s; }
 .dropdown-item:hover { background: rgba(59, 130, 246, 0.15); color: var(--blue-light); }
-.dropdown-item.logout, .dropdown-item[style*="color: #f59e0b"] { color: var(--danger); }
-.dropdown-item.logout:hover, .dropdown-item[style*="color: #f59e0b"]:hover { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+.dropdown-item.logout { color: var(--danger); }
+.dropdown-item.logout:hover { background: rgba(239, 68, 68, 0.15); }
 .dropdown-divider { height: 1px; background: var(--panel-border); margin: 8px 0; }
 
-/* --- 5. CONTEÚDO PRINCIPAL (MAIN) --- */
+/* --- CONTEÚDO PRINCIPAL (MAIN) --- */
 .main {
-  width: 100%;
+  flex: 1;
   display: flex;
   flex-direction: column;
   padding: 30px;
-  gap: 20px;
   height: 100vh;
   overflow-y: auto;
-  transition: padding-left 0.3s ease-in-out;
-  padding-left: 290px; /* (260px da sidebar + 30px de espaçamento) */
-  align-items: center;
+  margin-left: 260px;
+  transition: margin-left 0.3s ease-in-out;
+}
+
+.sidebar.hidden + .main {
+  margin-left: 88px;
 }
 
 .main-header {
-  width: 100%;
-  max-width: 800px;
-  text-align: left;
+  margin-bottom: 30px;
 }
 
 .main-header h1 {
@@ -256,170 +255,248 @@ i[data-lucide] {
   color: var(--text-muted);
 }
 
-/* --- 6. ESTILOS ESPECÍFICOS DA PÁGINA DE FLASHCARD --- */
+/* --- ESTILOS DO CALENDÁRIO --- */
 .panel {
+  display: flex;
+  gap: 22px;
+  flex: 1;
+  width: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+.calendar-wrapper, .events-wrapper {
   background: var(--bg-panel);
   border-radius: 16px;
   border: 1px solid var(--panel-border);
   box-shadow: 0 0 15px rgba(37, 99, 235, 0.15);
   padding: 24px;
+}
+
+.calendar-wrapper {
+  flex: 2;
+  min-width: 500px;
+}
+
+.events-wrapper {
+  flex: 1;
+  min-width: 320px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 20px;
-  width: 100%;
-  max-width: 800px;
 }
 
-.toolbar {
+.calendar-header {
   display: flex;
   justify-content: space-between;
-  width: 100%;
   align-items: center;
+  margin-bottom: 20px;
 }
 
-.back-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: #1e293b;
+.calendar-header button {
+  background: transparent;
   border: 1px solid var(--panel-border);
-  padding: 10px 16px;
-  border-radius: 8px;
+  padding: 8px 12px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
-  color: var(--text-light);
+  color: var(--blue-glow);
   transition: all 0.2s;
-  text-decoration: none;
 }
 
-.back-btn:hover {
+.calendar-header button:hover {
   background: rgba(59, 130, 246, 0.2);
   border-color: var(--blue-light);
+}
+
+.month-year {
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: capitalize;
+  color: var(--text-light);
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.weekdays div {
+  text-align: center;
+  font-weight: 600;
+  color: var(--blue-light);
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+}
+
+.day {
+  position: relative;
+  height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+}
+
+.day:hover {
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.day.today {
+  border: 1px solid var(--blue-light);
+  font-weight: 700;
   color: var(--blue-light);
 }
 
-.btn-primary {
+.day.selected {
+  background: var(--primary-blue);
+  color: var(--white);
+  font-weight: 700;
+  box-shadow: 0 0 10px var(--primary-blue);
+}
+
+.day.other-month {
+  color: var(--text-muted);
+  opacity: 0.5;
+}
+
+.event-dot {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+}
+
+.day.selected .event-dot {
+  background: var(--white);
+}
+
+.events {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.events h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--blue-light);
+}
+
+.add-event-btn {
   background: var(--primary-blue);
   color: var(--white);
   border: none;
-  padding: 12px 20px;
+  padding: 12px 16px;
   border-radius: 8px;
-  font-size: 14px;
-  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 20px;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
+  transition: all 0.3s;
 }
 
-.btn-primary:hover {
+.add-event-btn:hover {
   background: var(--blue-light);
   box-shadow: 0 0 12px var(--blue-light);
 }
 
-.flashcard-container {
-  perspective: 1000px;
-  width: 100%;
-  max-width: 600px;
-  height: 350px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.flashcard {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  transition: transform 0.6s;
-  transform-style: preserve-3d;
-  cursor: pointer;
-}
-
-.flashcard.is-flipped {
-  transform: rotateY(180deg);
-}
-
-.flashcard-face {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  backface-visibility: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  text-align: center;
-  border-radius: 16px;
-  border: 1px solid var(--panel-border);
-  box-shadow: 0 0 15px rgba(37, 99, 235, 0.15);
-  font-size: 22px;
-  font-weight: 500;
-}
-
-.flashcard-front {
-  background: var(--bg-panel);
-}
-
-.flashcard-back {
-  background: #1e293b;
-  transform: rotateY(180deg);
-}
-
-.tags {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  justify-content: center;
-  min-height: 24px; /* Garante espaço mesmo sem tags */
-}
-
-.tag {
-  background: #1e293b;
-  color: var(--text-muted);
-  padding: 4px 12px;
-  border-radius: 16px;
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.counter {
+.event-list {
+  flex: 1;
+  overflow-y: auto;
   color: var(--text-muted);
   font-size: 14px;
-  text-align: center;
-  min-height: 21px; /* Garante espaço mesmo sem contador */
+  min-height: 150px;
+  padding-right: 8px;
 }
 
-.controls {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.event-card {
   background: #1e293b;
   border: 1px solid var(--panel-border);
-  padding: 10px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  text-align: left;
+  width: 100%;
+}
+
+.event-title {
   color: var(--text-light);
+  font-weight: 500;
+  word-break: break-all;
+}
+
+.event-turma {
+  display: inline-block;
+  font-size: 12px;
+  background: var(--bg-dark);
+  color: var(--text-muted);
+  padding: 2px 8px;
+  border-radius: 6px;
+  margin-bottom: 6px;
+}
+
+.event-card-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--panel-border);
+}
+
+.event-action-btn {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
   transition: all 0.2s;
 }
 
-.btn:hover {
-  background: rgba(59, 130, 246, 0.2);
-  border-color: var(--blue-light);
+.event-action-btn:hover {
+  background-color: rgba(59, 130, 246, 0.2);
   color: var(--blue-light);
 }
 
-/* --- 7. ESTILOS DOS MODAIS --- */
+.event-action-btn.delete:hover {
+  color: var(--danger-hover);
+  background-color: rgba(239, 68, 68, 0.2);
+}
+
+.event-action-btn i {
+  width: 16px;
+  height: 16px;
+}
+
+/* --- ESTILOS DOS MODAIS --- */
 .modal {
   display: none;
   position: fixed;
@@ -437,47 +514,37 @@ i[data-lucide] {
 
 .modal-content {
   background: var(--bg-panel);
+  border-radius: 12px;
   padding: 24px;
+  width: 450px;
+  max-width: 90%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  position: relative;
   border: 1px solid var(--panel-border);
-  width: 90%;
-  max-width: 500px;
-  border-radius: 16px;
-  box-shadow: 0 0 40px rgba(59, 130, 246, 0.3);
-  transform: scale(0.95);
-  transition: transform 0.3s ease;
-}
-
-.modal.show .modal-content {
-  transform: scale(1);
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   padding-bottom: 12px;
   border-bottom: 1px solid var(--panel-border);
 }
 
 .modal-header h4 {
   font-size: 18px;
+  font-weight: 600;
   color: var(--blue-light);
 }
 
 .close-btn {
-  color: var(--text-muted);
-  font-size: 28px;
-  font-weight: bold;
   background: none;
   border: none;
+  font-size: 20px;
+  color: var(--text-muted);
   cursor: pointer;
-  transition: color 0.2s;
-}
-
-.close-btn:hover,
-.close-btn:focus {
-  color: var(--text-light);
+  padding: 4px;
 }
 
 .form-group {
@@ -486,27 +553,29 @@ i[data-lucide] {
 
 .form-group label {
   display: block;
-  margin-bottom: 8px;
-  font-size: 14px;
+  margin-bottom: 6px;
   font-weight: 500;
+  font-size: 14px;
   color: var(--text-light);
 }
 
 .form-group input,
+.form-group select,
 .form-group textarea {
   width: 100%;
-  padding: 12px;
-  border-radius: 8px;
+  padding: 10px 12px;
   border: 1px solid var(--panel-border);
-  outline: none;
-  background: #1e293b;
-  color: var(--white);
+  border-radius: 6px;
   font-size: 14px;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  background: #1e293b;
+  color: var(--text-light);
+  transition: all 0.3s;
 }
 
 .form-group input:focus,
+.form-group select:focus,
 .form-group textarea:focus {
+  outline: none;
   border-color: var(--blue-light);
   box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
 }
@@ -515,84 +584,37 @@ i[data-lucide] {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  margin-top: 16px;
+  margin-top: 20px;
 }
 
-.btn-secondary {
-  padding: 10px 20px;
+.btn-cancel {
   background: transparent;
   color: var(--text-muted);
   border: 1px solid var(--panel-border);
+  padding: 10px 16px;
   border-radius: 8px;
   cursor: pointer;
+  font-size: 14px;
   font-weight: 500;
   transition: all 0.3s;
 }
-
-.btn-secondary:hover {
+.btn-cancel:hover {
   background: #1e293b;
   color: var(--text-light);
 }
 
 .btn-save {
-  padding: 10px 20px;
   background: var(--primary-blue);
-  color: white;
+  color: var(--white);
   border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s;
-}
-
-.btn-save:hover {
-  background: var(--blue-light);
-  box-shadow: 0 0 12px var(--blue-light);
-}
-
-.btn-danger {
-  background: var(--danger);
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
+  padding: 10px 16px;
   border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
-  transition: background 0.2s, box-shadow 0.2s;
+  transition: all 0.3s;
 }
-
-.btn-danger:hover {
-  background: var(--danger-hover);
-  box-shadow: 0 0 12px var(--danger-hover);
-}
-
-.confirm-icon {
-  width: 48px;
-  height: 48px;
-  color: var(--danger);
-  margin: 0 auto 16px;
-  display: block;
-}
-
-.modal-body p {
-  font-size: 15px;
-  color: var(--text-muted);
-  line-height: 1.6;
-  text-align: center;
-}
-
-/* --- RESPONSIVIDADE --- */
-@media (max-width: 980px) {
-  body { flex-direction: column; overflow: auto; }
-  .sidebar { position: static; width: 100%; height: auto; flex-direction: row; align-items: center; }
-  .sidebar-main-navigation { display: flex; align-items: center; justify-content: space-between; flex-grow: 1; }
-  .sidebar-main-navigation nav { display: flex; flex-direction: row; }
-  .sidebar-bottom-menu { border-top: none; padding-top: 0; flex-direction: row; }
-  .main { margin-left: 0; }
-}
-@media (max-width: 480px) {
-  .sidebar { flex-direction: column; align-items: stretch; }
-  .sidebar-main-navigation nav { flex-direction: column; }
-  .sidebar-bottom-menu { flex-direction: column; border-top: 1px solid var(--panel-border); padding-top: 12px; }
+.btn-save:hover {
+  background: var(--blue-light);
+  box-shadow: 0 0 12px var(--blue-light);
 }
